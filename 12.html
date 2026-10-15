@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Document</title>
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+.tlist {
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    align-items: center;
+}
+.tlist li {
+    width: 320px;
+    position: relative;
+    overflow: hidden;
+    /* 图片下方留出空白放固定文字 */
+    padding-bottom:20px;
+}
+.tlist li img {
+    width: 100%;
+    display: block;
+    transition: all 0.5s ease;
+    cursor: pointer;
+    border-radius:6px;
+}
+/* 鼠标悬浮：图片上浮+轻微放大 */
+.tlist li:hover img{
+    transform: scale(1.05) translateY(-8px);
+}
+/* 点击激活的class */
+.tlist li img.active{
+    transform: scale(1.15) rotate(3deg);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+    border: 3px solid #0099cc;
+}
+/* 悬浮滑入的黑色提示文字 */
+.text {
+    width:100%;
+    position: absolute;
+    left: 0;
+    bottom: -80px;
+    background-color: rgba(0, 0, 0, 0.5);
+    color: white;
+    transition: all 0.5s ease;
+    height:33px;
+    font-size:12px;
+}
+.text h3 {
+    height:33px;
+    line-height: 33px;
+    text-align: center;
+}
+.text p{
+    display:none;
+}
+.tlist li:hover .text {
+    bottom: 0;
+}
+.tlist li:hover .text p{
+    display:block;
+}
+/* ==========新增：图片下方永久显示的描述文字========== */
+.desc{
+    margin-top:12px;
+    text-align:center;
+    font-size:14px;
+    color:#333;
+}
+</style>
+</head>
+<body>
+<h2>transition 过渡</h2>
+<ul class="tlist">
+    <li>
+        <img src="campus.jpg" onclick="toggleEffect(this)">
+        <!-- 固定在图片下面的文字 -->
+        <div class="desc">校园风光，漫步校园感受青春氛围</div>
+        <div class="text">
+            <h3>校园风景</h3>
+            <p>安静整洁的校园小路，充满青春气息。</p>
+        </div>
+    </li>
+    <li>
+        <img src="flower.jpg" onclick="toggleEffect(this)">
+        <div class="desc">盛放牡丹，温柔淡雅，生机盎然</div>
+        <div class="text">
+            <h3>鲜花图片</h3>
+            <p>盛开的牡丹，色彩柔和，优雅动人。</p>
+        </div>
+    </li>
+    <li>
+        <img src="heart.jpg" onclick="toggleEffect(this)">
+        <div class="desc">红色爱心，象征温暖与美好祝愿</div>
+        <div class="text">
+            <h3>爱心图案</h3>
+            <p>温暖的红色爱心，代表美好与热爱。</p>
+        </div>
+    </li>
+</ul>
+<script>
+function toggleEffect(imgDom){
+    // 先清除所有图片active
+    document.querySelectorAll(".tlist li img").forEach(img=>{
+        img.classList.remove("active");
+    });
+    // 当前点击图片添加active
+    imgDom.classList.add("active");
+}
+</script>
+</body>
+</html>

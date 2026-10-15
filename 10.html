@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>左图右文</title>
+    <style>
+        *{
+            margin: 0;
+            padding: 0;
+        }
+        .container{
+            display: flex;
+            flex-direction: column;
+            gap:15px;
+            padding:20px;
+        }
+        .box{
+            display: flex;
+            align-items: center;
+            gap:12px;
+            padding:12px;
+            border-bottom: 1px solid #eee;
+        }
+        .zy img{
+            width:120px;
+            height:90px;
+            object-fit:cover;
+        }
+        .text{
+            flex:1;
+        }
+        .text h3{
+            font-size:17px;
+            color:#222;
+            margin-bottom:8px;
+        }
+        .text .author{
+            font-size:14px;
+            color:#666;
+        }
+        .time{
+            font-size:14px;
+            color:#888;
+            margin-left:auto;
+        }
+        .text-wrap{
+            display:flex;
+            justify-content: space-between;
+            align-items:center;
+            flex:1;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="box">
+            <div class="zy">
+                <img src="campus.jpg">
+            </div>
+            <div class="text-wrap">
+                <div class="text">
+                    <h3>校园风景</h3>
+                    <span class="author">张艺凡</span>
+                </div>
+                <span class="time">2028-10-18</span>
+            </div>
+        </div>
+
+        <div class="box">
+            <div class="zy">
+                <img src="flower.jpg">
+            </div>
+            <div class="text-wrap">
+                <div class="text">
+                    <h3>美丽花朵</h3>
+                    <span class="author">张艺凡</span>
+                </div>
+                <span class="time">2028-10-18</span>
+            </div>
+        </div>
+
+        <div class="box">
+            <div class="zy">
+                <img src="heart.jpg">
+            </div>
+            <div class="text-wrap">
+                <div class="text">
+                    <h3>爱心图案</h3>
+                    <span class="author">张艺凡</span>
+                </div>
+                <span class="time">2028-10-18</span>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

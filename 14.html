@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>10-2 幻灯片</title>
+    <style>
+        body {
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin:0;
+            background:#f4f4f4;
+        }
+        .slide-box {
+            width: 500px;
+            height: 320px;
+            overflow: hidden;
+            position: relative;
+            border: 2px solid #333;
+        }
+        .img-wrap {
+            width: 1500px;
+            height: 320px;
+            display: flex;
+            animation: slideMove 9s infinite linear;
+        }
+        .img-wrap img {
+            width: 500px;
+            height: 320px;
+            object-fit: cover;
+        }
+        /* 扩展要求：图片上的文字，透明背景+白色文字 */
+        .slide-text {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: rgba(0,0,0,0.4); /*透明背景*/
+            color: #fff; /*白色字*/
+            text-align: center;
+            padding: 12px 0;
+            font-size: 18px;
+        }
+        /* 位置移动动画，不是透明度 */
+        @keyframes slideMove {
+            0%{transform: translateX(0px);}
+            30%{transform: translateX(0px);}
+            33%{transform: translateX(-500px);}
+            63%{transform: translateX(-500px);}
+            66%{transform: translateX(-1000px);}
+            96%{transform: translateX(-1000px);}
+            100%{transform: translateX(0px);}
+        }
+    </style>
+</head>
+<body>
+    <div class="slide-box">
+        <div class="img-wrap">
+            <img src="campus.jpg">
+            <img src="flower.jpg">
+            <img src="heart.jpg">
+        </div>
+        <div class="slide-text">张艺凡</div>
+    </div>
+</body>
+</html>

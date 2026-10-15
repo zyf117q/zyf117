@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSS群组选择器和后代选择器</title>
+
+    <style>
+        /* 全局清除内外边距（群组选择器） */
+        h2, h3, p {
+            padding: 0;
+            margin: 0;
+        }
+
+        /* 外层盒子：增加文字居中、行高 */
+        #box {
+            padding: 28px;
+            margin: 28px;
+            border: 1px solid #ccc;
+            text-align: center;
+            line-height: 2;
+        }
+
+        /* box内部h3：蓝色 */
+        #box h3 {
+            color:#096dd9;
+            font-size: 16px;
+            line-height: 30px;
+            text-align: center;
+            letter-spacing: 3px;
+        }
+
+        /* box内部段落 */
+        #box p {
+            color: #666;
+            text-indent: 2em;
+            line-height: 150%;
+        }
+
+        /* 同一个类，多处复用：蓝色加粗 */
+        .blueBold{
+            font-weight:bold;
+            color:#096dd9;
+        }
+
+        /* box里面的超链接 */
+        #box a {
+            color: #034;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+
+    <h2>css群组选择器和后代选择器</h2>
+
+    <div id="box">
+        <h3>CSS进阶</h3>
+        <p>学号：<span class="blueBold">117</span>，姓名：<span class="blueBold">张艺凡</span>，班级：<span class="blueBold">24008</span></p>
+        <p>《高级网页设计》设计的学习难度中等。本实例的<span class="blueBold">知识点</span>是CSS群组选择器和后代选择器。</p>
+        <a href="#">更多</a>
+    </div>
+
+</body>
+</html>

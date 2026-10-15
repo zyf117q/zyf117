@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>动画导航页面</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        .yuan_body {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #0f172a, #1e293b);
+            perspective: 800px;
+        }
+        .yuan_title {
+            text-align: center;
+            padding: 40px 0;
+            color: #fff;
+            font-size: 32px;
+            letter-spacing: 3px;
+        }
+        .yuan_nav_box {
+            display: flex;
+            justify-content: center;
+            gap: 35px;
+            flex-wrap: wrap;
+        }
+        .yuan_nav_item {
+            width: 180px;
+            height: 80px;
+            line-height: 80px;
+            text-align: center;
+            background: rgba(255,255,255,0.12);
+            border: 1px solid rgba(255,255,255,0.25);
+            border-radius: 12px;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: all 0.4s ease;
+        }
+        .yuan_nav_item a {
+            display: block;
+            width: 100%;
+            height: 100%;
+            color: #fff;
+            text-decoration: none;
+            font-size: 20px;
+        }
+        /* 鼠标悬浮动画 + 3D倾斜 */
+        .yuan_nav_item:hover {
+            transform: rotateY(12deg) translateY(-8px);
+            background: rgba(59, 130, 246, 0.4);
+            box-shadow: 0 15px 30px rgba(59,130,246,0.35);
+        }
+        /* 底部返回首页链接 */
+        .yuan_return_box {
+            text-align: center;
+            margin-top: 80px;
+        }
+        .yuan_return {
+            display: inline-block;
+            padding: 12px 28px;
+            background: #2563eb;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            transition: 0.3s;
+        }
+        .yuan_return:hover {
+            background: #1d4ed8;
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+<body class="yuan_body">
+    <h2 class="yuan_title">动画导航页面</h2>
+    <div class="yuan_nav_box">
+        <div class="yuan_nav_item">
+            <a href="17.html">3D立方体</a>
+        </div>
+        <div class="yuan_nav_item">
+            <a href="18.html">卡片翻转</a>
+        </div>
+        <div class="yuan_nav_item">
+            <a href="20.html">多盒子动画</a>
+        </div>
+        <div class="yuan_nav_item">
+            <a href="11-4.html">当前页面</a>
+        </div>
+    </div>
+    <div class="yuan_return_box">
+        <a href="index.html" class="zhang_return">返回首页 index.html</a>
+    </div>
+</body>
+</html>

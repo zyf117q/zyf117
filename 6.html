@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>全部盒模型整合</title>
+    <style>
+        /* ========== 第1组：基础盒模型 ========== */
+        div{
+            width:100px;
+            height:100px;
+            border:2px dotted red;
+        }
+
+        /* ========== 第2组：带padding、margin的box盒模型 ========== */
+        ul{
+            list-style: none;
+        }
+        .box{
+            width:100px;
+            height:100px;
+            border:2px solid red;
+            padding:10px 20px 30px 40px;
+            margin:40px auto;
+        }
+
+        /* ========== 第3组：5-2课堂盒模型 a、b、c ========== */
+        .a{
+            width:500px;
+            height:300px;
+            border:2px dotted #039;
+            padding:70px 60px 50px 40px; /*上 右 下 左*/
+            margin:40px auto;
+            /*上下、左右，左右margin为auto则盒子居中*/
+        }
+        .b{
+            width:500px;
+            height:300px;
+            border:2px dashed #039;
+            margin:50px auto 40px;
+            /*上、左右、下*/
+        }
+        .c{
+            width:400px;
+            height:200px;
+            border:3px solid #903;
+            padding:30px;
+            margin:30px auto;
+            background-color:#eef9ee;
+        }
+    </style>
+</head>
+<body>
+    <h3>第一组 基础盒模型</h3>
+    <div>盒模型</div>
+    <div>盒模型</div>
+    <div>盒模型</div>
+
+    <h3>第二组 带内外边距的盒子</h3>
+    <div class="box">张艺凡</div>
+    <div class="box">张艺凡</div>
+    <div class="box">张艺凡</div>
+
+    <h3>第三组 课堂5-2 a,b,c盒子</h3>
+    <div class="a">盒子a（带padding）</div>
+    <div class="b">盒子b（无padding）</div>
+    <div class="c">盒子c（绿色实线+背景色，尺寸更小）</div>
+</body>
+</html>

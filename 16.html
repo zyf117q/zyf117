@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>10-4 媒体查询多盒子布局</title>
+    <style>
+        *{
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body{
+            min-width:320px;
+            padding: 20px;
+        }
+        .title{
+            text-align: center;
+            font-size: 1.5rem;
+            margin-bottom:20px;
+        }
+        .container{
+            display: flex;
+            flex-wrap: wrap;
+            gap:15px;
+        }
+        .box{
+            height:120px;
+            border-radius:10px;
+            display:flex;
+            justify-content:center;
+            align-items:center;
+            color:#fff;
+            font-size:20px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        /*鼠标悬浮特效*/
+        .box:hover {
+            transform: scale(1.08);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+            z-index: 10;
+        }
+
+        /* ========== 8个盒子各自特效 ========== */
+        .box:nth-child(1){
+            background-color:#e74c3c;
+            animation: rotate 4s infinite linear;
+        }
+        .box:nth-child(2){
+            background-color:#e67e22;
+            animation: scale 2s infinite ease-in-out;
+        }
+        .box:nth-child(3){
+            background-color:#f1c40f;
+            color:#222;
+            animation: shake 3s infinite ease-in-out;
+        }
+        .box:nth-child(4){
+            background-color:#2ecc71;
+            animation: upDown 2.5s infinite ease-in-out;
+        }
+        .box:nth-child(5){
+            background-color:#1abc9c;
+            animation: opacityAni 3s infinite ease-in-out;
+        }
+        .box:nth-child(6){
+            background-color:#3498db;
+            animation: skewAni 4s infinite ease-in-out;
+        }
+        .box:nth-child(7){
+            background-color:#9b59b6;
+            animation: borderGlow 2s infinite ease-in-out;
+        }
+        .box:nth-child(8){
+            background-color:#34495e;
+            animation: leftRight 3s infinite ease-in-out;
+        }
+        /* 动画定义 */
+        @keyframes rotate{
+            0%{transform: rotate(0deg);}
+            100%{transform: rotate(360deg);}
+        }
+        @keyframes scale{
+            0%,100%{transform: scale(1);}
+            50%{transform: scale(1.15);}
+        }
+        @keyframes shake{
+            0%,100%{transform: translateX(0);}
+            25%{transform: translateX(-6px);}
+            75%{transform: translateX(6px);}
+        }
+        @keyframes upDown{
+            0%,100%{transform: translateY(0);}
+            50%{transform: translateY(-8px);}
+        }
+        @keyframes opacityAni{
+            0%,100%{opacity:1;}
+            50%{opacity:0.4;}
+        }
+        @keyframes skewAni{
+            0%,100%{transform: skew(0deg);}
+            50%{transform: skew(-8deg,8deg);}
+        }
+        @keyframes borderGlow{
+            0%,100%{box-shadow:0 0 8px #9b59b6;}
+            50%{box-shadow:0 0 25px #9b59b6;}
+        }
+        @keyframes leftRight{
+            0%,100%{transform: translateX(0);}
+            50%{transform: translateX(10px);}
+        }
+
+        /* 4套媒体查询（从小到大顺序） */
+        /* ①极小屏幕 宽度≤480px：一列8个，一行1个 */
+        @media screen and (max-width:480px) {
+            .box{
+                width:100%;
+            }
+        }
+        /* ②小屏幕 481 ~768px：一行2个盒子 */
+        @media screen and (min-width:481px) and (max-width:768px) {
+            .box{
+                width: calc((100% - 15px)/2);
+            }
+        }
+        /* ③中等屏幕 769~1200px：一行4个盒子 */
+        @media screen and (min-width:769px) and (max-width:1200px) {
+            .box{
+                width: calc((100% - 3*15px)/4);
+            }
+        }
+        /* ④大屏幕 ≥1201px：一行8个盒子 */
+        @media screen and (min-width:1201px) {
+            .box{
+                width: calc((100% - 7*15px)/8);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="title">张艺凡</div>
+    <div class="container">
+        <div class="box">1</div>
+        <div class="box">2</div>
+        <div class="box">3</div>
+        <div class="box">4</div>
+        <div class="box">5</div>
+        <div class="box">6</div>
+        <div class="box">7</div>
+        <div class="box">8</div>
+    </div>
+</body>
+</html>

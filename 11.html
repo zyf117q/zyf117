@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>css3</title>
+    <!-- 这里放CSS -->
+</head>
+<body>
+    <div class="main">
+        <div class="box">1</div>
+        <div class="box">2</div>
+        <div class="box">3</div>
+        <div class="box">4</div>
+        <div class="box">5</div>
+        <div class="box">6</div>
+        <div class="box">7</div>
+        <div class="box">8</div>
+        <div class="box">9</div>
+        <div class="box">10</div>
+        <div class="box">11</div>
+        <div class="box">12</div>
+    </div>
+    <!-- 这里放JS -->
+</body>
+</html>
+<style>
+.main{
+    display: flex;
+    flex-wrap: wrap;
+    margin:10px auto;
+    /* 水平居中 */
+    justify-content: center;
+    /* 开启3D空间，给3D变换做准备 */
+    perspective: 800px;
+}
+.box{
+    width:150px;
+    height:150px;
+    border:2px solid #ccc;
+    margin:10px;
+    text-align:center;
+    line-height:150px;
+    font-size:30px;
+    color:#000;
+    background-color:#fff;
+    cursor: pointer;
+    transition: all 0.3s;
+    border-radius: 12px;
+}
+/* 鼠标悬浮，盒子上浮+蓝色发光 */
+.box:hover{
+    transform: translateY(-6px);
+    box-shadow: 0 8px 16px #4488ff80;
+}
+/* 第三个盒子 弥散阴影 */
+.box:nth-child(3){
+    box-shadow: 0 0 15px #999;
+}
+/*第四个盒子 带偏移阴影*/
+.box:nth-child(4){
+    box-shadow: 5px 5px 10px #999;
+}
+/*第五个盒子 线性渐变*/
+.box:nth-child(5){
+    background: linear-gradient(45deg, #4285f4, #ff6ad5);
+    color:#fff;
+}
+/*第六个盒子 径向渐变*/
+.box:nth-child(6){
+    background: radial-gradient(circle, #36d1dc, #5b86e5);
+    color:#fff;
+}
+/*第七个盒子 缩放效果 */
+.box:nth-child(7){
+    transform: scale(0.85);
+}
+/*第八个盒子 平移*/
+.box:nth-child(8){
+    transform: translate(10px, 8px);
+}
+/*第九个盒子 3D旋转*/
+.box:nth-child(9){
+    transform: rotateX(20deg) rotateY(15deg);
+}
+/*第十个盒子 倾斜 skew*/
+.box:nth-child(10){
+    transform: skew(15deg,5deg);
+}
+/*第十一个盒子：伪元素添加红色*号在文字前面 */
+.box:nth-child(11)::before{
+    content:"*";
+    color:red;
+    margin-right:5px;
+}
+</style>
+
+<script>
+// 获取所有盒子
+const boxList = document.querySelectorAll('.box');
+// 准备12套不同样式
+const styleArr = [
+    {bg:'red',color:'white',scale:1.1},
+    {bg:'orange',color:'#000',scale:1},
+    {bg:'yellow',color:'#000',scale:1.2},
+    {bg:'green',color:'white',scale:1},
+    {bg:'#0099ff',color:'white',scale:1.15},
+    {bg:'purple',color:'white',scale:1},
+    {bg:'pink',color:'#000',scale:1.3},
+    {bg:'#222',color:'#fff',scale:1},
+    {bg:'#00cccc',color:'black',scale:1.2},
+    {bg:'#884422',color:'white',scale:1},
+    {bg:'#77ff77',color:'#000',scale:1.1},
+    {bg:'#6666ff',color:'white',scale:1}
+]
+
+boxList.forEach( (box,index)=>{
+    box.onclick = function(){
+        let num = index + 1;
+        // 3的倍数盒子(3,6,9,12)点击，边框变为绿色
+        if(num % 3 === 0){
+            this.style.borderColor = "green";
+        }
+        // 第12个盒子：显示张艺凡，红底白字
+        if(index === 11){
+            this.innerText = "张艺凡";
+            this.style.backgroundColor = "red";
+            this.style.color = "white";
+        }else{
+            this.style.backgroundColor = styleArr[index].bg;
+            this.style.color = styleArr[index].color;
+            this.style.transform = `scale(${styleArr[index].scale})`;
+        }
+    }
+})
+</script>

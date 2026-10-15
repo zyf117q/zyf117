@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flex布局演示</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            padding: 40px;
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        .wrap {
+            display: flex;
+            flex-direction: column;
+            gap: 50px;
+        }
+        /* 每行单独容器 */
+        .row1, .row2, .row3 {
+            display: flex;
+        }
+        /* 第一行：居中 */
+        .row1 {
+            justify-content: center;
+        }
+        /* 第二行：左右两边贴边界 */
+        .row2 {
+            justify-content: space-between;
+        }
+        /* 第三行：居中 */
+        .row3 {
+            justify-content: center;
+        }
+
+        .item1 {
+            width: 220px;
+            height: 260px;
+            border: 1px solid #999;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #e8f4f8;
+        }
+        .item2 {
+            width: 220px;
+            height: 260px;
+            border: 1px solid #999;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #fff2e8;
+        }
+        .item3 {
+            width: 220px;
+            height: 260px;
+            border: 1px solid #999;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #f0e8f8;
+        }
+        .item4 {
+            width: 220px;
+            height: 260px;
+            border: 1px solid #999;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #e8f8e8;
+        }
+        /* 第1个：中间1个小方块 */
+        .box1 {
+            width: 60px;
+            height: 60px;
+            border:1px solid #999;
+        }
+        /* 第2个：上下2个 */
+        .box2 {
+            display: flex;
+            flex-direction: column;
+            gap:15px;
+        }
+        .box2>div {
+            width:80px;
+            height:60px;
+            border:1px solid #999;
+        }
+        /* 第3个：2行2列4个方块 */
+        .box3 {
+            display: flex;
+            flex-wrap: wrap;
+            gap:15px;
+            justify-content: center;
+        }
+        .box3>div {
+            width:80px;
+            height:60px;
+            border:1px solid #999;
+        }
+        /* 第4个：上面1个长块，下面2个并排 */
+        .box4 {
+            display: flex;
+            flex-direction: column;
+            gap:15px;
+        }
+        .box4-top {
+            width:170px;
+            height:50px;
+            border:1px solid #999;
+        }
+        .box4-bottom {
+            display: flex;
+            gap:15px;
+        }
+        .box4-bottom>div {
+            width:80px;
+            height:50px;
+            border:1px solid #999;
+        }
+    </style>
+</head>\
+<body>
+    <h1>Flex布局演示</h1>
+    <div class="wrap">
+        <!-- 第一行：居中 -->
+        <div class="row1">
+            <div class="item1">
+                <div class="box1"></div>
+            </div>
+        </div>
+        <!-- 第二行：左右分到两边边界 -->
+        <div class="row2">
+            <div class="item2">
+                <div class="box2">
+                    <div></div>
+                    <div></div>
+                </div>
+            </div>
+            <div class="item3">
+                <div class="box3">
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                </div>
+            </div>
+        </div>
+        <!-- 第三行：居中 -->
+        <div class="row3">
+            <div class="item4">
+                <div class="box4">
+                    <div class="box4-top"></div>
+                    <div class="box4-bottom">
+                        <div></div>
+                        <div></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>10-3 媒体查询</title>
+    <style>
+        html {
+            font-size: 16px; /* 基准，rem以此计算 */
+        }
+        body {
+            margin: 0;
+            min-width: 320px; /* 要求最小宽度 */
+            height: 100vh;
+            display:flex;
+            justify-content:center;
+            align-items:center;
+            transition: background-color 0.5s;
+        }
+        .text{
+            font-size:1.5rem; /* rem单位，满足扩展 */
+        }
+
+        /* 3套媒体查询 视口改变，背景+文字大小变化 */
+        @media screen and (max-width:768px) {
+            body {
+                background-color: #87CEEB;
+            }
+            .text {
+                font-size:1.2rem;
+            }
+        }
+        @media screen and (min-width:769px) and (max-width:1200px) {
+            body {
+                background-color: #FFD700;
+            }
+            .text {
+                font-size:1.6rem;
+            }
+        }
+        @media screen and (min-width:1201px) {
+            body {
+                background-color: #8FBC8F;
+            }
+            .text {
+                font-size:2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="text">张艺凡</div>
+</body>
+</html>
