@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>13-2 Lucide SVG 图标</title>
+    <style>
+        *{
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body{
+            font-family: "Microsoft YaHei", Arial, sans-serif;
+            background-color:#f7f7fb;
+            color:#333;
+            padding:30px 20px;
+        }
+        .title{
+            text-align: center;
+            font-size: 1.5rem;
+            margin-bottom:8px;
+        }
+        .subtitle{
+            text-align:center;
+            color:#888;
+            font-size:0.9rem;
+            margin-bottom:35px;
+        }
+        .group{
+            max-width:1100px;
+            margin:0 auto 40px;
+        }
+        .group h2{
+            font-size:1.15rem;
+            color:#4a5568;
+            border-left:5px solid #6366f1;
+            padding-left:12px;
+            margin-bottom:20px;
+        }
+        .container{
+            display:grid;
+            grid-template-columns:repeat(auto-fill, minmax(110px, 1fr));
+            gap:18px;
+        }
+        .item{
+            background:#fff;
+            border-radius:12px;
+            padding:22px 10px;
+            text-align:center;
+            box-shadow:0 2px 10px rgba(0,0,0,0.06);
+            transition:transform 0.3s ease, box-shadow 0.3s ease;
+            cursor:pointer;
+        }
+        .item:hover{
+            transform:translateY(-6px);
+            box-shadow:0 10px 22px rgba(99,102,241,0.25);
+        }
+        /* Lucide 渲染出的内联 SVG */
+        .item svg{
+            width:38px;
+            height:38px;
+            display:block;
+            margin:0 auto 12px;
+            color:#6366f1;
+            stroke-width:2;
+            transition:transform 0.3s ease, color 0.3s ease;
+        }
+        .item:hover svg{
+            transform:scale(1.18);
+            color:#f59e0b;
+        }
+        .item span{
+            font-size:0.82rem;
+            color:#666;
+        }
+    </style>
+</head>
+<body>
+    <div class="title">张艺凡</div>
+    <p class="subtitle">13-2 Lucide 图标（SVG 形式 · 本地 CDN）</p>
+
+    <!-- ===== 常用图标 ===== -->
+    <div class="group">
+        <h2>常用图标</h2>
+        <div class="container">
+            <div class="item"><i data-lucide="house"></i><span>首页</span></div>
+            <div class="item"><i data-lucide="user"></i><span>用户</span></div>
+            <div class="item"><i data-lucide="settings"></i><span>设置</span></div>
+            <div class="item"><i data-lucide="heart"></i><span>喜欢</span></div>
+            <div class="item"><i data-lucide="star"></i><span>收藏</span></div>
+            <div class="item"><i data-lucide="bell"></i><span>通知</span></div>
+            <div class="item"><i data-lucide="search"></i><span>搜索</span></div>
+            <div class="item"><i data-lucide="shopping-cart"></i><span>购物车</span></div>
+            <div class="item"><i data-lucide="cloud"></i><span>云端</span></div>
+            <div class="item"><i data-lucide="mail"></i><span>邮件</span></div>
+            <div class="item"><i data-lucide="map-pin"></i><span>定位</span></div>
+            <div class="item"><i data-lucide="calendar"></i><span>日历</span></div>
+            <div class="item"><i data-lucide="clock"></i><span>时钟</span></div>
+            <div class="item"><i data-lucide="download"></i><span>下载</span></div>
+            <div class="item"><i data-lucide="message-circle"></i><span>评论</span></div>
+            <div class="item"><i data-lucide="circle-check"></i><span>成功</span></div>
+        </div>
+    </div>
+
+    <!-- ===== 媒体与设备 ===== -->
+    <div class="group">
+        <h2>媒体与设备</h2>
+        <div class="container">
+            <div class="item"><i data-lucide="camera"></i><span>相机</span></div>
+            <div class="item"><i data-lucide="music"></i><span>音乐</span></div>
+            <div class="item"><i data-lucide="image"></i><span>图片</span></div>
+            <div class="item"><i data-lucide="printer"></i><span>打印</span></div>
+            <div class="item"><i data-lucide="wifi"></i><span>WiFi</span></div>
+            <div class="item"><i data-lucide="battery"></i><span>电池</span></div>
+            <div class="item"><i data-lucide="chrome"></i><span>浏览器</span></div>
+            <div class="item"><i data-lucide="github"></i><span>GitHub</span></div>
+            <div class="item"><i data-lucide="youtube"></i><span>YouTube</span></div>
+            <div class="item"><i data-lucide="figma"></i><span>Figma</span></div>
+        </div>
+    </div>
+
+    <!-- ===== 生活与其他 ===== -->
+    <div class="group">
+        <h2>生活与其他</h2>
+        <div class="container">
+            <div class="item"><i data-lucide="smile"></i><span>表情</span></div>
+            <div class="item"><i data-lucide="thumbs-up"></i><span>点赞</span></div>
+            <div class="item"><i data-lucide="trash-2"></i><span>删除</span></div>
+            <div class="item"><i data-lucide="wallet"></i><span>钱包</span></div>
+            <div class="item"><i data-lucide="coffee"></i><span>咖啡</span></div>
+            <div class="item"><i data-lucide="gift"></i><span>礼物</span></div>
+            <div class="item"><i data-lucide="rocket"></i><span>火箭</span></div>
+            <div class="item"><i data-lucide="plane"></i><span>飞机</span></div>
+            <div class="item"><i data-lucide="sun"></i><span>白天</span></div>
+            <div class="item"><i data-lucide="moon"></i><span>夜间</span></div>
+        </div>
+    </div>
+
+    <!-- 本地 CDN：Lucide UMD 版，负责把上面的占位符替换为内联 SVG -->
+    <script src="cdn/lucide/lucide.min.js"></script>
+    <script>
+        lucide.createIcons();
+    </script>
+</body>
+</html>

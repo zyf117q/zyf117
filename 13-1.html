@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>13-1 Font Awesome 字体图标</title>
+    <!-- 本地 CDN：字体图标（CSS 通过 @font-face 加载 webfonts 字体文件） -->
+    <link rel="stylesheet" href="cdn/fontawesome/css/all.min.css">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: "Microsoft YaHei", Arial, sans-serif;
+            background-color: #f4f6fb;
+            color: #333;
+            padding: 30px 20px;
+        }
+
+        .title {
+            text-align: center;
+            font-size: 1.5rem;
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #888;
+            font-size: 0.9rem;
+            margin-bottom: 35px;
+        }
+
+        .group {
+            max-width: 1100px;
+            margin: 0 auto 40px;
+        }
+
+        .group h2 {
+            font-size: 1.15rem;
+            color: #4a5568;
+            border-left: 5px solid #3498db;
+            padding-left: 12px;
+            margin-bottom: 20px;
+        }
+
+        .container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+            gap: 18px;
+        }
+
+        .item {
+            background: #fff;
+            border-radius: 12px;
+            padding: 22px 10px;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+        }
+
+        .item:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 10px 22px rgba(52, 152, 219, 0.25);
+        }
+
+        .item i {
+            display: block;
+            font-size: 2.4rem;
+            margin-bottom: 12px;
+            color: #3498db;
+            transition: transform 0.3s ease, color 0.3s ease;
+        }
+
+        .item:hover i {
+            transform: scale(1.18);
+            color: #e74c3c;
+        }
+
+        .item span {
+            font-size: 0.82rem;
+            color: #666;
+        }
+
+        /* 品牌图标单独配色 */
+        .brands .item i {
+            color: #8e44ad;
+        }
+
+        .brands .item:hover i {
+            color: #f39c12;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="title">张艺凡</div>
+    <p class="subtitle">13-1 Font Awesome 字体图标（字体图标形式 · 本地 CDN）</p>
+
+    <!-- ===== 实心图标 fa-solid ===== -->
+    <div class="group">
+        <h2>实心图标 (fa-solid)</h2>
+        <div class="container">
+            <div class="item"><i class="fa-solid fa-house"></i><span>首页</span></div>
+            <div class="item"><i class="fa-solid fa-user"></i><span>用户</span></div>
+            <div class="item"><i class="fa-solid fa-gear"></i><span>设置</span></div>
+            <div class="item"><i class="fa-solid fa-heart"></i><span>喜欢</span></div>
+            <div class="item"><i class="fa-solid fa-star"></i><span>收藏</span></div>
+            <div class="item"><i class="fa-solid fa-bell"></i><span>通知</span></div>
+            <div class="item"><i class="fa-solid fa-magnifying-glass"></i><span>搜索</span></div>
+            <div class="item"><i class="fa-solid fa-cart-shopping"></i><span>购物车</span></div>
+            <div class="item"><i class="fa-solid fa-cloud"></i><span>云端</span></div>
+            <div class="item"><i class="fa-solid fa-envelope"></i><span>邮件</span></div>
+            <div class="item"><i class="fa-solid fa-camera"></i><span>相机</span></div>
+            <div class="item"><i class="fa-solid fa-music"></i><span>音乐</span></div>
+            <div class="item"><i class="fa-solid fa-location-dot"></i><span>定位</span></div>
+            <div class="item"><i class="fa-solid fa-calendar"></i><span>日历</span></div>
+            <div class="item"><i class="fa-solid fa-clock"></i><span>时钟</span></div>
+            <div class="item"><i class="fa-solid fa-download"></i><span>下载</span></div>
+        </div>
+    </div>
+
+    <!-- ===== 线框图标 fa-regular ===== -->
+    <div class="group">
+        <h2>线框图标 (fa-regular)</h2>
+        <div class="container">
+            <div class="item"><i class="fa-regular fa-heart"></i><span>喜欢</span></div>
+            <div class="item"><i class="fa-regular fa-star"></i><span>收藏</span></div>
+            <div class="item"><i class="fa-regular fa-user"></i><span>用户</span></div>
+            <div class="item"><i class="fa-regular fa-comment"></i><span>评论</span></div>
+            <div class="item"><i class="fa-regular fa-circle-check"></i><span>成功</span></div>
+            <div class="item"><i class="fa-regular fa-clock"></i><span>时钟</span></div>
+            <div class="item"><i class="fa-regular fa-envelope"></i><span>邮件</span></div>
+            <div class="item"><i class="fa-regular fa-bell"></i><span>通知</span></div>
+            <div class="item"><i class="fa-regular fa-thumbs-up"></i><span>点赞</span></div>
+            <div class="item"><i class="fa-regular fa-image"></i><span>图片</span></div>
+            <div class="item"><i class="fa-regular fa-face-smile"></i><span>表情</span></div>
+            <div class="item"><i class="fa-regular fa-trash-can"></i><span>删除</span></div>
+        </div>
+    </div>
+
+    <!-- ===== 品牌图标 fa-brands ===== -->
+    <div class="group brands">
+        <h2>品牌图标 (fa-brands)</h2>
+        <div class="container">
+            <div class="item"><i class="fa-brands fa-github"></i><span>GitHub</span></div>
+            <div class="item"><i class="fa-brands fa-weixin"></i><span>微信</span></div>
+            <div class="item"><i class="fa-brands fa-qq"></i><span>QQ</span></div>
+            <div class="item"><i class="fa-brands fa-bilibili"></i><span>哔哩哔哩</span></div>
+            <div class="item"><i class="fa-brands fa-html5"></i><span>HTML5</span></div>
+            <div class="item"><i class="fa-brands fa-css3-alt"></i><span>CSS3</span></div>
+            <div class="item"><i class="fa-brands fa-js"></i><span>JavaScript</span></div>
+            <div class="item"><i class="fa-brands fa-vuejs"></i><span>Vue</span></div>
+            <div class="item"><i class="fa-brands fa-react"></i><span>React</span></div>
+            <div class="item"><i class="fa-brands fa-android"></i><span>Android</span></div>
+            <div class="item"><i class="fa-brands fa-apple"></i><span>Apple</span></div>
+            <div class="item"><i class="fa-brands fa-windows"></i><span>Windows</span></div>
+        </div>
+    </div>
+</body>
+
+</html>
