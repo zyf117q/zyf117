@@ -1,16 +1,16 @@
 ---
 name: gitee-push
-description: Commit and push the current project to the Gitee remote gitee.com/whalefox/yl2. Use when the user asks to 提交项目, 提交代码到 Gitee, push or upload this project to Gitee. Do not use for other remotes, other hosts, or force-pushing.
+description: Commit and push the current project to the Gitee remote gitee.com/zyf117/yl2. Use when the user asks to 提交项目, 提交代码到 Gitee, push or upload this project to Gitee. Do not use for other remotes, other hosts, or force-pushing.
 ---
 
 # Gitee Push
 
-Commit and push the current workspace (c:\h) to the Gitee repo `whalefox/yl2`. Shell is Windows PowerShell — do not use bash heredocs.
+Commit and push the current workspace (c:\h) to the Gitee repo `zyf117/yl2`. Shell is Windows PowerShell — do not use bash heredocs.
 
 ## Remote
 
-- SSH (preferred): `git@gitee.com:whalefox/yl2.git`, key at `~/.ssh/id_ed25519`
-- HTTPS fallback: `https://gitee.com/whalefox/yl2.git`, needs a Gitee private token as the password — ask the user for it
+- SSH (preferred): `git@gitee.com:zyf117/yl2.git`, key at `~/.ssh/id_ed25519`
+- HTTPS fallback: `https://gitee.com/zyf117/yl2.git`, needs a Gitee private token as the password — ask the user for it
 
 ## Steps
 
@@ -26,5 +26,5 @@ git commit -m @"
 "@
 ```
 
-6. Add remote if missing: `git remote add origin git@gitee.com:whalefox/yl2.git` (or `git remote set-url` if origin exists but points elsewhere).
+6. Add remote if missing: `git remote add origin git@gitee.com:zyf117/yl2.git` (or `git remote set-url` if origin exists but points elsewhere).
 7. Push: `git push -u origin master`. If rejected because the remote repo was created with an auto-initialized README, run `git pull --rebase origin master` then push again. Never force-push unless the user explicitly asks.
