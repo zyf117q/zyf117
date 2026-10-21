@@ -8,19 +8,24 @@
     <!-- 本地 CDN：Lucide 图标（仅用于渲染图标，无任何交互逻辑） -->
     <script src="cdn/lucide/lucide.min.js" defer></script>
     <style>
-        /* ===== 全局 CSS（公共样式） ===== */
+        /* ===== 全局 CSS（公共样式 · 暗夜科技风） ===== */
         :root {
-            --bg: #f5f6fa;
-            --card: #ffffff;
-            --ink: #23283b;
-            --muted: #7a8095;
-            --line: #e8eaf1;
-            --brand: #5b6ef5;
-            --brand-2: #8b5cf6;
-            --grad: linear-gradient(135deg, #5b6ef5 0%, #8b5cf6 100%);
-            --shadow: 0 6px 24px rgba(35, 40, 59, 0.07);
-            --shadow-lg: 0 16px 40px rgba(35, 40, 59, 0.12);
+            --bg: #0a0e1c;
+            --card: rgba(148, 163, 255, 0.06);
+            --ink: #e8ebf8;
+            --muted: #98a0bd;
+            --line: rgba(148, 163, 255, 0.14);
+            --brand: #5d8bff;
+            --brand-2: #a06bff;
+            --grad: linear-gradient(135deg, #4f7cff 0%, #9a55ff 55%, #c95cff 100%);
+            --glow: 0 0 22px rgba(99, 102, 241, 0.35);
+            --shadow: 0 8px 28px rgba(0, 0, 0, 0.4);
+            --shadow-lg: 0 20px 48px rgba(0, 0, 0, 0.55);
             --radius: 16px;
+        }
+
+        html {
+            color-scheme: dark;
         }
 
         * {
@@ -31,9 +36,31 @@
 
         body {
             font-family: "Microsoft YaHei", "PingFang SC", Arial, sans-serif;
-            background-color: var(--bg);
+            background:
+                radial-gradient(620px 420px at 85% -60px, rgba(99, 102, 241, 0.20), transparent 70%),
+                radial-gradient(720px 520px at -120px 42%, rgba(56, 189, 248, 0.10), transparent 70%),
+                var(--bg);
+            background-attachment: fixed;
             color: var(--ink);
             line-height: 1.6;
+        }
+
+        ::selection {
+            background: rgba(99, 102, 241, 0.45);
+        }
+
+        ::-webkit-scrollbar {
+            width: 10px;
+            height: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #2a3352;
+            border-radius: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: transparent;
         }
 
         img {
@@ -52,7 +79,7 @@
         }
 
         .wrap {
-            max-width: 1100px;
+            max-width: 1120px;
             margin: 0 auto;
             padding: 0 20px;
         }
@@ -60,30 +87,34 @@
         /* ===== 页面标题区 ===== */
         .page-head {
             text-align: center;
-            padding: 42px 20px 10px;
+            padding: 46px 20px 12px;
         }
 
         .page-head h1 {
-            font-size: 1.7rem;
-            letter-spacing: 2px;
+            font-size: 1.8rem;
+            letter-spacing: 5px;
+            background: var(--grad);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
         }
 
         .page-head p {
             color: var(--muted);
-            font-size: 0.92rem;
-            margin-top: 6px;
+            font-size: 0.9rem;
+            margin-top: 8px;
         }
 
-        /* 区块通用标题：左侧渐变竖条 + 编号徽章 */
+        /* 区块通用标题：渐变竖条 + 编号徽章 */
         .sec {
-            padding-top: 34px;
+            padding-top: 40px;
         }
 
         .sec-head {
             display: flex;
             align-items: center;
             gap: 12px;
-            margin-bottom: 18px;
+            margin-bottom: 20px;
         }
 
         .sec-head .bar {
@@ -91,17 +122,19 @@
             height: 22px;
             border-radius: 3px;
             background: var(--grad);
+            box-shadow: var(--glow);
         }
 
         .sec-head h2 {
             font-size: 1.18rem;
+            letter-spacing: 1px;
         }
 
         .sec-head .badge {
             font-size: 0.72rem;
-            color: var(--brand);
-            background: rgba(91, 110, 245, 0.1);
-            border: 1px solid rgba(91, 110, 245, 0.25);
+            color: #9db4ff;
+            background: rgba(93, 139, 255, 0.10);
+            border: 1px solid rgba(93, 139, 255, 0.30);
             padding: 3px 10px;
             border-radius: 999px;
             white-space: nowrap;
@@ -112,8 +145,8 @@
             position: sticky;
             top: 0;
             z-index: 10;
-            background: rgba(255, 255, 255, 0.86);
-            backdrop-filter: blur(12px);
+            background: rgba(10, 14, 28, 0.78);
+            backdrop-filter: blur(14px);
             border-bottom: 1px solid var(--line);
         }
 
@@ -121,7 +154,7 @@
             display: flex;
             align-items: center;
             gap: 28px;
-            height: 62px;
+            height: 64px;
         }
 
         .logo {
@@ -138,6 +171,7 @@
             height: 34px;
             border-radius: 10px;
             background: var(--grad);
+            box-shadow: var(--glow);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -153,7 +187,7 @@
             display: flex;
             gap: 26px;
             font-size: 0.95rem;
-            color: #4c5265;
+            color: #b9c0d8;
         }
 
         .nav-links a {
@@ -163,11 +197,11 @@
         }
 
         .nav-links a:hover {
-            color: var(--brand);
+            color: #ffffff;
         }
 
         .nav-links a.active {
-            color: var(--brand);
+            color: #9db4ff;
             font-weight: bold;
         }
 
@@ -181,6 +215,7 @@
             height: 3px;
             border-radius: 2px;
             background: var(--grad);
+            box-shadow: var(--glow);
         }
 
         .nav-right {
@@ -194,7 +229,8 @@
             display: flex;
             align-items: center;
             gap: 8px;
-            background: #f0f2f8;
+            background: rgba(148, 163, 255, 0.08);
+            border: 1px solid var(--line);
             border-radius: 999px;
             padding: 7px 14px;
             color: var(--muted);
@@ -211,11 +247,12 @@
             width: 36px;
             height: 36px;
             border-radius: 50%;
-            background: #f0f2f8;
+            background: rgba(148, 163, 255, 0.08);
+            border: 1px solid var(--line);
             display: flex;
             align-items: center;
             justify-content: center;
-            color: #5a6072;
+            color: #b9c0d8;
             cursor: pointer;
         }
 
@@ -231,7 +268,7 @@
             padding: 9px 20px;
             border-radius: 999px;
             letter-spacing: 1px;
-            box-shadow: 0 6px 16px rgba(91, 110, 245, 0.35);
+            box-shadow: 0 8px 20px rgba(99, 102, 241, 0.40);
             cursor: pointer;
             border: none;
         }
@@ -240,25 +277,28 @@
         .cards {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 24px;
+            gap: 26px;
         }
 
         .card {
             background: var(--card);
+            border: 1px solid var(--line);
             border-radius: var(--radius);
             overflow: hidden;
-            box-shadow: var(--shadow);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            backdrop-filter: blur(10px);
+            transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
         }
 
         .card:hover {
             transform: translateY(-6px);
+            border-color: rgba(93, 139, 255, 0.45);
             box-shadow: var(--shadow-lg);
         }
 
         .card .cover {
             aspect-ratio: 3 / 2;
             overflow: hidden;
+            border-bottom: 1px solid var(--line);
         }
 
         .card .cover img {
@@ -268,14 +308,14 @@
         }
 
         .card .body {
-            padding: 18px 20px 20px;
+            padding: 20px 22px 22px;
         }
 
         .tag {
             display: inline-block;
             font-size: 0.72rem;
-            color: var(--brand-2);
-            background: rgba(139, 92, 246, 0.1);
+            color: #c4a5ff;
+            background: rgba(160, 107, 255, 0.12);
             padding: 3px 10px;
             border-radius: 999px;
             margin-bottom: 10px;
@@ -320,12 +360,13 @@
         /* ===== 典型部分③：左图右文（含 CSS 图表） ===== */
         .feature {
             display: flex;
-            gap: 40px;
+            gap: 44px;
             align-items: center;
             background: var(--card);
+            border: 1px solid var(--line);
             border-radius: var(--radius);
-            box-shadow: var(--shadow);
-            padding: 34px;
+            backdrop-filter: blur(10px);
+            padding: 36px;
         }
 
         .feature .pic {
@@ -336,10 +377,11 @@
         .feature .pic::before {
             content: "";
             position: absolute;
-            inset: 18px -18px -18px 18px;
+            inset: 20px -16px -16px 20px;
             border-radius: var(--radius);
             background: var(--grad);
-            opacity: 0.16;
+            filter: blur(26px);
+            opacity: 0.35;
         }
 
         .feature .pic img {
@@ -348,6 +390,7 @@
             aspect-ratio: 1 / 1;
             object-fit: cover;
             border-radius: var(--radius);
+            border: 1px solid var(--line);
             box-shadow: var(--shadow-lg);
         }
 
@@ -360,7 +403,7 @@
             font-size: 0.75rem;
             font-weight: bold;
             letter-spacing: 3px;
-            color: var(--brand);
+            color: #8fb0ff;
             margin-bottom: 8px;
         }
 
@@ -372,7 +415,7 @@
         .feature .txt>p {
             font-size: 0.9rem;
             color: var(--muted);
-            margin-bottom: 22px;
+            margin-bottom: 24px;
         }
 
         /* 纯 CSS 柱状图 */
@@ -404,13 +447,13 @@
             width: 100%;
             max-width: 34px;
             border-radius: 8px 8px 3px 3px;
-            background: linear-gradient(180deg, #8b5cf6 0%, #5b6ef5 100%);
-            opacity: 0.85;
+            background: linear-gradient(180deg, #9a55ff 0%, #4f7cff 100%);
+            box-shadow: 0 0 12px rgba(122, 92, 255, 0.35);
         }
 
         .chart .col.hot .stick {
-            background: linear-gradient(180deg, #f59e0b 0%, #ef6c4d 100%);
-            opacity: 1;
+            background: linear-gradient(180deg, #fbbf24 0%, #f97316 100%);
+            box-shadow: 0 0 14px rgba(249, 115, 22, 0.40);
         }
 
         .chart-labels {
@@ -440,18 +483,19 @@
         }
 
         .legend .c1 i {
-            background: linear-gradient(180deg, #8b5cf6, #5b6ef5);
+            background: linear-gradient(180deg, #9a55ff, #4f7cff);
         }
 
         .legend .c2 i {
-            background: linear-gradient(180deg, #f59e0b, #ef6c4d);
+            background: linear-gradient(180deg, #fbbf24, #f97316);
         }
 
         /* ===== 典型部分④：列表（本周热榜） ===== */
         .board {
             background: var(--card);
+            border: 1px solid var(--line);
             border-radius: var(--radius);
-            box-shadow: var(--shadow);
+            backdrop-filter: blur(10px);
             padding: 8px 26px;
         }
 
@@ -459,7 +503,7 @@
             display: flex;
             align-items: center;
             gap: 18px;
-            padding: 15px 4px;
+            padding: 16px 4px;
             border-bottom: 1px solid var(--line);
         }
 
@@ -472,7 +516,7 @@
             font-size: 1.15rem;
             font-weight: bold;
             font-style: italic;
-            color: #c3c8d6;
+            color: #3f4a6e;
             text-align: center;
         }
 
@@ -497,8 +541,8 @@
         .board .cat {
             flex: none;
             font-size: 0.72rem;
-            color: var(--brand);
-            background: rgba(91, 110, 245, 0.08);
+            color: #9db4ff;
+            background: rgba(93, 139, 255, 0.10);
             padding: 3px 10px;
             border-radius: 999px;
         }
@@ -509,7 +553,7 @@
             align-items: center;
             gap: 5px;
             font-size: 0.8rem;
-            color: #ef6c4d;
+            color: #ff8f5e;
             width: 76px;
             justify-content: flex-end;
         }
@@ -522,8 +566,9 @@
         /* ===== 典型部分⑤：Tab（静态标签页） ===== */
         .tabs {
             background: var(--card);
+            border: 1px solid var(--line);
             border-radius: var(--radius);
-            box-shadow: var(--shadow);
+            backdrop-filter: blur(10px);
             overflow: hidden;
         }
 
@@ -540,10 +585,16 @@
             color: var(--muted);
             position: relative;
             cursor: pointer;
+            white-space: nowrap;
+            transition: color 0.25s;
+        }
+
+        .tab-bar .tab:hover {
+            color: #d6dbf0;
         }
 
         .tab-bar .tab.active {
-            color: var(--brand);
+            color: #9db4ff;
             font-weight: bold;
         }
 
@@ -556,28 +607,30 @@
             height: 3px;
             border-radius: 3px 3px 0 0;
             background: var(--grad);
+            box-shadow: var(--glow);
         }
 
         .tab-panel {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
-            gap: 18px;
-            padding: 24px 22px 26px;
+            gap: 20px;
+            padding: 26px 22px;
         }
 
         .mini {
             display: flex;
             flex-direction: column;
             gap: 10px;
-            background: #f8f9fd;
+            background: rgba(148, 163, 255, 0.05);
             border: 1px solid var(--line);
             border-radius: 12px;
             padding: 18px;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
         }
 
         .mini:hover {
             transform: translateY(-4px);
+            border-color: rgba(93, 139, 255, 0.45);
             box-shadow: var(--shadow);
         }
 
@@ -597,19 +650,23 @@
         }
 
         .mini:nth-child(1) .ico {
-            background: linear-gradient(135deg, #5b6ef5, #6ea8f7);
+            background: linear-gradient(135deg, #4f7cff, #38bdf8);
+            box-shadow: 0 0 14px rgba(56, 189, 248, 0.35);
         }
 
         .mini:nth-child(2) .ico {
-            background: linear-gradient(135deg, #8b5cf6, #d46ef0);
+            background: linear-gradient(135deg, #9a55ff, #e879f9);
+            box-shadow: 0 0 14px rgba(232, 121, 249, 0.30);
         }
 
         .mini:nth-child(3) .ico {
-            background: linear-gradient(135deg, #22b8a6, #4cd9a8);
+            background: linear-gradient(135deg, #14b8a6, #4ade80);
+            box-shadow: 0 0 14px rgba(74, 222, 128, 0.30);
         }
 
         .mini:nth-child(4) .ico {
-            background: linear-gradient(135deg, #f59e0b, #ef6c4d);
+            background: linear-gradient(135deg, #f59e0b, #fb7185);
+            box-shadow: 0 0 14px rgba(251, 113, 133, 0.30);
         }
 
         .mini h4 {
@@ -623,13 +680,12 @@
 
         /* ===== 页脚 ===== */
         footer {
-            margin-top: 46px;
-            padding: 26px 20px 34px;
+            margin-top: 50px;
+            padding: 28px 20px 36px;
             text-align: center;
             color: var(--muted);
             font-size: 0.82rem;
             border-top: 1px solid var(--line);
-            background: #fbfbfe;
         }
 
         footer .foot-links {
@@ -637,7 +693,7 @@
             justify-content: center;
             gap: 22px;
             margin-bottom: 8px;
-            color: #5a6072;
+            color: #b9c0d8;
         }
 
         /* ===== 响应式 ===== */
@@ -652,7 +708,8 @@
 
             .feature {
                 flex-direction: column;
-                padding: 26px;
+                padding: 28px;
+                gap: 32px;
             }
 
             .feature .pic {
@@ -679,12 +736,16 @@
                 display: none;
             }
 
+            .tab-bar {
+                overflow-x: auto;
+            }
+
             .tab-panel {
                 grid-template-columns: 1fr;
             }
 
             .page-head h1 {
-                font-size: 1.35rem;
+                font-size: 1.4rem;
             }
         }
     </style>
@@ -787,13 +848,20 @@
                     <p>红砖墙、消防梯与远处玻璃幕墙同框，老巷是城市最诚实的底稿。我们统计了一周内读者的专注阅读时段，发现周末的深度阅读时长显著高于工作日。</p>
                     <!-- 纯 CSS 柱状图：每周专注时长（分钟） -->
                     <div class="chart" role="img" aria-label="每周专注时长柱状图">
-                        <div class="col"><span class="val">45</span><span class="stick" style="height: 38%"></span></div>
-                        <div class="col"><span class="val">60</span><span class="stick" style="height: 52%"></span></div>
-                        <div class="col"><span class="val">38</span><span class="stick" style="height: 32%"></span></div>
-                        <div class="col"><span class="val">75</span><span class="stick" style="height: 64%"></span></div>
-                        <div class="col"><span class="val">52</span><span class="stick" style="height: 44%"></span></div>
-                        <div class="col hot"><span class="val">90</span><span class="stick" style="height: 80%"></span></div>
-                        <div class="col"><span class="val">68</span><span class="stick" style="height: 58%"></span></div>
+                        <div class="col"><span class="val">45</span><span class="stick" style="height: 38%"></span>
+                        </div>
+                        <div class="col"><span class="val">60</span><span class="stick" style="height: 52%"></span>
+                        </div>
+                        <div class="col"><span class="val">38</span><span class="stick" style="height: 32%"></span>
+                        </div>
+                        <div class="col"><span class="val">75</span><span class="stick" style="height: 64%"></span>
+                        </div>
+                        <div class="col"><span class="val">52</span><span class="stick" style="height: 44%"></span>
+                        </div>
+                        <div class="col hot"><span class="val">90</span><span class="stick" style="height: 80%"></span>
+                        </div>
+                        <div class="col"><span class="val">68</span><span class="stick" style="height: 58%"></span>
+                        </div>
                     </div>
                     <div class="chart-labels">
                         <span>周一</span><span>周二</span><span>周三</span><span>周四</span><span>周五</span><span>周六</span><span>周日</span>
