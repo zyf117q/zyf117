@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>13-3 图像解决方案 · 下导航</title>
+    <!-- 图标来源说明：按指导书要求使用"字体图标 + SVG"两种技术方案。
+         iconfont.cn 需注册登录，此处等价采用本地已下载的：
+         ① Font Awesome 6.7.2 —— 字体图标方案（CSS @font-face + 类名）
+         ② Lucide 0.475 —— SVG 方案（data-lucide + 内联 SVG）
+         指导书注明"不要求与原图标完全一致"，两种方案均满足实验要求。 -->
+    <link rel="stylesheet" href="cdn/fontawesome/css/all.min.css">
+    <script src="cdn/lucide/lucide.min.js" defer></script>
+    <style>
+        /* ===== 全局 CSS（公共样式 · 暗夜科技风） ===== */
+        :root {
+            --bg: #0a0e1c;
+            --card: rgba(148, 163, 255, 0.06);
+            --ink: #e8ebf8;
+            --muted: #98a0bd;
+            --line: rgba(148, 163, 255, 0.14);
+            --grad: linear-gradient(135deg, #4f7cff 0%, #9a55ff 55%, #c95cff 100%);
+            --glow: 0 0 22px rgba(99, 102, 241, 0.35);
+            --shadow: 0 8px 28px rgba(0, 0, 0, 0.4);
+            --shadow-lg: 0 20px 48px rgba(0, 0, 0, 0.55);
+            --radius: 16px;
+        }
+
+        html {
+            color-scheme: dark;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: "Microsoft YaHei", "PingFang SC", Arial, sans-serif;
+            /* 背景：三层星点（白/青/紫/琥珀）+ 细网格 + 两团星云光晕，深空底色渐变 */
+            background:
+                radial-gradient(circle at 18% 22%, rgba(255, 255, 255, 0.55) 0 1px, transparent 1.4px),
+                radial-gradient(circle at 64% 8%, rgba(255, 255, 255, 0.40) 0 1px, transparent 1.4px),
+                radial-gradient(circle at 82% 48%, rgba(255, 255, 255, 0.50) 0 1px, transparent 1.4px),
+                radial-gradient(circle at 36% 74%, rgba(255, 255, 255, 0.45) 0 1px, transparent 1.4px),
+                radial-gradient(circle at 8% 88%, rgba(255, 255, 255, 0.35) 0 1px, transparent 1.4px),
+                radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.85) 0 1.2px, transparent 1.8px),
+                radial-gradient(circle at 76% 70%, rgba(255, 255, 255, 0.70) 0 1.2px, transparent 1.8px),
+                radial-gradient(circle at 52% 12%, rgba(255, 255, 255, 0.60) 0 1.2px, transparent 1.8px),
+                radial-gradient(circle at 22% 40%, rgba(56, 189, 248, 0.90) 0 1.6px, transparent 2.6px),
+                radial-gradient(circle at 68% 26%, rgba(196, 165, 255, 0.90) 0 1.6px, transparent 2.6px),
+                radial-gradient(circle at 84% 82%, rgba(251, 191, 36, 0.80) 0 1.4px, transparent 2.4px),
+                radial-gradient(circle at 44% 60%, rgba(255, 255, 255, 0.95) 0 1.8px, transparent 3px),
+                linear-gradient(rgba(148, 163, 255, 0.04) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(148, 163, 255, 0.04) 1px, transparent 1px),
+                radial-gradient(640px 440px at 88% -80px, rgba(124, 92, 255, 0.18), transparent 68%),
+                radial-gradient(760px 540px at -140px 40%, rgba(56, 189, 248, 0.10), transparent 70%),
+                linear-gradient(180deg, #0c1226 0%, #070a16 60%, #090d1c 100%);
+            background-size: 200px 200px, 200px 200px, 200px 200px, 200px 200px, 200px 200px,
+                310px 310px, 310px 310px, 310px 310px,
+                520px 520px, 520px 520px, 520px 520px, 520px 520px,
+                42px 42px, 42px 42px, auto, auto, auto;
+            background-attachment: fixed;
+            color: var(--ink);
+            line-height: 1.6;
+        }
+
+        ::selection {
+            background: rgba(99, 102, 241, 0.45);
+        }
+
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #2a3352;
+            border-radius: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        ul {
+            list-style: none;
+        }
+
+        .wrap {
+            max-width: 1120px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* ===== 页面标题区 ===== */
+        .page-head {
+            text-align: center;
+            padding: 46px 20px 12px;
+        }
+
+        .page-head h1 {
+            font-size: 1.8rem;
+            letter-spacing: 5px;
+            background: var(--grad);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .page-head p {
+            color: var(--muted);
+            font-size: 0.9rem;
+            margin-top: 8px;
+        }
+
+        /* 区块通用标题 */
+        .sec {
+            padding-top: 40px;
+        }
+
+        .sec-head {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .sec-head .bar {
+            width: 5px;
+            height: 22px;
+            border-radius: 3px;
+            background: var(--grad);
+            box-shadow: var(--glow);
+        }
+
+        .sec-head h2 {
+            font-size: 1.15rem;
+            letter-spacing: 1px;
+        }
+
+        .sec-head .badge {
+            font-size: 0.72rem;
+            color: #9db4ff;
+            background: rgba(93, 139, 255, 0.10);
+            border: 1px solid rgba(93, 139, 255, 0.30);
+            padding: 3px 10px;
+            border-radius: 999px;
+            white-space: nowrap;
+        }
+
+        .sec-tip {
+            font-size: 0.82rem;
+            color: var(--muted);
+            margin: -8px 0 18px;
+        }
+
+        .sec-tip code {
+            color: #9db4ff;
+            background: rgba(93, 139, 255, 0.10);
+            padding: 1px 7px;
+            border-radius: 6px;
+            font-family: Consolas, monospace;
+        }
+
+        /* ===== 下导航演示面板（模拟 App 屏幕） ===== */
+        .phone {
+            max-width: 430px;
+            margin: 0 auto;
+            background: var(--card);
+            border: 1px solid var(--line);
+            border-radius: 24px;
+            backdrop-filter: blur(10px);
+            box-shadow: var(--shadow-lg);
+            overflow: hidden;
+        }
+
+        .screen {
+            display: flex;
+            flex-direction: column;
+            min-height: 250px;
+        }
+
+        .screen-note {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #3f4a6e;
+            font-size: 0.85rem;
+            letter-spacing: 4px;
+        }
+
+        /* ===== 下导航公共样式：flex 等分实现自适应宽度 ===== */
+        .bnav {
+            display: flex;
+            border-top: 1px solid var(--line);
+            background: rgba(10, 14, 28, 0.72);
+        }
+
+        .bnav .item {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 3px;
+            padding: 11px 4px 10px;
+            color: var(--muted);
+            min-width: 0;
+            transition: color 0.25s;
+        }
+
+        .bnav .item span {
+            font-size: 0.68rem;
+            letter-spacing: 1px;
+        }
+
+        /* ① 字体图标：CSS 控制字体图标的字号与颜色 */
+        .bnav.fa-nav .item i {
+            font-size: 22px;
+            color: #6b7394;
+            transition: color 0.25s, text-shadow 0.25s;
+        }
+
+        .bnav.fa-nav .item.on i {
+            color: #9db4ff;
+            text-shadow: 0 0 14px rgba(93, 139, 255, 0.75);
+        }
+
+        /* ② SVG 图标：CSS 同样可控制 SVG 的尺寸与颜色（currentColor 描边） */
+        .bnav.svg-nav .item svg {
+            width: 22px;
+            height: 22px;
+            color: #6b7394;
+            transition: color 0.25s, filter 0.25s;
+        }
+
+        .bnav.svg-nav .item.on svg {
+            color: #c4a5ff;
+            filter: drop-shadow(0 0 8px rgba(160, 107, 255, 0.75));
+        }
+
+        .bnav .item.on span {
+            color: #e8ebf8;
+            font-weight: bold;
+        }
+
+        /* "发布"高亮项：字体图标直接放大并上浮 */
+        .bnav .item.post i {
+            font-size: 27px;
+            margin-top: -8px;
+            background: var(--grad);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            filter: drop-shadow(0 4px 10px rgba(122, 92, 255, 0.45));
+        }
+
+        .bnav .item.post svg {
+            width: 25px;
+            height: 25px;
+            margin-top: -8px;
+            padding: 5px;
+            background: var(--grad);
+            border-radius: 50%;
+            color: #fff;
+            box-shadow: var(--glow);
+        }
+
+        .bnav .item.post span {
+            color: #9db4ff;
+        }
+
+        /* 方案 A 顶部说明 */
+        .plan-tag {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 14px;
+        }
+
+        .plan-tag em {
+            font-style: normal;
+            font-size: 0.74rem;
+            color: var(--muted);
+            border: 1px dashed var(--line);
+            border-radius: 999px;
+            padding: 3px 12px;
+        }
+
+        /* ===== 酷炫图标库 ===== */
+        .icon-grid {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 16px;
+        }
+
+        .icon-grid .tile {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            padding: 18px 6px 14px;
+            background: var(--card);
+            border: 1px solid var(--line);
+            border-radius: 14px;
+            transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+            cursor: default;
+        }
+
+        .icon-grid .tile:hover {
+            transform: translateY(-5px);
+            border-color: rgba(93, 139, 255, 0.5);
+            box-shadow: var(--shadow);
+        }
+
+        .icon-grid .tile i {
+            font-size: 27px;
+            color: #9db4ff;
+            transition: color 0.3s, text-shadow 0.3s;
+        }
+
+        .icon-grid .tile svg {
+            width: 27px;
+            height: 27px;
+            color: #c4a5ff;
+            transition: color 0.3s, filter 0.3s;
+        }
+
+        .icon-grid .tile:hover i {
+            color: #c95cff;
+            text-shadow: 0 0 16px rgba(201, 92, 255, 0.8);
+        }
+
+        .icon-grid .tile:hover svg {
+            color: #38bdf8;
+            filter: drop-shadow(0 0 10px rgba(56, 189, 248, 0.8));
+        }
+
+        .icon-grid .tile b {
+            font-size: 0.74rem;
+            font-weight: normal;
+            color: var(--ink);
+        }
+
+        .icon-grid .tile small {
+            font-size: 0.62rem;
+            color: #55608a;
+            font-family: Consolas, monospace;
+        }
+
+        /* ===== 尺寸与颜色控制演示 ===== */
+        .ctrl-panel {
+            background: var(--card);
+            border: 1px solid var(--line);
+            border-radius: var(--radius);
+            backdrop-filter: blur(10px);
+            padding: 26px;
+            display: grid;
+            gap: 26px;
+        }
+
+        .ctrl-row {
+            display: flex;
+            align-items: flex-end;
+            gap: 30px;
+            flex-wrap: wrap;
+        }
+
+        .ctrl-row .cell {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .ctrl-row .cell small {
+            font-size: 0.66rem;
+            color: #55608a;
+            font-family: Consolas, monospace;
+        }
+
+        .ctrl-row h4,
+        .ctrl-row h5 {
+            font-size: 0.86rem;
+            color: #9db4ff;
+            margin-bottom: -16px;
+            letter-spacing: 1px;
+        }
+
+        .swatch {
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            background: rgba(148, 163, 255, 0.05);
+            border: 1px solid var(--line);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .swatch i {
+            font-size: 20px;
+        }
+
+        .swatch svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        .c-blue {
+            color: #38bdf8;
+        }
+
+        .c-violet {
+            color: #a78bfa;
+        }
+
+        .c-pink {
+            color: #f472b6;
+        }
+
+        .c-amber {
+            color: #fbbf24;
+        }
+
+        .c-green {
+            color: #4ade80;
+        }
+
+        /* ===== 页脚 ===== */
+        footer {
+            margin-top: 50px;
+            padding: 28px 20px 36px;
+            text-align: center;
+            color: var(--muted);
+            font-size: 0.82rem;
+            border-top: 1px solid var(--line);
+        }
+
+        footer .foot-links {
+            display: flex;
+            justify-content: center;
+            gap: 22px;
+            margin-bottom: 8px;
+            color: #b9c0d8;
+        }
+
+        .fix-hint {
+            display: none;
+            text-align: center;
+            font-size: 0.74rem;
+            color: #fbbf24;
+            margin-top: 10px;
+        }
+
+        /* ===== 响应式：自适应宽度 ===== */
+        @media (max-width: 860px) {
+            .icon-grid {
+                grid-template-columns: repeat(4, 1fr);
+            }
+        }
+
+        @media (max-width: 640px) {
+
+            /* 视口 ≤640px：方案A 下导航脱离面板，固定到屏幕底部（固定效果） */
+            body {
+                padding-bottom: 84px;
+            }
+
+            .phone {
+                max-width: 100%;
+                border-radius: var(--radius);
+            }
+
+            .demo-a .bnav {
+                position: fixed;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                z-index: 10;
+                border-radius: 0;
+                backdrop-filter: blur(14px);
+                box-shadow: 0 -8px 30px rgba(0, 0, 0, 0.45);
+            }
+
+            .fix-hint {
+                display: block;
+            }
+
+            .icon-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+
+            .page-head h1 {
+                font-size: 1.4rem;
+            }
+
+            .ctrl-row {
+                gap: 18px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- 页面标题 -->
+    <header class="page-head">
+        <h1>张艺凡</h1>
+        <p>13-3 图像解决方案 · 下导航设计（字体图标 Font Awesome + SVG Lucide · 自适应宽度）</p>
+    </header>
+
+    <main class="wrap">
+        <!-- ===== 方案 A：字体图标下导航 ===== -->
+        <section class="sec demo-a">
+            <div class="sec-head">
+                <span class="bar"></span>
+                <h2>方案 A · 字体图标下导航</h2>
+                <span class="badge">Font Awesome 字体图标</span>
+            </div>
+            <p class="sec-tip">图标由字体文件渲染，<code>&lt;i class="fa-solid fa-house"&gt;</code> 即可使用；通过 CSS 修改
+                <code>font-size</code> 与 <code>color</code>。视口 ≤640px 时导航固定到屏幕底部。
+            </p>
+            <div class="phone">
+                <div class="screen">
+                    <div class="screen-note">APP 内 容 区 域</div>
+                    <nav class="bnav fa-nav">
+                        <a class="item on" href="#"><i class="fa-solid fa-house"></i><span>首页</span></a>
+                        <a class="item" href="#"><i class="fa-solid fa-compass"></i><span>发现</span></a>
+                        <a class="item post" href="#"><i class="fa-solid fa-circle-plus"></i><span>发布</span></a>
+                        <a class="item" href="#"><i class="fa-solid fa-comment-dots"></i><span>消息</span></a>
+                        <a class="item" href="#"><i class="fa-solid fa-user"></i><span>我的</span></a>
+                    </nav>
+                </div>
+            </div>
+            <p class="fix-hint">▲ 当前视口较窄：本导航已固定（fixed）到屏幕底部</p>
+        </section>
+
+        <!-- ===== 方案 B：SVG 下导航 ===== -->
+        <section class="sec">
+            <div class="sec-head">
+                <span class="bar"></span>
+                <h2>方案 B · SVG 下导航</h2>
+                <span class="badge">Lucide 内联 SVG</span>
+            </div>
+            <p class="sec-tip">与方案 A 技术区分：SVG 由 <code>&lt;svg&gt;</code> 矢量绘制，描边继承 <code>currentColor</code>，CSS
+                直接改颜色；可用 <code>filter: drop-shadow()</code> 做发光。</p>
+            <div class="plan-tag"><em>house</em><em>compass</em><em>plus</em><em>message-circle</em><em>user</em></div>
+            <div class="phone">
+                <div class="screen">
+                    <div class="screen-note">APP 内 容 区 域</div>
+                    <nav class="bnav svg-nav">
+                        <a class="item on" href="#"><i data-lucide="house"></i><span>首页</span></a>
+                        <a class="item" href="#"><i data-lucide="compass"></i><span>发现</span></a>
+                        <a class="item post" href="#"><i data-lucide="plus"></i><span>发布</span></a>
+                        <a class="item" href="#"><i data-lucide="message-circle"></i><span>消息</span></a>
+                        <a class="item" href="#"><i data-lucide="user"></i><span>我的</span></a>
+                    </nav>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== 酷炫图标库 ===== -->
+        <section class="sec">
+            <div class="sec-head">
+                <span class="bar"></span>
+                <h2>酷炫图标库</h2>
+                <span class="badge">字体图标 12 枚 + SVG 12 枚</span>
+            </div>
+            <p class="sec-tip">同一网格混排两种技术：悬停时字体图标变品红发光，SVG 变天蓝发光。</p>
+            <div class="icon-grid">
+                <!-- 字体图标（Font Awesome） -->
+                <div class="tile"><i class="fa-solid fa-rocket"></i><b>火箭</b><small>fa-rocket</small></div>
+                <div class="tile"><i class="fa-solid fa-bolt"></i><b>闪电</b><small>fa-bolt</small></div>
+                <div class="tile"><i class="fa-solid fa-gem"></i><b>宝石</b><small>fa-gem</small></div>
+                <div class="tile"><i
+                        class="fa-solid fa-fire-flame-curved"></i><b>烈焰</b><small>fa-fire-flame-curved</small></div>
+                <div class="tile"><i class="fa-solid fa-gamepad"></i><b>手柄</b><small>fa-gamepad</small></div>
+                <div class="tile"><i class="fa-solid fa-wand-magic-sparkles"></i><b>魔法</b><small>fa-wand-magic</small>
+                </div>
+                <div class="tile"><i class="fa-solid fa-ghost"></i><b>幽灵</b><small>fa-ghost</small></div>
+                <div class="tile"><i class="fa-solid fa-jet-fighter"></i><b>战机</b><small>fa-jet-fighter</small></div>
+                <div class="tile"><i class="fa-solid fa-meteor"></i><b>陨石</b><small>fa-meteor</small></div>
+                <div class="tile"><i class="fa-solid fa-crown"></i><b>王冠</b><small>fa-crown</small></div>
+                <div class="tile"><i class="fa-solid fa-dragon"></i><b>巨龙</b><small>fa-dragon</small></div>
+                <div class="tile"><i class="fa-solid fa-hat-wizard"></i><b>巫师帽</b><small>fa-hat-wizard</small></div>
+                <!-- SVG 图标（Lucide） -->
+                <div class="tile"><i data-lucide="rocket"></i><b>火箭</b><small>svg:rocket</small></div>
+                <div class="tile"><i data-lucide="zap"></i><b>闪电</b><small>svg:zap</small></div>
+                <div class="tile"><i data-lucide="gem"></i><b>宝石</b><small>svg:gem</small></div>
+                <div class="tile"><i data-lucide="flame"></i><b>火焰</b><small>svg:flame</small></div>
+                <div class="tile"><i data-lucide="gamepad-2"></i><b>手柄</b><small>svg:gamepad-2</small></div>
+                <div class="tile"><i data-lucide="sparkles"></i><b>星芒</b><small>svg:sparkles</small></div>
+                <div class="tile"><i data-lucide="crown"></i><b>王冠</b><small>svg:crown</small></div>
+                <div class="tile"><i data-lucide="swords"></i><b>双剑</b><small>svg:swords</small></div>
+                <div class="tile"><i data-lucide="orbit"></i><b>轨道</b><small>svg:orbit</small></div>
+                <div class="tile"><i data-lucide="atom"></i><b>原子</b><small>svg:atom</small></div>
+                <div class="tile"><i data-lucide="ghost"></i><b>幽灵</b><small>svg:ghost</small></div>
+                <div class="tile"><i data-lucide="party-popper"></i><b>礼花</b><small>svg:party-popper</small></div>
+            </div>
+        </section>
+
+        <!-- ===== 尺寸与颜色控制 ===== -->
+        <section class="sec">
+            <div class="sec-head">
+                <span class="bar"></span>
+                <h2>CSS 控制图标的尺寸与颜色</h2>
+                <span class="badge">两种技术同样生效</span>
+            </div>
+            <div class="ctrl-panel">
+                <div class="ctrl-row">
+                    <h4>字体图标 · 尺寸</h4>
+                </div>
+                <div class="ctrl-row">
+                    <div class="cell"><i class="fa-solid fa-rocket" style="font-size: 16px"></i><small>16px</small>
+                    </div>
+                    <div class="cell"><i class="fa-solid fa-rocket" style="font-size: 22px"></i><small>22px</small>
+                    </div>
+                    <div class="cell"><i class="fa-solid fa-rocket" style="font-size: 28px"></i><small>28px</small>
+                    </div>
+                    <div class="cell"><i class="fa-solid fa-rocket" style="font-size: 36px"></i><small>36px</small>
+                    </div>
+                </div>
+                <div class="ctrl-row">
+                    <h5>字体图标 · 颜色</h5>
+                </div>
+                <div class="ctrl-row">
+                    <div class="cell"><span class="swatch"><i
+                                class="fa-solid fa-bolt c-blue"></i></span><small>#38bdf8</small></div>
+                    <div class="cell"><span class="swatch"><i
+                                class="fa-solid fa-bolt c-violet"></i></span><small>#a78bfa</small></div>
+                    <div class="cell"><span class="swatch"><i
+                                class="fa-solid fa-bolt c-pink"></i></span><small>#f472b6</small></div>
+                    <div class="cell"><span class="swatch"><i
+                                class="fa-solid fa-bolt c-amber"></i></span><small>#fbbf24</small></div>
+                </div>
+                <div class="ctrl-row">
+                    <h5>SVG 图标 · 尺寸与颜色</h5>
+                </div>
+                <div class="ctrl-row">
+                    <div class="cell"><i data-lucide="zap" style="width: 16px; height: 16px"></i><small>16px</small>
+                    </div>
+                    <div class="cell"><i data-lucide="zap" style="width: 22px; height: 22px"></i><small>22px</small>
+                    </div>
+                    <div class="cell"><i data-lucide="zap" style="width: 28px; height: 28px"></i><small>28px</small>
+                    </div>
+                    <div class="cell"><i data-lucide="zap" style="width: 36px; height: 36px"></i><small>36px</small>
+                    </div>
+                    <div class="cell"><span class="swatch"><i data-lucide="sparkles"
+                                class="c-blue"></i></span><small>#38bdf8</small></div>
+                    <div class="cell"><span class="swatch"><i data-lucide="sparkles"
+                                class="c-green"></i></span><small>#4ade80</small></div>
+                    <div class="cell"><span class="swatch"><i data-lucide="sparkles"
+                                class="c-pink"></i></span><small>#f472b6</small></div>
+                    <div class="cell"><span class="swatch"><i data-lucide="sparkles"
+                                class="c-amber"></i></span><small>#fbbf24</small></div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="foot-links">
+            <a href="13-1.html">13-1 字体图标</a><a href="13-2.html">13-2 SVG 图标</a><a href="index.html">作业列表</a>
+        </div>
+        <p>张艺凡 · 高级网页设计 I · 实验：图像解决方案（下导航）</p>
+    </footer>
+
+    <script>
+        // 渲染 Lucide SVG 图标（仅图标渲染，无交互效果）
+        window.addEventListener("DOMContentLoaded", function () {
+            lucide.createIcons();
+        });
+    </script>
+</body>
+
+</html>
