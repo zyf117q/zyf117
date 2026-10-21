@@ -1,0 +1,905 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>22 网页元素设计</title>
+    <!-- 本地 CDN：Lucide 图标（仅用于渲染图标，无任何交互逻辑） -->
+    <script src="cdn/lucide/lucide.min.js" defer></script>
+    <style>
+        /* ===== 全局 CSS（公共样式） ===== */
+        :root {
+            --bg: #f5f6fa;
+            --card: #ffffff;
+            --ink: #23283b;
+            --muted: #7a8095;
+            --line: #e8eaf1;
+            --brand: #5b6ef5;
+            --brand-2: #8b5cf6;
+            --grad: linear-gradient(135deg, #5b6ef5 0%, #8b5cf6 100%);
+            --shadow: 0 6px 24px rgba(35, 40, 59, 0.07);
+            --shadow-lg: 0 16px 40px rgba(35, 40, 59, 0.12);
+            --radius: 16px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: "Microsoft YaHei", "PingFang SC", Arial, sans-serif;
+            background-color: var(--bg);
+            color: var(--ink);
+            line-height: 1.6;
+        }
+
+        img {
+            display: block;
+            max-width: 100%;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        ul,
+        ol {
+            list-style: none;
+        }
+
+        .wrap {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* ===== 页面标题区 ===== */
+        .page-head {
+            text-align: center;
+            padding: 42px 20px 10px;
+        }
+
+        .page-head h1 {
+            font-size: 1.7rem;
+            letter-spacing: 2px;
+        }
+
+        .page-head p {
+            color: var(--muted);
+            font-size: 0.92rem;
+            margin-top: 6px;
+        }
+
+        /* 区块通用标题：左侧渐变竖条 + 编号徽章 */
+        .sec {
+            padding-top: 34px;
+        }
+
+        .sec-head {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 18px;
+        }
+
+        .sec-head .bar {
+            width: 5px;
+            height: 22px;
+            border-radius: 3px;
+            background: var(--grad);
+        }
+
+        .sec-head h2 {
+            font-size: 1.18rem;
+        }
+
+        .sec-head .badge {
+            font-size: 0.72rem;
+            color: var(--brand);
+            background: rgba(91, 110, 245, 0.1);
+            border: 1px solid rgba(91, 110, 245, 0.25);
+            padding: 3px 10px;
+            border-radius: 999px;
+            white-space: nowrap;
+        }
+
+        /* ===== 典型部分①：顶部导航 ===== */
+        .nav {
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            background: rgba(255, 255, 255, 0.86);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--line);
+        }
+
+        .nav .inner {
+            display: flex;
+            align-items: center;
+            gap: 28px;
+            height: 62px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: bold;
+            font-size: 1.1rem;
+            letter-spacing: 1px;
+        }
+
+        .logo .mark {
+            width: 34px;
+            height: 34px;
+            border-radius: 10px;
+            background: var(--grad);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+        }
+
+        .logo .mark svg {
+            width: 19px;
+            height: 19px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 26px;
+            font-size: 0.95rem;
+            color: #4c5265;
+        }
+
+        .nav-links a {
+            position: relative;
+            padding: 6px 2px;
+            transition: color 0.25s;
+        }
+
+        .nav-links a:hover {
+            color: var(--brand);
+        }
+
+        .nav-links a.active {
+            color: var(--brand);
+            font-weight: bold;
+        }
+
+        .nav-links a.active::after {
+            content: "";
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            bottom: -4px;
+            width: 18px;
+            height: 3px;
+            border-radius: 2px;
+            background: var(--grad);
+        }
+
+        .nav-right {
+            margin-left: auto;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .search {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: #f0f2f8;
+            border-radius: 999px;
+            padding: 7px 14px;
+            color: var(--muted);
+            font-size: 0.85rem;
+            min-width: 180px;
+        }
+
+        .search svg {
+            width: 15px;
+            height: 15px;
+        }
+
+        .icon-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: #f0f2f8;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #5a6072;
+            cursor: pointer;
+        }
+
+        .icon-btn svg {
+            width: 17px;
+            height: 17px;
+        }
+
+        .btn {
+            background: var(--grad);
+            color: #fff;
+            font-size: 0.88rem;
+            padding: 9px 20px;
+            border-radius: 999px;
+            letter-spacing: 1px;
+            box-shadow: 0 6px 16px rgba(91, 110, 245, 0.35);
+            cursor: pointer;
+            border: none;
+        }
+
+        /* ===== 典型部分②：上图下文（卡片栅格） ===== */
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+        }
+
+        .card {
+            background: var(--card);
+            border-radius: var(--radius);
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-6px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .card .cover {
+            aspect-ratio: 3 / 2;
+            overflow: hidden;
+        }
+
+        .card .cover img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .card .body {
+            padding: 18px 20px 20px;
+        }
+
+        .tag {
+            display: inline-block;
+            font-size: 0.72rem;
+            color: var(--brand-2);
+            background: rgba(139, 92, 246, 0.1);
+            padding: 3px 10px;
+            border-radius: 999px;
+            margin-bottom: 10px;
+        }
+
+        .card h3 {
+            font-size: 1.04rem;
+            margin-bottom: 8px;
+        }
+
+        .card p {
+            font-size: 0.86rem;
+            color: var(--muted);
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .card .meta {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-top: 14px;
+            padding-top: 12px;
+            border-top: 1px solid var(--line);
+            font-size: 0.78rem;
+            color: var(--muted);
+        }
+
+        .card .meta span {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .card .meta svg {
+            width: 14px;
+            height: 14px;
+        }
+
+        /* ===== 典型部分③：左图右文（含 CSS 图表） ===== */
+        .feature {
+            display: flex;
+            gap: 40px;
+            align-items: center;
+            background: var(--card);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 34px;
+        }
+
+        .feature .pic {
+            flex: 0 0 320px;
+            position: relative;
+        }
+
+        .feature .pic::before {
+            content: "";
+            position: absolute;
+            inset: 18px -18px -18px 18px;
+            border-radius: var(--radius);
+            background: var(--grad);
+            opacity: 0.16;
+        }
+
+        .feature .pic img {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 1 / 1;
+            object-fit: cover;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .feature .txt {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .eyebrow {
+            font-size: 0.75rem;
+            font-weight: bold;
+            letter-spacing: 3px;
+            color: var(--brand);
+            margin-bottom: 8px;
+        }
+
+        .feature h2 {
+            font-size: 1.4rem;
+            margin-bottom: 10px;
+        }
+
+        .feature .txt>p {
+            font-size: 0.9rem;
+            color: var(--muted);
+            margin-bottom: 22px;
+        }
+
+        /* 纯 CSS 柱状图 */
+        .chart {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 12px;
+            align-items: end;
+            height: 150px;
+            padding-top: 10px;
+            border-bottom: 2px solid var(--line);
+        }
+
+        .chart .col {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 6px;
+            height: 100%;
+        }
+
+        .chart .val {
+            font-size: 0.7rem;
+            color: var(--muted);
+        }
+
+        .chart .stick {
+            width: 100%;
+            max-width: 34px;
+            border-radius: 8px 8px 3px 3px;
+            background: linear-gradient(180deg, #8b5cf6 0%, #5b6ef5 100%);
+            opacity: 0.85;
+        }
+
+        .chart .col.hot .stick {
+            background: linear-gradient(180deg, #f59e0b 0%, #ef6c4d 100%);
+            opacity: 1;
+        }
+
+        .chart-labels {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 12px;
+            margin-top: 8px;
+            font-size: 0.72rem;
+            color: var(--muted);
+            text-align: center;
+        }
+
+        .legend {
+            display: flex;
+            gap: 18px;
+            margin-top: 14px;
+            font-size: 0.75rem;
+            color: var(--muted);
+        }
+
+        .legend i {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 3px;
+            margin-right: 6px;
+        }
+
+        .legend .c1 i {
+            background: linear-gradient(180deg, #8b5cf6, #5b6ef5);
+        }
+
+        .legend .c2 i {
+            background: linear-gradient(180deg, #f59e0b, #ef6c4d);
+        }
+
+        /* ===== 典型部分④：列表（本周热榜） ===== */
+        .board {
+            background: var(--card);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 8px 26px;
+        }
+
+        .board li {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 15px 4px;
+            border-bottom: 1px solid var(--line);
+        }
+
+        .board li:last-child {
+            border-bottom: none;
+        }
+
+        .rank {
+            flex: 0 0 34px;
+            font-size: 1.15rem;
+            font-weight: bold;
+            font-style: italic;
+            color: #c3c8d6;
+            text-align: center;
+        }
+
+        .board li:nth-child(1) .rank,
+        .board li:nth-child(2) .rank,
+        .board li:nth-child(3) .rank {
+            background: var(--grad);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .board .t {
+            flex: 1;
+            min-width: 0;
+            font-size: 0.95rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .board .cat {
+            flex: none;
+            font-size: 0.72rem;
+            color: var(--brand);
+            background: rgba(91, 110, 245, 0.08);
+            padding: 3px 10px;
+            border-radius: 999px;
+        }
+
+        .board .heat {
+            flex: none;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 0.8rem;
+            color: #ef6c4d;
+            width: 76px;
+            justify-content: flex-end;
+        }
+
+        .board .heat svg {
+            width: 14px;
+            height: 14px;
+        }
+
+        /* ===== 典型部分⑤：Tab（静态标签页） ===== */
+        .tabs {
+            background: var(--card);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            overflow: hidden;
+        }
+
+        .tab-bar {
+            display: flex;
+            gap: 8px;
+            padding: 10px 22px 0;
+            border-bottom: 1px solid var(--line);
+        }
+
+        .tab-bar .tab {
+            padding: 12px 18px;
+            font-size: 0.92rem;
+            color: var(--muted);
+            position: relative;
+            cursor: pointer;
+        }
+
+        .tab-bar .tab.active {
+            color: var(--brand);
+            font-weight: bold;
+        }
+
+        .tab-bar .tab.active::after {
+            content: "";
+            position: absolute;
+            left: 14px;
+            right: 14px;
+            bottom: -1px;
+            height: 3px;
+            border-radius: 3px 3px 0 0;
+            background: var(--grad);
+        }
+
+        .tab-panel {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 18px;
+            padding: 24px 22px 26px;
+        }
+
+        .mini {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            background: #f8f9fd;
+            border: 1px solid var(--line);
+            border-radius: 12px;
+            padding: 18px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .mini:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow);
+        }
+
+        .mini .ico {
+            width: 38px;
+            height: 38px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+        }
+
+        .mini .ico svg {
+            width: 18px;
+            height: 18px;
+        }
+
+        .mini:nth-child(1) .ico {
+            background: linear-gradient(135deg, #5b6ef5, #6ea8f7);
+        }
+
+        .mini:nth-child(2) .ico {
+            background: linear-gradient(135deg, #8b5cf6, #d46ef0);
+        }
+
+        .mini:nth-child(3) .ico {
+            background: linear-gradient(135deg, #22b8a6, #4cd9a8);
+        }
+
+        .mini:nth-child(4) .ico {
+            background: linear-gradient(135deg, #f59e0b, #ef6c4d);
+        }
+
+        .mini h4 {
+            font-size: 0.92rem;
+        }
+
+        .mini p {
+            font-size: 0.78rem;
+            color: var(--muted);
+        }
+
+        /* ===== 页脚 ===== */
+        footer {
+            margin-top: 46px;
+            padding: 26px 20px 34px;
+            text-align: center;
+            color: var(--muted);
+            font-size: 0.82rem;
+            border-top: 1px solid var(--line);
+            background: #fbfbfe;
+        }
+
+        footer .foot-links {
+            display: flex;
+            justify-content: center;
+            gap: 22px;
+            margin-bottom: 8px;
+            color: #5a6072;
+        }
+
+        /* ===== 响应式 ===== */
+        @media (max-width: 920px) {
+            .search {
+                display: none;
+            }
+
+            .cards {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .feature {
+                flex-direction: column;
+                padding: 26px;
+            }
+
+            .feature .pic {
+                flex: none;
+                width: 100%;
+                max-width: 420px;
+            }
+
+            .tab-panel {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 640px) {
+            .nav-links {
+                display: none;
+            }
+
+            .cards {
+                grid-template-columns: 1fr;
+            }
+
+            .board .cat {
+                display: none;
+            }
+
+            .tab-panel {
+                grid-template-columns: 1fr;
+            }
+
+            .page-head h1 {
+                font-size: 1.35rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- ===== 典型部分①：顶部导航 ===== -->
+    <nav class="nav">
+        <div class="wrap inner">
+            <a class="logo" href="#">
+                <span class="mark"><i data-lucide="aperture"></i></span>
+                <span>Lumina</span>
+            </a>
+            <ul class="nav-links">
+                <li><a class="active" href="#">首页</a></li>
+                <li><a href="#">探索</a></li>
+                <li><a href="#">榜单</a></li>
+                <li><a href="#">专栏</a></li>
+                <li><a href="#">关于</a></li>
+            </ul>
+            <div class="nav-right">
+                <div class="search"><i data-lucide="search"></i>搜索文章 / 作者</div>
+                <span class="icon-btn"><i data-lucide="bell"></i></span>
+                <button class="btn">订阅</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 页面标题 -->
+    <header class="page-head">
+        <h1>张艺凡</h1>
+        <p>22 网页元素设计 · 导航 / 上图下文 / 左图右文 / 列表 / Tab（Flex + Grid 布局）</p>
+    </header>
+
+    <main class="wrap">
+        <!-- ===== 典型部分②：上图下文 ===== -->
+        <section class="sec">
+            <div class="sec-head">
+                <span class="bar"></span>
+                <h2>编辑精选</h2>
+                <span class="badge">典型部分 ② 上图下文</span>
+            </div>
+            <div class="cards">
+                <article class="card">
+                    <div class="cover"><img src="images/22-card1.jpg" alt="高地公路蜿蜒穿过青绿山谷"></div>
+                    <div class="body">
+                        <span class="tag">旅行随笔</span>
+                        <h3>穿行高地：一条公路的清晨</h3>
+                        <p>云雾还未散尽，公路在青绿山脊间划出优雅的弧线。这是一次关于慢速旅行的记录。</p>
+                        <div class="meta">
+                            <span><i data-lucide="user"></i>林一舟</span>
+                            <span><i data-lucide="eye"></i>12.4k</span>
+                            <span><i data-lucide="clock"></i>8 分钟</span>
+                        </div>
+                    </div>
+                </article>
+                <article class="card">
+                    <div class="cover"><img src="images/22-card2.jpg" alt="木桌上摆放着笔记本电脑与手账本"></div>
+                    <div class="body">
+                        <span class="tag">效率工作台</span>
+                        <h3>把书桌变成创意工作台</h3>
+                        <p>一台电脑、一页手绘草图，好的工具布置能让灵感更愿意停留。附桌面收纳清单。</p>
+                        <div class="meta">
+                            <span><i data-lucide="user"></i>苏晚晴</span>
+                            <span><i data-lucide="eye"></i>9.8k</span>
+                            <span><i data-lucide="clock"></i>6 分钟</span>
+                        </div>
+                    </div>
+                </article>
+                <article class="card">
+                    <div class="cover"><img src="images/22-card3.jpg" alt="卫星视角下蓝绿色交织的海岸线"></div>
+                    <div class="body">
+                        <span class="tag">视觉灵感</span>
+                        <h3>从卫星俯瞰色彩的边界</h3>
+                        <p>当镜头升上高空，海岸线成为大自然最抽象的渐变画。一组令人惊叹的卫星影像。</p>
+                        <div class="meta">
+                            <span><i data-lucide="user"></i>陈叙白</span>
+                            <span><i data-lucide="eye"></i>15.2k</span>
+                            <span><i data-lucide="clock"></i>5 分钟</span>
+                        </div>
+                    </div>
+                </article>
+            </div>
+        </section>
+
+        <!-- ===== 典型部分③：左图右文（含图表） ===== -->
+        <section class="sec">
+            <div class="sec-head">
+                <span class="bar"></span>
+                <h2>城市观察</h2>
+                <span class="badge">典型部分 ③ 左图右文</span>
+            </div>
+            <div class="feature">
+                <figure class="pic">
+                    <img src="images/22-feature.jpg" alt="红砖建筑之间的城市老巷" width="320" height="320">
+                </figure>
+                <div class="txt">
+                    <p class="eyebrow">URBAN TEXTURE · 城市肌理</p>
+                    <h2>巷子里的旧时光与新天际线</h2>
+                    <p>红砖墙、消防梯与远处玻璃幕墙同框，老巷是城市最诚实的底稿。我们统计了一周内读者的专注阅读时段，发现周末的深度阅读时长显著高于工作日。</p>
+                    <!-- 纯 CSS 柱状图：每周专注时长（分钟） -->
+                    <div class="chart" role="img" aria-label="每周专注时长柱状图">
+                        <div class="col"><span class="val">45</span><span class="stick" style="height: 38%"></span></div>
+                        <div class="col"><span class="val">60</span><span class="stick" style="height: 52%"></span></div>
+                        <div class="col"><span class="val">38</span><span class="stick" style="height: 32%"></span></div>
+                        <div class="col"><span class="val">75</span><span class="stick" style="height: 64%"></span></div>
+                        <div class="col"><span class="val">52</span><span class="stick" style="height: 44%"></span></div>
+                        <div class="col hot"><span class="val">90</span><span class="stick" style="height: 80%"></span></div>
+                        <div class="col"><span class="val">68</span><span class="stick" style="height: 58%"></span></div>
+                    </div>
+                    <div class="chart-labels">
+                        <span>周一</span><span>周二</span><span>周三</span><span>周四</span><span>周五</span><span>周六</span><span>周日</span>
+                    </div>
+                    <div class="legend">
+                        <span class="c1"><i></i>工作日平均 54 分钟</span>
+                        <span class="c2"><i></i>周末峰值 90 分钟</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== 典型部分④：列表 ===== -->
+        <section class="sec">
+            <div class="sec-head">
+                <span class="bar"></span>
+                <h2>本周热榜</h2>
+                <span class="badge">典型部分 ④ 列表</span>
+            </div>
+            <ol class="board">
+                <li>
+                    <span class="rank">01</span>
+                    <span class="t">CSS Grid 布局实战：从两栏卡片到九宫格图墙</span>
+                    <span class="cat">前端</span>
+                    <span class="heat"><i data-lucide="flame"></i>32.1k</span>
+                </li>
+                <li>
+                    <span class="rank">02</span>
+                    <span class="t">用 Lucide 替换整套图标库的一次完整实践</span>
+                    <span class="cat">设计</span>
+                    <span class="heat"><i data-lucide="flame"></i>27.8k</span>
+                </li>
+                <li>
+                    <span class="rank">03</span>
+                    <span class="t">手机拍摄城市街巷的 7 个构图技巧</span>
+                    <span class="cat">摄影</span>
+                    <span class="heat"><i data-lucide="flame"></i>24.5k</span>
+                </li>
+                <li>
+                    <span class="rank">04</span>
+                    <span class="t">一文读懂 Flexbox 的主轴与交叉轴对齐体系</span>
+                    <span class="cat">前端</span>
+                    <span class="heat"><i data-lucide="flame"></i>21.3k</span>
+                </li>
+                <li>
+                    <span class="rank">05</span>
+                    <span class="t">极简主义网页的留白法则与节奏控制</span>
+                    <span class="cat">设计</span>
+                    <span class="heat"><i data-lucide="flame"></i>18.9k</span>
+                </li>
+            </ol>
+        </section>
+
+        <!-- ===== 典型部分⑤：Tab ===== -->
+        <section class="sec">
+            <div class="sec-head">
+                <span class="bar"></span>
+                <h2>主题专栏</h2>
+                <span class="badge">典型部分 ⑤ Tab</span>
+            </div>
+            <div class="tabs">
+                <div class="tab-bar">
+                    <span class="tab active">推荐</span>
+                    <span class="tab">前端</span>
+                    <span class="tab">设计</span>
+                    <span class="tab">影像</span>
+                </div>
+                <div class="tab-panel">
+                    <article class="mini">
+                        <span class="ico"><i data-lucide="book-open"></i></span>
+                        <h4>语义化标签指南</h4>
+                        <p>header、main、article 的正确打开方式</p>
+                    </article>
+                    <article class="mini">
+                        <span class="ico"><i data-lucide="palette"></i></span>
+                        <h4>渐变配色手册</h4>
+                        <p>12 组高级感渐变色，直接复制取用</p>
+                    </article>
+                    <article class="mini">
+                        <span class="ico"><i data-lucide="layout-grid"></i></span>
+                        <h4>网格系统速查</h4>
+                        <p>Grid 模板列与间距的常用组合</p>
+                    </article>
+                    <article class="mini">
+                        <span class="ico"><i data-lucide="camera"></i></span>
+                        <h4>图标使用规范</h4>
+                        <p>尺寸、线宽与视觉重量的统一</p>
+                    </article>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="foot-links">
+            <a href="#">关于我们</a><a href="#">投稿指南</a><a href="#">隐私政策</a><a href="#">联系我们</a>
+        </div>
+        <p>张艺凡 · 高级网页设计 I · 实验：网页元素设计</p>
+    </footer>
+
+    <script>
+        // 渲染 Lucide 图标（仅图标渲染，无交互效果）
+        window.addEventListener("DOMContentLoaded", function () {
+            lucide.createIcons();
+        });
+    </script>
+</body>
+
+</html>
