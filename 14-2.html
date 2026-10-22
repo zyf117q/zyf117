@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<!--
+    姓名：张艺凡
+    日期：2026-10-22
+    功能名称：JavaScript 六种基础数据类型演示
+-->
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>14-2 JavaScript 六种基础数据类型</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: "Microsoft YaHei", Arial, sans-serif;
+            background: linear-gradient(135deg, #1a1f3a 0%, #0f1226 100%);
+            color: #e2e8f0;
+            min-height: 100vh;
+            padding: 40px 20px;
+            line-height: 1.7;
+        }
+
+        .title {
+            text-align: center;
+            font-size: 1.6rem;
+            margin-bottom: 6px;
+            background: linear-gradient(90deg, #4f7cff, #9a55ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #94a3b8;
+            font-size: 0.95rem;
+            margin-bottom: 12px;
+        }
+
+        .tip {
+            max-width: 860px;
+            margin: 0 auto 36px;
+            background: rgba(79, 124, 255, 0.08);
+            border: 1px dashed rgba(79, 124, 255, 0.4);
+            border-radius: 8px;
+            padding: 12px 18px;
+            color: #93c5fd;
+            font-size: 0.9rem;
+        }
+
+        .tip code {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 2px 6px;
+            border-radius: 4px;
+            color: #fbbf24;
+        }
+
+        .container {
+            max-width: 860px;
+            margin: 0 auto;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 14px;
+            padding: 22px 26px;
+            margin-bottom: 18px;
+            backdrop-filter: blur(12px);
+            transition: border-color 0.3s ease, transform 0.3s ease;
+        }
+
+        .card:hover {
+            border-color: rgba(79, 124, 255, 0.5);
+            transform: translateY(-2px);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+            flex-wrap: wrap;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.78rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            background: rgba(79, 124, 255, 0.15);
+            color: #60a5fa;
+            border: 1px solid rgba(79, 124, 255, 0.3);
+        }
+
+        .badge-green {
+            background: rgba(74, 222, 128, 0.15);
+            color: #4ade80;
+            border: 1px solid rgba(74, 222, 128, 0.3);
+        }
+
+        .badge-amber {
+            background: rgba(245, 158, 11, 0.15);
+            color: #fbbf24;
+            border: 1px solid rgba(245, 158, 11, 0.3);
+        }
+
+        .badge-cyan {
+            background: rgba(34, 211, 238, 0.15);
+            color: #22d3ee;
+            border: 1px solid rgba(34, 211, 238, 0.3);
+        }
+
+        .badge-pink {
+            background: rgba(244, 114, 182, 0.15);
+            color: #f472b6;
+            border: 1px solid rgba(244, 114, 182, 0.3);
+        }
+
+        .badge-violet {
+            background: rgba(167, 139, 250, 0.15);
+            color: #a78bfa;
+            border: 1px solid rgba(167, 139, 250, 0.3);
+        }
+
+        .badge-gray {
+            background: rgba(148, 163, 184, 0.15);
+            color: #cbd5e1;
+            border: 1px solid rgba(148, 163, 184, 0.3);
+        }
+
+        .card h2 {
+            font-size: 1.05rem;
+            color: #f1f5f9;
+        }
+
+        .desc {
+            color: #94a3b8;
+            font-size: 0.9rem;
+            margin-bottom: 12px;
+        }
+
+        .preview {
+            background: rgba(0, 0, 0, 0.45);
+            border-radius: 8px;
+            padding: 12px 14px;
+            border-left: 3px solid #4f7cff;
+            font-family: "Consolas", "Courier New", monospace;
+            font-size: 0.86rem;
+            color: #cbd5e1;
+            white-space: pre-wrap;
+            margin-bottom: 12px;
+        }
+
+        .preview .keyword { color: #c084fc; }
+        .preview .string  { color: #fbbf24; }
+        .preview .number  { color: #60a5fa; }
+        .preview .bool    { color: #4ade80; }
+        .preview .func    { color: #22d3ee; }
+        .preview .comment { color: #64748b; font-style: italic; }
+
+        .result-box {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px dashed rgba(255, 255, 255, 0.18);
+            border-radius: 8px;
+            padding: 10px 14px;
+            font-size: 0.88rem;
+            color: #cbd5e1;
+        }
+
+        .result-box .line {
+            margin: 3px 0;
+        }
+
+        .result-box .key {
+            color: #a78bfa;
+            font-family: "Consolas", "Courier New", monospace;
+            margin-right: 6px;
+        }
+
+        .result-box .val {
+            color: #fbbf24;
+            font-family: "Consolas", "Courier New", monospace;
+        }
+
+        .result-box .bool-val { color: #4ade80; }
+        .result-box .num-val  { color: #60a5fa; }
+        .result-box .null-val { color: #94a3b8; }
+        .result-box .type-tag {
+            display: inline-block;
+            background: rgba(79, 124, 255, 0.15);
+            color: #60a5fa;
+            padding: 1px 8px;
+            border-radius: 4px;
+            font-size: 0.78rem;
+            margin-left: 8px;
+            border: 1px solid rgba(79, 124, 255, 0.3);
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            color: #64748b;
+            font-size: 0.88rem;
+        }
+
+        footer a {
+            color: #60a5fa;
+            text-decoration: none;
+            margin: 0 8px;
+        }
+    </style>
+</head>
+
+<body>
+    <h1 class="title">张艺凡</h1>
+    <p class="subtitle">14-2 JavaScript 六种基础数据类型</p>
+    <p class="tip">
+        JavaScript 有 <strong>六种原始数据类型</strong>：
+        <code>Number</code>、<code>String</code>、<code>Boolean</code>、<code>Undefined</code>、<code>Null</code>、<code>Symbol</code>。
+        用 <code>typeof</code> 可以查看一个值的类型（<code>null</code> 是历史 bug，会返回 <code>"object"</code>）。
+    </p>
+
+    <div class="container">
+
+        <!-- ===== 1. Number 数字 ===== -->
+        <div class="card">
+            <div class="card-header">
+                <span class="badge">类型 1</span>
+                <h2>Number · 数字</h2>
+                <span class="badge badge-blue">typeof → "number"</span>
+            </div>
+            <p class="desc">整数、浮点数、科学计数法、特殊值 NaN/Infinity，都是 Number 类型。</p>
+            <div class="preview"><span class="keyword">let</span> num1 = <span class="number">42</span>;
+<span class="keyword">let</span> num2 = <span class="number">3.14</span>;
+<span class="keyword">let</span> num3 = <span class="number">1e10</span>;
+<span class="keyword">let</span> num4 = <span class="keyword">NaN</span>;          <span class="comment">// 非数字</span>
+<span class="keyword">let</span> num5 = <span class="keyword">Infinity</span>;   <span class="comment">// 无穷大</span></div>
+            <div class="result-box" id="result-number"></div>
+        </div>
+
+        <!-- ===== 2. String 字符串 ===== -->
+        <div class="card">
+            <div class="card-header">
+                <span class="badge">类型 2</span>
+                <h2>String · 字符串</h2>
+                <span class="badge badge-amber">typeof → "string"</span>
+            </div>
+            <p class="desc">用单引号、双引号或反引号（模板字符串）括起来的文本内容。</p>
+            <div class="preview"><span class="keyword">let</span> str1 = <span class="string">"你好"</span>;
+<span class="keyword">let</span> str2 = <span class="string">'张艺凡'</span>;
+<span class="keyword">let</span> str3 = <span class="string">`今年是 ${2026} 年`</span>;  <span class="comment">// 模板字符串</span></div>
+            <div class="result-box" id="result-string"></div>
+        </div>
+
+        <!-- ===== 3. Boolean 布尔 ===== -->
+        <div class="card">
+            <div class="card-header">
+                <span class="badge">类型 3</span>
+                <h2>Boolean · 布尔</h2>
+                <span class="badge badge-green">typeof → "boolean"</span>
+            </div>
+            <p class="desc">只有两个值：<code>true</code> 和 <code>false</code>，常用于条件判断。</p>
+            <div class="preview"><span class="keyword">let</span> isOk = <span class="bool">true</span>;
+<span class="keyword">let</span> isNo = <span class="bool">false</span>;
+<span class="keyword">let</span> isBig = <span class="number">10</span> > <span class="number">5</span>;   <span class="comment">// 比较结果也是 Boolean</span></div>
+            <div class="result-box" id="result-boolean"></div>
+        </div>
+
+        <!-- ===== 4. Undefined 未定义 ===== -->
+        <div class="card">
+            <div class="card-header">
+                <span class="badge">类型 4</span>
+                <h2>Undefined · 未定义</h2>
+                <span class="badge badge-gray">typeof → "undefined"</span>
+            </div>
+            <p class="desc">变量声明了但没赋值，默认值就是 <code>undefined</code>。</p>
+            <div class="preview"><span class="keyword">let</span> a;               <span class="comment">// 只声明没赋值</span>
+<span class="keyword">let</span> b = <span class="keyword">undefined</span>;   <span class="comment">// 显式赋值</span></div>
+            <div class="result-box" id="result-undefined"></div>
+        </div>
+
+        <!-- ===== 5. Null 空值 ===== -->
+        <div class="card">
+            <div class="card-header">
+                <span class="badge">类型 5</span>
+                <h2>Null · 空值</h2>
+                <span class="badge badge-pink">typeof → "object"（历史 bug）</span>
+            </div>
+            <p class="desc">表示"空"或"无"，需要用 <code>=== null</code> 来判断。<code>typeof null</code> 返回 <code>"object"</code> 是 JavaScript 早期遗留的 bug，永远不会修复。</p>
+            <div class="preview"><span class="keyword">let</span> n = <span class="keyword">null</span>;
+<span class="comment">// 判断 null 的正确方式：</span>
+<span class="keyword">if</span> (n === <span class="keyword">null</span>) { <span class="comment">/* ... */</span> }</div>
+            <div class="result-box" id="result-null"></div>
+        </div>
+
+        <!-- ===== 6. Symbol 符号 ===== -->
+        <div class="card">
+            <div class="card-header">
+                <span class="badge">类型 6</span>
+                <h2>Symbol · 符号</h2>
+                <span class="badge badge-violet">typeof → "symbol"</span>
+            </div>
+            <p class="desc">ES6 新增的唯一标识符，每次调用 <code>Symbol()</code> 都会返回一个永不相等的值。常用于对象属性名避免冲突。</p>
+            <div class="preview"><span class="keyword">let</span> s1 = <span class="keyword">Symbol</span>();
+<span class="keyword">let</span> s2 = <span class="keyword">Symbol</span>(<span class="string">"myKey"</span>);   <span class="comment">// 带描述</span>
+<span class="keyword">let</span> s3 = <span class="keyword">Symbol</span>(<span class="string">"myKey"</span>);
+<span class="keyword">console</span>.<span class="keyword">log</span>(s2 === s3);   <span class="comment">// false，每次都唯一</span></div>
+            <div class="result-box" id="result-symbol"></div>
+        </div>
+
+    </div>
+
+    <footer>
+        <a href="14-1.html">上一页 14-1</a> ·
+        <a href="index.html">作业列表</a>
+    </footer>
+
+    <script>
+        // ===== 定义各类型的示例变量 =====
+
+        // 1. Number
+        let num1 = 42;
+        let num2 = 3.14;
+        let num3 = 1e10;
+        let num4 = NaN;
+        let num5 = Infinity;
+
+        // 2. String
+        let str1 = "你好";
+        let str2 = '张艺凡';
+        let year = 2026;
+        let str3 = `今年是 ${year} 年`;
+
+        // 3. Boolean
+        let isOk = true;
+        let isNo = false;
+        let isBig = 10 > 5;
+
+        // 4. Undefined
+        let a;
+        let b = undefined;
+
+        // 5. Null
+        let n = null;
+
+        // 6. Symbol
+        let s1 = Symbol();
+        let s2 = Symbol("myKey");
+        let s3 = Symbol("myKey");
+
+        // ===== 渲染结果到页面 =====
+
+        function show(id, lines) {
+            document.getElementById(id).innerHTML = lines;
+        }
+
+        // Number
+        show('result-number',
+            makeLine('num1 = 42', num1) +
+            makeLine('num2 = 3.14', num2) +
+            makeLine('num3 = 1e10', num3) +
+            makeLine('num4 = NaN', num4) +
+            makeLine('num5 = Infinity', num5)
+        );
+
+        // String
+        show('result-string',
+            makeLine('str1 = "你好"', str1) +
+            makeLine("str2 = '张艺凡'", str2) +
+            makeLine('str3 = `今年是 ${year} 年`', str3)
+        );
+
+        // Boolean
+        show('result-boolean',
+            makeBoolLine('isOk = true', isOk) +
+            makeBoolLine('isNo = false', isNo) +
+            makeBoolLine('isBig = 10 > 5', isBig)
+        );
+
+        // Undefined
+        show('result-undefined',
+            makeNullLikeLine('a', a) +
+            makeNullLikeLine('b = undefined', b)
+        );
+
+        // Null
+        show('result-null',
+            makeNullLine('n = null', n)
+        );
+
+        // Symbol
+        show('result-symbol',
+            makeSymbolLine('s1 = Symbol()', s1) +
+            makeSymbolLine('s2 = Symbol("myKey")', s2) +
+            makeSymbolLine('s3 = Symbol("myKey")', s3) +
+            '<div class="line"><span class="key">s2 === s3</span><span class="val">' + (s2 === s3) + '</span></div>'
+        );
+
+        function makeLine(label, val) {
+            let t = typeof val;
+            let vhtml = t === 'number' ? '<span class="val num-val">' + val + '</span>'
+                     : t === 'boolean' ? '<span class="val bool-val">' + val + '</span>'
+                     : '<span class="val">' + val + '</span>';
+            return '<div class="line"><span class="key">' + label + '</span>' + vhtml +
+                   '<span class="type-tag">typeof → "' + t + '"</span></div>';
+        }
+
+        function makeBoolLine(label, val) {
+            return '<div class="line"><span class="key">' + label + '</span>' +
+                   '<span class="val bool-val">' + val + '</span>' +
+                   '<span class="type-tag">typeof → "boolean"</span></div>';
+        }
+
+        function makeNullLikeLine(label, val) {
+            return '<div class="line"><span class="key">' + label + '</span>' +
+                   '<span class="val null-val">' + val + '</span>' +
+                   '<span class="type-tag">typeof → "' + (typeof val) + '"</span></div>';
+        }
+
+        function makeNullLine(label, val) {
+            // typeof null 是 "object"，标注这是 JS 的历史 bug
+            return '<div class="line"><span class="key">' + label + '</span>' +
+                   '<span class="val null-val">' + val + '</span>' +
+                   '<span class="type-tag">typeof → "' + (typeof val) + '"' +
+                   ' <span style="color:#f87171">⚠ 历史 bug</span></span></div>';
+        }
+
+        function makeSymbolLine(label, val) {
+            return '<div class="line"><span class="key">' + label + '</span>' +
+                   '<span class="val" style="color:#a78bfa">' + val.toString() + '</span>' +
+                   '<span class="type-tag">typeof → "' + (typeof val) + '"</span></div>';
+        }
+
+        // 控制台也输出一遍（按 F12 可查看）
+        console.log('===== Number =====');
+        console.log({ num1, num2, num3, num4, num5 });
+        console.log('===== String =====');
+        console.log({ str1, str2, str3 });
+        console.log('===== Boolean =====');
+        console.log({ isOk, isNo, isBig });
+        console.log('===== Undefined =====');
+        console.log({ a, b });
+        console.log('===== Null =====');
+        console.log('typeof null =', typeof null);
+        console.log('===== Symbol =====');
+        console.log({ s1, s2, s3 });
+        console.log('s2 === s3 :', s2 === s3);
+    </script>
+</body>
+
+</html>
