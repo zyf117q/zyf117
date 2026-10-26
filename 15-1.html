@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<!-- 姓名：张艺凡 / 日期：2026-10-26 / 功能名称：15-1 数7游戏（100格盒子） -->
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>15-1 数7游戏 · 张艺凡</title>
+<style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+        font-family: "Microsoft YaHei", "PingFang SC", Arial, sans-serif;
+        background: linear-gradient(160deg, #0a0e1c 0%, #1a1140 100%);
+        min-height: 100vh;
+        color: #e8ebf8;
+        padding: 40px 20px;
+    }
+    .zyf_117_header {
+        text-align: center;
+        margin-bottom: 36px;
+    }
+    .zyf_117_header h1 {
+        font-size: 2rem;
+        background: linear-gradient(90deg, #5d8bff, #a06bff, #c95cff);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+        letter-spacing: 4px;
+    }
+    .zyf_117_header p {
+        margin-top: 10px;
+        color: #98a0bd;
+        font-size: 0.95rem;
+    }
+    .zyf_117_rule {
+        max-width: 920px;
+        margin: 0 auto 24px;
+        padding: 16px 24px;
+        background: rgba(148, 163, 255, 0.06);
+        border: 1px solid rgba(148, 163, 255, 0.20);
+        border-radius: 12px;
+        color: #cdd5f0;
+        font-size: 0.95rem;
+        line-height: 1.7;
+    }
+    .zyf_117_rule b {
+        color: #f472b6;
+        font-weight: bold;
+    }
+    .zyf_117_grid {
+        max-width: 920px;
+        margin: 0 auto;
+        display: grid;
+        grid-template-columns: repeat(10, 1fr);
+        gap: 10px;
+    }
+    .zyf_117_box {
+        aspect-ratio: 1 / 1;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.05rem;
+        font-weight: 600;
+        background: linear-gradient(135deg, rgba(93, 139, 255, 0.18), rgba(160, 107, 255, 0.18));
+        border: 1px solid rgba(148, 163, 255, 0.35);
+        color: #e8ebf8;
+        transition: transform 0.18s ease;
+    }
+    .zyf_117_box:hover {
+        transform: scale(1.08);
+    }
+    /* 满足数7规则的空盒子 */
+    .zyf_117_box.zyf_117_empty {
+        background: linear-gradient(135deg, rgba(244, 114, 182, 0.22), rgba(192, 132, 252, 0.22));
+        border: 2px dashed rgba(244, 114, 182, 0.70);
+        color: transparent;
+        position: relative;
+    }
+    .zyf_117_box.zyf_117_empty::after {
+        content: "×";
+        font-size: 1.2rem;
+        color: rgba(244, 114, 182, 0.85);
+    }
+    .zyf_117_footer {
+        text-align: center;
+        margin-top: 40px;
+        color: #6b7394;
+        font-size: 0.85rem;
+        letter-spacing: 2px;
+    }
+    @media (max-width: 520px) {
+        .zyf_117_grid { grid-template-columns: repeat(5, 1fr); gap: 8px; }
+        .zyf_117_box { font-size: 0.9rem; }
+    }
+</style>
+</head>
+<body>
+    <header class="zyf_117_header">
+        <h1>数 7 游 戏</h1>
+        <p>1 ~ 100 · 100 个盒子 · 张艺凡</p>
+    </header>
+
+    <section class="zyf_117_rule">
+        <b>游戏规则：</b>数字是 <b>7 的倍数</b> 或 数字中含有 <b>"7"</b> （包括末尾是 7 的数） → 输出空盒子（虚线 + ×）；其他盒子内填对应数字。
+    </section>
+
+    <div class="zyf_117_grid" id="zyf_117_container"></div>
+
+    <footer class="zyf_117_footer">
+        张艺凡 · 高级网页设计 I · 15-1 数7游戏
+    </footer>
+
+    <script>
+        // 判断一个数是否满足"数7"规则
+        function zyf_117_isBingo(n) {
+            // 7 的倍数
+            if (n % 7 === 0) return true;
+            // 数字中含有 "7"（包括末尾是 7 的情况）
+            if (String(n).indexOf("7") !== -1) return true;
+            return false;
+        }
+
+        const zyf_117_container = document.getElementById("zyf_117_container");
+        for (let zyf_117_i = 1; zyf_117_i <= 100; zyf_117_i++) {
+            const zyf_117_box = document.createElement("div");
+            zyf_117_box.className = "zyf_117_box";
+            if (zyf_117_isBingo(zyf_117_i)) {
+                zyf_117_box.classList.add("zyf_117_empty");
+            } else {
+                zyf_117_box.textContent = zyf_117_i;
+            }
+            zyf_117_container.appendChild(zyf_117_box);
+        }
+    </script>
+</body>
+</html>

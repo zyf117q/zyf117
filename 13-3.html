@@ -201,7 +201,25 @@
         .bnav {
             display: flex;
             border-top: 1px solid var(--line);
-            background: rgba(10, 14, 28, 0.72);
+            /* 只放背景图：曼哈顿天际线在图下半部，用 bottom center */
+            background: url("images/13-3-nav-bg.jpg") bottom center / cover no-repeat;
+            position: relative;
+        }
+
+        /* 遮罩用伪元素叠在图片上面，保证图标文字可读 */
+        .bnav::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: rgba(10, 14, 28, 0.18);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* 让导航内容（图标+文字）在遮罩之上 */
+        .bnav .item {
+            position: relative;
+            z-index: 1;
         }
 
         .bnav .item {
