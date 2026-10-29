@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<!-- 姓名：张艺凡 / 日期：2026-10-29 / 功能名称：16-4 Tab 选项卡 + 弹窗 -->
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>16-4 Tab 选项卡 · 张艺凡</title>
+<style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+        font-family: "Microsoft YaHei", "PingFang SC", Arial, sans-serif;
+        background: linear-gradient(160deg, #0a0e1c 0%, #1a1140 100%);
+        min-height: 100vh; color: #e8ebf8; padding: 40px 20px;
+    }
+
+    .zyf_117_wrap {
+        max-width: 720px; margin: 0 auto;
+        background: #1e2236;
+        border-radius: 18px;
+        overflow: hidden;
+        box-shadow: 0 20px 60px rgba(0,0,0,0.5), 0 0 0 1px rgba(148,163,255,0.15);
+    }
+
+    /* Tab 栏 */
+    .zyf_117_tabs {
+        display: flex;
+        background: #262b48;
+        border-bottom: 2px solid rgba(93,139,255,0.20);
+        overflow-x: auto;
+        scrollbar-width: none;
+    }
+    .zyf_117_tabs::-webkit-scrollbar { display: none; }
+    .zyf_117_tab {
+        flex-shrink: 0;
+        padding: 14px 22px;
+        font-size: 0.92rem; font-weight: 500;
+        color: #98a0bd;
+        cursor: pointer;
+        position: relative;
+        transition: color .2s;
+        white-space: nowrap;
+        border: none; background: none;
+    }
+    .zyf_117_tab:hover { color: #cdd5f0; }
+    .zyf_117_tab.zyf_117_active {
+        color: #fff; font-weight: 700;
+    }
+    .zyf_117_tab.zyf_117_active::after {
+        content: ""; position: absolute;
+        left: 14px; right: 14px; bottom: -2px;
+        height: 3px;
+        background: linear-gradient(90deg, #5d8bff, #a06bff);
+        border-radius: 2px 2px 0 0;
+    }
+
+    /* 内容区 */
+    .zyf_117_pane { display: none; padding: 22px 24px 28px; }
+    .zyf_117_pane.zyf_117_show { display: block; animation: zyf_117_fade .3s ease; }
+    @keyframes zyf_117_fade {
+        from { opacity: 0; transform: translateY(8px); }
+        to   { opacity: 1; transform: none; }
+    }
+
+    .zyf_117_bigtitle {
+        font-size: 1.35rem; font-weight: 700;
+        background: linear-gradient(90deg, #5d8bff, #a06bff);
+        -webkit-background-clip: text; background-clip: text; color: transparent;
+        margin-bottom: 18px; letter-spacing: 1px;
+    }
+
+    .zyf_117_list { list-style: none; }
+    .zyf_117_item {
+        display: flex; align-items: center; gap: 12px;
+        padding: 12px 4px;
+        border-bottom: 1px dashed rgba(148,163,255,0.15);
+        cursor: pointer;
+        transition: background .2s;
+    }
+    .zyf_117_item:last-child { border-bottom: none; }
+    .zyf_117_item:hover { background: rgba(93,139,255,0.08); }
+    .zyf_117_item:hover .zyf_117_title { color: #a06bff; }
+
+    .zyf_117_dot {
+        width: 8px; height: 8px; border-radius: 50%;
+        background: linear-gradient(135deg, #5d8bff, #a06bff);
+        flex-shrink: 0;
+    }
+    .zyf_117_title {
+        flex: 1; font-size: 0.92rem; color: #cdd5f0;
+        transition: color .2s;
+    }
+    .zyf_117_date {
+        font-size: 0.78rem; color: #6b7394;
+        flex-shrink: 0;
+    }
+
+    /* 弹窗遮罩 */
+    .zyf_117_mask {
+        position: fixed; inset: 0;
+        background: rgba(0,0,0,0.75);
+        display: none;
+        align-items: center; justify-content: center;
+        z-index: 999;
+        padding: 20px;
+        animation: zyf_117_maskin .25s ease;
+    }
+    .zyf_117_mask.zyf_117_open { display: flex; }
+    @keyframes zyf_117_maskin {
+        from { opacity: 0; } to { opacity: 1; }
+    }
+
+    .zyf_117_modal {
+        max-width: 520px; width: 100%;
+        background: #1e2236;
+        border-radius: 16px;
+        overflow: hidden;
+        position: relative;
+        border: 1px solid rgba(148,163,255,0.20);
+        animation: zyf_117_pop .3s ease;
+    }
+    @keyframes zyf_117_pop {
+        from { opacity: 0; transform: scale(.85) translateY(10px); }
+        to   { opacity: 1; transform: none; }
+    }
+
+    .zyf_117_close {
+        position: absolute; top: 10px; right: 12px; z-index: 2;
+        width: 32px; height: 32px; border-radius: 50%;
+        background: rgba(0,0,0,0.5);
+        color: #fff; border: none; font-size: 18px; cursor: pointer;
+        display: flex; align-items: center; justify-content: center;
+        transition: background .2s;
+    }
+    .zyf_117_close:hover { background: #f472b6; }
+
+    .zyf_117_modal-img {
+        width: 100%; display: block;
+        max-height: 380px; object-fit: cover;
+    }
+    .zyf_117_modal-body { padding: 18px 20px 20px; }
+    .zyf_117_modal-title {
+        font-size: 1.05rem; font-weight: 600;
+        color: #e8ebf8; margin-bottom: 6px;
+    }
+    .zyf_117_modal-meta {
+        font-size: 0.78rem; color: #6b7394; margin-bottom: 12px;
+    }
+    .zyf_117_modal-desc {
+        font-size: 0.86rem; color: #a0a8c4; line-height: 1.7;
+    }
+
+    @media (max-width: 520px) {
+        .zyf_117_tab { padding: 12px 16px; font-size: 0.85rem; }
+        .zyf_117_pane { padding: 18px; }
+        .zyf_117_bigtitle { font-size: 1.1rem; }
+    }
+</style>
+</head>
+<body>
+    <div class="zyf_117_wrap">
+
+        <!-- ============ Tab 栏 ============ -->
+        <nav class="zyf_117_tabs" id="zyf_117_tabs">
+            <button class="zyf_117_tab zyf_117_active" data-idx="0">导购</button>
+            <button class="zyf_117_tab" data-idx="1">3-9 万</button>
+            <button class="zyf_117_tab" data-idx="2">9-17 万</button>
+            <button class="zyf_117_tab" data-idx="3">17-42 万</button>
+            <button class="zyf_117_tab" data-idx="4">SUV</button>
+        </nav>
+
+        <!-- ============ 内容区 ============ -->
+
+        <!-- Tab 0：导购 -->
+        <section class="zyf_117_pane zyf_117_show">
+            <h2 class="zyf_117_bigtitle">改变品牌的未来 · 认识豪华品牌最便宜车型</h2>
+            <ul class="zyf_117_list">
+                <li class="zyf_117_item" data-img="images/16-4-tab1.jpg">
+                    <span class="zyf_117_dot"></span>
+                    <span class="zyf_117_title">推荐：X1 等城市四驱 Style+ 经济省油的 SUV</span>
+                    <span class="zyf_117_date">12/16</span>
+                </li>
+                <li class="zyf_117_item" data-img="images/16-4-tab1.jpg">
+                    <span class="zyf_117_dot"></span>
+                    <span class="zyf_117_title">全景天窗 / 保养便利 30 万齐驱四驱 SUV 推荐</span>
+                    <span class="zyf_117_date">12/16</span>
+                </li>
+                <li class="zyf_117_item" data-img="images/16-4-tab1.jpg">
+                    <span class="zyf_117_dot"></span>
+                    <span class="zyf_117_title">最高降 20 万！奥迪 Q5 等年底特惠 SUV 盘点</span>
+                    <span class="zyf_117_date">12/16</span>
+                </li>
+                <li class="zyf_117_item" data-img="images/16-4-tab1.jpg">
+                    <span class="zyf_117_dot"></span>
+                    <span class="zyf_117_title">比拼硬实力 8 款低四驱紧凑型 SUV 性能点评</span>
+                    <span class="zyf_117_date">12/16</span>
+                </li>
+                <li class="zyf_117_item" data-img="images/16-4-tab1.jpg">
+                    <span class="zyf_117_dot"></span>
+                    <span class="zyf_117_title">花钱也能养 SUV 翼博等入门 SUV 使用手册</span>
+                    <span class="zyf_117_date">12/16</span>
+                </li>
+                <li class="zyf_117_item" data-img="images/16-4-tab1.jpg">
+                    <span class="zyf_117_dot"></span>
+                    <span class="zyf_117_title">最高优惠 4.3 万 十款 15 万 SUV 年末买推荐</span>
+                    <span class="zyf_117_date">12/16</span>
+                </li>
+            </ul>
+        </section>
+
+        <!-- Tab 1：3-9 万 -->
+        <section class="zyf_117_pane">
+            <h2 class="zyf_117_bigtitle">全民摇号时代？六款低价占号必备车型推荐</h2>
+            <ul class="zyf_117_list">
+                <li class="zyf_117_item" data-img="images/16-4-tab2.jpg">
+                    <span class="zyf_117_dot"></span>
+                    <span class="zyf_117_title">凌派 / 观致等 2019 全新热门家用车推荐</span>
+                    <span class="zyf_117_date">12/19</span>
+                </li>
+                <li class="zyf_117_item" data-img="images/16-4-tab2.jpg">
+                    <span class="zyf_117_dot"></span>
+                    <span class="zyf_117_title">坚持高配路线！静态评测华泰路盛 E70</span>
+                    <span class="zyf_117_date">12/09</span>
+                </li>
+                <li class="zyf_117_item" data-img="images/16-4-tab2.jpg">
+                    <span class="zyf_117_dot"></span>
+                    <span class="zyf_117_title">买车先看销量 10 月份销量前十名新车盘点</span>
+                    <span class="zyf_117_date">11/29</span>
+                </li>
+                <li class="zyf_117_item" data-img="images/16-4-tab2.jpg">
+                    <span class="zyf_117_dot"></span>
+                    <span class="zyf_117_title">秒压正当车 车展后清仓优惠老款车型推荐</span>
+                    <span class="zyf_117_date">11/28</span>
+                </li>
+                <li class="zyf_117_item" data-img="images/16-4-tab2.jpg">
+                    <span class="zyf_117_dot"></span>
+                    <span class="zyf_117_title">土家气质 细数车展那些低价车上的"神器"</span>
+                    <span class="zyf_117_date">11/27</span>
+                </li>
+            </ul>
+        </section>
+
+        <!-- Tab 2：9-17 万 -->
+        <section class="zyf_117_pane">
+            <h2 class="zyf_117_bigtitle">15 万级价格谁更值 预算 / 油耗 / 空间较量</h2>
+            <ul class="zyf_117_list">
+                <li class="zyf_117_item" data-img="images/16-4-tab3.jpg">
+                    <span class="zyf_117_dot"></span>
+                    <span class="zyf_117_title">爸爸去哪？亲子出游适合车型和注意事项</span>
+                    <span class="zyf_117_date">12/20</span>
+                </li>
+                <li class="zyf_117_item" data-img="images/16-4-tab3.jpg">
+                    <span class="zyf_117_dot"></span>
+                    <span class="zyf_117_title">最高降 20 万！奥迪 Q5 等年底特惠 SUV 盘点</span>
+                    <span class="zyf_117_date">12/18</span>
+                </li>
+                <li class="zyf_117_item" data-img="images/16-4-tab3.jpg">
+                    <span class="zyf_117_dot"></span>
+                    <span class="zyf_117_title">配置气囊值得肯定！传祺 GA3 碰撞试验图解</span>
+                    <span class="zyf_117_date">12/16</span>
+                </li>
+                <li class="zyf_117_item" data-img="images/16-4-tab3.jpg">
+                    <span class="zyf_117_dot"></span>
+                    <span class="zyf_117_title">高尔夫 7 两厢版配置 / 动力差异解读</span>
+                    <span class="zyf_117_date">12/17</span>
+                </li>
+                <li class="zyf_117_item" data-img="images/16-4-tab3.jpg">
+                    <span class="zyf_117_dot"></span>
+                    <span class="zyf_117_title">花钱也能养 SUV 翼博等入门 SUV 使用手册</span>
+                    <span class="zyf_117_date">12/16</span>
+                </li>
+                <li class="zyf_117_item" data-img="images/16-4-tab3.jpg">
+                    <span class="zyf_117_dot"></span>
+                    <span class="zyf_117_title">最高优惠 4.3 万 十款 15 万 SUV 年末买推荐</span>
+                    <span class="zyf_117_date">12/16</span>
+                </li>
+            </ul>
+        </section>
+
+        <!-- Tab 3：17-42 万 -->
+        <section class="zyf_117_pane">
+            <h2 class="zyf_117_bigtitle">B 级品质满足 A 级需求 路盛 E70 亮点详析</h2>
+            <ul class="zyf_117_list">
+                <li class="zyf_117_item" data-img="images/16-4-tab4.jpg">
+                    <span class="zyf_117_dot"></span>
+                    <span class="zyf_117_title">购车必看 凯迪拉克 XTS 领先型 28T 深度体验</span>
+                    <span class="zyf_117_date">12/20</span>
+                </li>
+                <li class="zyf_117_item" data-img="images/16-4-tab4.jpg">
+                    <span class="zyf_117_dot"></span>
+                    <span class="zyf_117_title">爸爸去哪？亲子出游适合车型和注意事项</span>
+                    <span class="zyf_117_date">12/19</span>
+                </li>
+                <li class="zyf_117_item" data-img="images/16-4-tab4.jpg">
+                    <span class="zyf_117_dot"></span>
+                    <span class="zyf_117_title">推荐：X1 等城市四驱 Style+ 经济省油的 SUV</span>
+                    <span class="zyf_117_date">12/19</span>
+                </li>
+                <li class="zyf_117_item" data-img="images/16-4-tab4.jpg">
+                    <span class="zyf_117_dot"></span>
+                    <span class="zyf_117_title">全景天窗 / 保养便利 30 万齐驱四驱 SUV 推荐</span>
+                    <span class="zyf_117_date">12/19</span>
+                </li>
+                <li class="zyf_117_item" data-img="images/16-4-tab4.jpg">
+                    <span class="zyf_117_dot"></span>
+                    <span class="zyf_117_title">全民摇号时代？六款低价占号必备车型推荐</span>
+                    <span class="zyf_117_date">12/19</span>
+                </li>
+                <li class="zyf_117_item" data-img="images/16-4-tab4.jpg">
+                    <span class="zyf_117_dot"></span>
+                    <span class="zyf_117_title">最高降 20 万！奥迪 Q5 等年底特惠 SUV 盘点</span>
+                    <span class="zyf_117_date">12/18</span>
+                </li>
+            </ul>
+        </section>
+
+        <!-- Tab 4：SUV -->
+        <section class="zyf_117_pane">
+            <h2 class="zyf_117_bigtitle">最低仅 4.6 万元起 超低价 SUV 购买价值点评</h2>
+            <ul class="zyf_117_list">
+                <li class="zyf_117_item" data-img="images/16-4-tab5.jpg">
+                    <span class="zyf_117_dot"></span>
+                    <span class="zyf_117_title">全民摇号时代？六款低价占号必备车型推荐</span>
+                    <span class="zyf_117_date">12/19</span>
+                </li>
+                <li class="zyf_117_item" data-img="images/16-4-tab5.jpg">
+                    <span class="zyf_117_dot"></span>
+                    <span class="zyf_117_title">凌派 / 观致等 2019 全新热门家用车推荐</span>
+                    <span class="zyf_117_date">12/11</span>
+                </li>
+                <li class="zyf_117_item" data-img="images/16-4-tab5.jpg">
+                    <span class="zyf_117_dot"></span>
+                    <span class="zyf_117_title">坚持高配路线！静态评测华泰路盛 E70</span>
+                    <span class="zyf_117_date">12/09</span>
+                </li>
+                <li class="zyf_117_item" data-img="images/16-4-tab5.jpg">
+                    <span class="zyf_117_dot"></span>
+                    <span class="zyf_117_title">买车先看销量 10 月份销量前十名新车盘点</span>
+                    <span class="zyf_117_date">11/29</span>
+                </li>
+                <li class="zyf_117_item" data-img="images/16-4-tab5.jpg">
+                    <span class="zyf_117_dot"></span>
+                    <span class="zyf_117_title">秒压正当车 车展后清仓优惠老款车型推荐</span>
+                    <span class="zyf_117_date">11/28</span>
+                </li>
+                <li class="zyf_117_item" data-img="images/16-4-tab5.jpg">
+                    <span class="zyf_117_dot"></span>
+                    <span class="zyf_117_title">土家气质 细数车展那些低价车上的"神器"</span>
+                    <span class="zyf_117_date">11/27</span>
+                </li>
+            </ul>
+        </section>
+
+    </div>
+
+    <!-- ============ 弹窗 ============ -->
+    <div class="zyf_117_mask" id="zyf_117_mask">
+        <div class="zyf_117_modal">
+            <button class="zyf_117_close" id="zyf_117_close">✕</button>
+            <img class="zyf_117_modal-img" id="zyf_117_mImg" src="" alt="">
+            <div class="zyf_117_modal-body">
+                <div class="zyf_117_modal-title" id="zyf_117_mTitle"></div>
+                <div class="zyf_117_modal-meta" id="zyf_117_mMeta"></div>
+                <div class="zyf_117_modal-desc" id="zyf_117_mDesc"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ============ Tab 切换 ============
+        const zyf_117_tabs = document.querySelectorAll(".zyf_117_tab");
+        const zyf_117_panes = document.querySelectorAll(".zyf_117_pane");
+
+        function zyf_117_switchTab(idx) {
+            zyf_117_tabs.forEach(t => t.classList.remove("zyf_117_active"));
+            zyf_117_panes.forEach(p => p.classList.remove("zyf_117_show"));
+            zyf_117_tabs[idx].classList.add("zyf_117_active");
+            zyf_117_panes[idx].classList.add("zyf_117_show");
+        }
+        zyf_117_tabs.forEach(t => {
+            t.addEventListener("click", () => zyf_117_switchTab(Number(t.dataset.idx)));
+        });
+
+        // ============ 弹窗 ============
+        const zyf_117_mask = document.getElementById("zyf_117_mask");
+        const zyf_117_close = document.getElementById("zyf_117_close");
+        const zyf_117_mImg = document.getElementById("zyf_117_mImg");
+        const zyf_117_mTitle = document.getElementById("zyf_117_mTitle");
+        const zyf_117_mMeta = document.getElementById("zyf_117_mMeta");
+        const zyf_117_mDesc = document.getElementById("zyf_117_mDesc");
+
+        function zyf_117_openModal(title, date, img) {
+            zyf_117_mTitle.textContent = title;
+            zyf_117_mMeta.textContent = `发布日期：${date} · 详情图：${img}`;
+            zyf_117_mDesc.textContent  = `点击关闭按钮或按 Esc 键可以退出弹窗。该弹窗展示了当前 Tab 页对应的参考图片，作为文章的上下文配图。`;
+            zyf_117_mImg.src = img;
+            zyf_117_mask.classList.add("zyf_117_open");
+            document.body.style.overflow = "hidden";
+        }
+        function zyf_117_closeModal() {
+            zyf_117_mask.classList.remove("zyf_117_open");
+            zyf_117_mImg.src = "";
+            document.body.style.overflow = "";
+        }
+
+        // 点击文章项 → 弹窗
+        document.querySelectorAll(".zyf_117_item").forEach(item => {
+            item.addEventListener("click", () => {
+                const titleEl = item.querySelector(".zyf_117_title");
+                const dateEl  = item.querySelector(".zyf_117_date");
+                zyf_117_openModal(titleEl.textContent, dateEl.textContent, item.dataset.img);
+            });
+        });
+
+        // 关闭弹窗
+        zyf_117_close.addEventListener("click", zyf_117_closeModal);
+        zyf_117_mask.addEventListener("click", e => {
+            if (e.target === zyf_117_mask) zyf_117_closeModal();
+        });
+        document.addEventListener("keydown", e => {
+            if (e.key === "Escape") zyf_117_closeModal();
+        });
+    </script>
+</body>
+</html>
