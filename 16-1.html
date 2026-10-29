@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<!-- 姓名：张艺凡 / 日期：2026-10-29 / 功能名称：16-1 JS 数组方法可视化 -->
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>16-1 JS 数组方法 · 张艺凡</title>
+<style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+        font-family: "Microsoft YaHei", "PingFang SC", Arial, sans-serif;
+        background: linear-gradient(160deg, #0a0e1c 0%, #1a1140 100%);
+        min-height: 100vh; color: #e8ebf8; padding: 40px 20px;
+    }
+    .zyf_117_header { text-align: center; margin-bottom: 36px; }
+    .zyf_117_header h1 {
+        font-size: 2rem;
+        background: linear-gradient(90deg, #5d8bff, #a06bff, #c95cff);
+        -webkit-background-clip: text; background-clip: text; color: transparent;
+        letter-spacing: 4px;
+    }
+    .zyf_117_header p { margin-top: 10px; color: #98a0bd; font-size: 0.95rem; }
+
+    .zyf_117_section {
+        max-width: 1150px; margin: 0 auto 38px;
+        background: rgba(148, 163, 255, 0.06);
+        border: 1px solid rgba(148, 163, 255, 0.20);
+        border-radius: 14px; padding: 26px 28px;
+    }
+    .zyf_117_section h2 {
+        font-size: 1.25rem; margin-bottom: 8px;
+        color: #f0c4ff; border-left: 4px solid #a06bff; padding-left: 12px;
+    }
+    .zyf_117_desc { color: #98a0bd; margin-bottom: 18px; font-size: 0.9rem; }
+
+    /* 可视化数组 */
+    .zyf_117_array-vis {
+        display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;
+        padding: 22px;
+        background: rgba(8, 12, 28, 0.85);
+        border: 1px dashed rgba(148, 163, 255, 0.30);
+        border-radius: 10px; min-height: 80px; align-items: center;
+    }
+    .zyf_117_cell {
+        width: 54px; height: 54px; border-radius: 8px;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 1.25rem; font-weight: bold;
+        background: linear-gradient(135deg, rgba(93,139,255,0.25), rgba(160,107,255,0.25));
+        border: 1.5px solid rgba(160, 107, 255, 0.60);
+        color: #e8ebf8; transition: all .3s ease;
+        position: relative;
+    }
+    .zyf_117_cell.zyf_117_new {
+        animation: zyf_117_pop .45s ease;
+        background: linear-gradient(135deg, rgba(134,239,172,0.35), rgba(52,211,153,0.35));
+        border-color: #86efac;
+        box-shadow: 0 0 12px rgba(134,239,172,0.50);
+    }
+    .zyf_117_cell.zyf_117_out {
+        animation: zyf_117_fadeout .4s ease forwards;
+    }
+    .zyf_117_cell.zyf_117_match {
+        background: linear-gradient(135deg, rgba(244,114,182,0.40), rgba(236,72,153,0.40));
+        border-color: #f472b6;
+        box-shadow: 0 0 12px rgba(244,114,182,0.50);
+    }
+    .zyf_117_idx {
+        position: absolute; top: -18px; left: 50%; transform: translateX(-50%);
+        font-size: 0.65rem; color: #6b7394;
+    }
+    @keyframes zyf_117_pop {
+        0% { transform: scale(0); opacity: 0; }
+        60% { transform: scale(1.2); }
+        100% { transform: scale(1); opacity: 1; }
+    }
+    @keyframes zyf_117_fadeout {
+        to { transform: scale(0.3) rotate(-15deg); opacity: 0; }
+    }
+
+    .zyf_117_row { display: flex; gap: 28px; flex-wrap: wrap; margin-top: 20px; }
+    .zyf_117_col { flex: 1; min-width: 320px; }
+
+    .zyf_117_code {
+        background: rgba(8, 12, 28, 0.85);
+        border: 1px solid rgba(148, 163, 255, 0.18);
+        border-radius: 10px; padding: 16px 18px;
+        font-family: Consolas, Monaco, "Courier New", monospace;
+        font-size: 0.85rem; line-height: 1.7; overflow-x: auto;
+        color: #cdd5f0;
+    }
+    .zyf_117_code .zyf_117_kw { color: #c792ea; font-weight: bold; }
+    .zyf_117_code .zyf_117_br { color: #82aaff; }
+    .zyf_117_code .zyf_117_s  { color: #c3e88d; }
+    .zyf_117_code .zyf_117_c  { color: #6b7394; font-style: italic; }
+    .zyf_117_code .zyf_117_n  { color: #f78c6c; }
+
+    .zyf_117_run { display: flex; align-items: center; gap: 10px; margin-top: 14px; flex-wrap: wrap; }
+    .zyf_117_run button {
+        background: linear-gradient(90deg, #5d8bff, #a06bff);
+        color: #fff; border: none; padding: 8px 18px; border-radius: 8px;
+        cursor: pointer; font-size: 0.88rem; font-weight: 600; letter-spacing: 1px;
+        transition: opacity .2s;
+    }
+    .zyf_117_run button:hover { opacity: 0.85; }
+    .zyf_117_run button.zyf_117_reset { background: linear-gradient(90deg, #6b7394, #3a4160); }
+    .zyf_117_run input[type="text"], .zyf_117_run input[type="number"] {
+        padding: 7px 10px; border-radius: 6px;
+        border: 1px solid rgba(148, 163, 255, 0.40);
+        background: rgba(10, 14, 28, 0.8); color: #e8ebf8; font-size: 0.88rem;
+        width: 120px;
+    }
+    .zyf_117_output {
+        margin-top: 14px; min-height: 38px; padding: 10px 14px;
+        background: rgba(244, 114, 182, 0.08);
+        border: 1px solid rgba(244, 114, 182, 0.30);
+        border-radius: 8px; color: #f9a8d4;
+        font-family: Consolas, Monaco, monospace; font-size: 0.85rem;
+        white-space: pre-wrap; word-break: break-all;
+    }
+
+    .zyf_117_badge {
+        display: inline-block; padding: 2px 10px; border-radius: 20px;
+        font-size: 0.75rem; margin-right: 6px;
+    }
+    .zyf_117_badge.zyf_117_mut { background: rgba(252,165,165,0.20); color: #fca5a5; border: 1px solid rgba(252,165,165,0.35); }
+    .zyf_117_badge.zyf_117_imm { background: rgba(134,239,172,0.15); color: #86efac; border: 1px solid rgba(134,239,172,0.30); }
+    .zyf_117_badge.zyf_117_trav { background: rgba(93,139,255,0.20); color: #93c5fd; border: 1px solid rgba(93,139,255,0.35); }
+
+    .zyf_117_footer {
+        text-align: center; margin-top: 40px; color: #6b7394;
+        font-size: 0.85rem; letter-spacing: 2px;
+    }
+
+    @media (max-width: 700px) {
+        .zyf_117_section { padding: 18px; }
+        .zyf_117_row { flex-direction: column; gap: 18px; }
+        .zyf_117_col { min-width: unset; }
+        .zyf_117_cell { width: 40px; height: 40px; font-size: 1rem; }
+    }
+</style>
+</head>
+<body>
+    <header class="zyf_117_header">
+        <h1>JS 数组方法可视化</h1>
+        <p>push · pop · shift · unshift · splice · map · filter · reduce · sort …  /  张艺凡</p>
+    </header>
+
+    <!-- 原始数组展示 -->
+    <section class="zyf_117_section">
+        <h2>🟢 原始数组（可点 Reset 恢复）</h2>
+        <p class="zyf_117_desc">let <b>zyf_117_arr</b> = [ <span id="zyf_117_init_str">1, 2, 3, 4, 5</span> ];</p>
+        <div class="zyf_117_array-vis" id="zyf_117_origin">
+            <!-- JS 填充 -->
+        </div>
+        <div class="zyf_117_run">
+            <button class="zyf_117_reset" onclick="zyf_117_resetAll()">🔄 Reset 全部</button>
+        </div>
+    </section>
+
+    <!-- 1. push / pop -->
+    <section class="zyf_117_section">
+        <h2>① push / pop —— 尾部增删</h2>
+        <p class="zyf_117_desc">
+            <span class="zyf_117_badge zyf_117_mut">修改原数组</span>
+            <code>push(...items)</code> 尾部追加元素，返回新长度 &nbsp;|&nbsp;
+            <code>pop()</code> 尾部弹出最后一个，返回弹出值
+        </p>
+        <div class="zyf_117_row">
+            <div class="zyf_117_col">
+                <div class="zyf_117_code">
+<span class="zyf_117_kw">const</span> fruits = [<span class="zyf_117_s">"🍎"</span>, <span class="zyf_117_s">"🍌"</span>];
+fruits.<span class="zyf_117_br">push</span>(<span class="zyf_117_s">"🍇"</span>);
+<span class="zyf_117_c">// → ["🍎","🍌","🍇"] 长度=3</span>
+fruits.<span class="zyf_117_br">pop</span>();
+<span class="zyf_117_c">// → 弹出 "🍇"，剩余 ["🍎","🍌"]</span>
+                </div>
+                <div class="zyf_117_run">
+                    <button onclick="zyf_117_push()">push("🍇")</button>
+                    <button onclick="zyf_117_pop()">pop()</button>
+                </div>
+                <div class="zyf_117_output" id="zyf_117_outPushPop">等待运行…</div>
+            </div>
+            <div class="zyf_117_col">
+                <div class="zyf_117_array-vis" id="zyf_117_arr1"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 2. shift / unshift -->
+    <section class="zyf_117_section">
+        <h2>② shift / unshift —— 头部增删</h2>
+        <p class="zyf_117_desc">
+            <span class="zyf_117_badge zyf_117_mut">修改原数组</span>
+            <code>unshift(...items)</code> 头部插入 &nbsp;|&nbsp;
+            <code>shift()</code> 头部弹出第一个
+        </p>
+        <div class="zyf_117_row">
+            <div class="zyf_117_col">
+                <div class="zyf_117_code">
+<span class="zyf_117_kw">const</span> q = [<span class="zyf_117_s">"🐱"</span>, <span class="zyf_117_s">"🐶"</span>, <span class="zyf_117_s">"🐰"</span>];
+q.<span class="zyf_117_br">shift</span>();
+<span class="zyf_117_c">// → 弹出 "🐱"，剩余 ["🐶","🐰"]</span>
+q.<span class="zyf_117_br">unshift</span>(<span class="zyf_117_s">"🐼"</span>);
+<span class="zyf_117_c">// → 头部插入 "🐼"</span>
+                </div>
+                <div class="zyf_117_run">
+                    <button onclick="zyf_117_shift()">shift()</button>
+                    <button onclick="zyf_117_unshift()">unshift("🐼")</button>
+                </div>
+                <div class="zyf_117_output" id="zyf_117_outShift">等待运行…</div>
+            </div>
+            <div class="zyf_117_col">
+                <div class="zyf_117_array-vis" id="zyf_117_arr2"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 3. splice -->
+    <section class="zyf_117_section">
+        <h2>③ splice —— 任意位置增删</h2>
+        <p class="zyf_117_desc">
+            <span class="zyf_117_badge zyf_117_mut">修改原数组</span>
+            <code>splice(start, deleteCount, ...items)</code> 一把梭，删除 + 插入同时做
+        </p>
+        <div class="zyf_117_row">
+            <div class="zyf_117_col">
+                <div class="zyf_117_code">
+<span class="zyf_117_kw">const</span> a = [<span class="zyf_117_n">1</span>,<span class="zyf_117_n">2</span>,<span class="zyf_117_n">3</span>,<span class="zyf_117_n">4</span>,<span class="zyf_117_n">5</span>];
+a.<span class="zyf_117_br">splice</span>(<span class="zyf_117_n">2</span>, <span class="zyf_117_n">1</span>, <span class="zyf_117_n">99</span>);
+<span class="zyf_117_c">// 从下标2开始，删1个，插入99</span>
+<span class="zyf_117_c">// → [1, 2, 99, 4, 5]</span>
+                </div>
+                <div class="zyf_117_run">
+                    起始下标：<input type="number" id="zyf_117_spStart" value="2" min="0" max="9">
+                    删几个：<input type="number" id="zyf_117_spDel" value="1" min="0" max="5">
+                    插入值：<input type="text" id="zyf_117_spIns" value="99">
+                    <button onclick="zyf_117_splice()">splice()</button>
+                </div>
+                <div class="zyf_117_output" id="zyf_117_outSplice">等待运行…</div>
+            </div>
+            <div class="zyf_117_col">
+                <div class="zyf_117_array-vis" id="zyf_117_arr3"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 4. map -->
+    <section class="zyf_117_section">
+        <h2>④ map —— 每一项加工，返回新数组</h2>
+        <p class="zyf_117_desc">
+            <span class="zyf_117_badge zyf_117_imm">不修改原数组</span>
+            <code>map(cb)</code> 遍历每个元素，回调返回值组装成新数组，长度不变
+        </p>
+        <div class="zyf_117_row">
+            <div class="zyf_117_col">
+                <div class="zyf_117_code">
+<span class="zyf_117_kw">const</span> nums = [<span class="zyf_117_n">1</span>, <span class="zyf_117_n">2</span>, <span class="zyf_117_n">3</span>, <span class="zyf_117_n">4</span>, <span class="zyf_117_n">5</span>];
+<span class="zyf_117_kw">const</span> doubled = nums.<span class="zyf_117_br">map</span>(n => n * <span class="zyf_117_n">2</span>);
+<span class="zyf_117_c">// → [2, 4, 6, 8, 10]</span>
+<span class="zyf_117_c">// 原数组不变！</span>
+                </div>
+                <div class="zyf_117_run">
+                    <button onclick="zyf_117_map2()">map(n ⇒ n*2)</button>
+                    <button onclick="zyf_117_mapSq()">map(n ⇒ n²)</button>
+                </div>
+                <div class="zyf_117_output" id="zyf_117_outMap">等待运行…</div>
+            </div>
+            <div class="zyf_117_col">
+                <div class="zyf_117_desc" style="color:#86efac;margin-top:0">原数组（不变）</div>
+                <div class="zyf_117_array-vis" id="zyf_117_arr4a"></div>
+                <div class="zyf_117_desc" style="color:#f9a8d4;margin-top:10px">新数组（map 返回）</div>
+                <div class="zyf_117_array-vis" id="zyf_117_arr4b"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 5. filter -->
+    <section class="zyf_117_section">
+        <h2>⑤ filter —— 筛选，返回符合条件的新数组</h2>
+        <p class="zyf_117_desc">
+            <span class="zyf_117_badge zyf_117_imm">不修改原数组</span>
+            <code>filter(cb)</code> 回调返回 true 的元素留下
+        </p>
+        <div class="zyf_117_row">
+            <div class="zyf_117_col">
+                <div class="zyf_117_code">
+<span class="zyf_117_kw">const</span> ages = [<span class="zyf_117_n">12</span>,<span class="zyf_117_n">18</span>,<span class="zyf_117_n">25</span>,<span class="zyf_117_n">15</span>,<span class="zyf_117_n">30</span>];
+<span class="zyf_117_kw">const</span> adults = ages.<span class="zyf_117_br">filter</span>(a => a >= <span class="zyf_117_n">18</span>);
+<span class="zyf_117_c">// → [18, 25, 30]</span>
+                </div>
+                <div class="zyf_117_run">
+                    筛选条件：
+                    <select id="zyf_117_fCond">
+                        <option value="even">偶数 n % 2 === 0</option>
+                        <option value="gt3">大于 3</option>
+                        <option value="lt4">小于 4</option>
+                    </select>
+                    <button onclick="zyf_117_filter()">filter()</button>
+                </div>
+                <div class="zyf_117_output" id="zyf_117_outFilter">等待运行…</div>
+            </div>
+            <div class="zyf_117_col">
+                <div class="zyf_117_desc" style="color:#86efac;margin-top:0">原数组（粉色=命中）</div>
+                <div class="zyf_117_array-vis" id="zyf_117_arr5a"></div>
+                <div class="zyf_117_desc" style="color:#f9a8d4;margin-top:10px">filter 结果</div>
+                <div class="zyf_117_array-vis" id="zyf_117_arr5b"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 6. reduce -->
+    <section class="zyf_117_section">
+        <h2>⑥ reduce —— 归约，把数组"压缩"成一个值</h2>
+        <p class="zyf_117_desc">
+            <span class="zyf_117_badge zyf_117_imm">不修改原数组</span>
+            <code>reduce((acc, cur) => acc + cur, initial)</code> 累加器 + 当前值，算出最终结果
+        </p>
+        <div class="zyf_117_row">
+            <div class="zyf_117_col">
+                <div class="zyf_117_code">
+<span class="zyf_117_kw">const</span> prices = [<span class="zyf_117_n">10</span>, <span class="zyf_117_n">20</span>, <span class="zyf_117_n">30</span>, <span class="zyf_117_n">40</span>, <span class="zyf_117_n">50</span>];
+<span class="zyf_117_kw">const</span> total = prices.<span class="zyf_117_br">reduce</span>(
+  (sum, p) => sum + p,
+  <span class="zyf_117_n">0</span>   <span class="zyf_117_c">// 初始值</span>
+);
+<span class="zyf_117_c">// → 150</span>
+                </div>
+                <div class="zyf_117_run">
+                    <button onclick="zyf_117_reduceSum()">求和 sum</button>
+                    <button onclick="zyf_117_reduceMul()">求积 product</button>
+                    <button onclick="zyf_117_reduceMax()">求最大值</button>
+                </div>
+                <div class="zyf_117_output" id="zyf_117_outReduce">等待运行…</div>
+            </div>
+            <div class="zyf_117_col">
+                <div class="zyf_117_array-vis" id="zyf_117_arr6"></div>
+                <p class="zyf_117_desc" style="margin-top:10px">reduce 过程（每步 acc + cur → 新 acc）</p>
+                <div class="zyf_117_output" id="zyf_117_reduceLog" style="min-height:60px;color:#cdd5f0">点击上面的按钮看执行过程…</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 7. sort / reverse -->
+    <section class="zyf_117_section">
+        <h2>⑦ sort / reverse —— 排序与反转</h2>
+        <p class="zyf_117_desc">
+            <span class="zyf_117_badge zyf_117_mut">修改原数组</span>
+            <code>sort((a,b) => a - b)</code> 数字升序 &nbsp;|&nbsp; <code>reverse()</code> 反转
+        </p>
+        <div class="zyf_117_row">
+            <div class="zyf_117_col">
+                <div class="zyf_117_code">
+<span class="zyf_117_kw">const</span> nums = [<span class="zyf_117_n">30</span>,<span class="zyf_117_n">5</span>,<span class="zyf_117_n">100</span>,<span class="zyf_117_n">1</span>,<span class="zyf_117_n">20</span>];
+nums.<span class="zyf_117_br">sort</span>((a,b) => a - b);
+<span class="zyf_117_c">// → [1, 5, 20, 30, 100]  升序</span>
+nums.<span class="zyf_117_br">reverse</span>();
+<span class="zyf_117_c">// → [100, 30, 20, 5, 1]  反转</span>
+                </div>
+                <div class="zyf_117_run">
+                    <button onclick="zyf_117_sortAsc()">sort 升序</button>
+                    <button onclick="zyf_117_sortDesc()">sort 降序</button>
+                    <button onclick="zyf_117_reverse()">reverse()</button>
+                    <button class="zyf_117_reset" onclick="zyf_117_reset7()">🔄 重置</button>
+                </div>
+                <div class="zyf_117_output" id="zyf_117_outSort">等待运行…</div>
+            </div>
+            <div class="zyf_117_col">
+                <div class="zyf_117_array-vis" id="zyf_117_arr7"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 8. 遍历汇总 -->
+    <section class="zyf_117_section">
+        <h2>⑧ 遍历方法横向对比</h2>
+        <p class="zyf_117_desc">
+            <span class="zyf_117_badge zyf_117_trav">遍历</span>
+            forEach / some / every / find / includes / indexOf —— 一眼看懂它们都在干嘛
+        </p>
+        <div class="zyf_117_row">
+            <div class="zyf_117_col">
+                <div class="zyf_117_code">
+<span class="zyf_117_kw">const</span> nums = [<span class="zyf_117_n">1</span>,<span class="zyf_117_n">2</span>,<span class="zyf_117_n">3</span>,<span class="zyf_117_n">4</span>,<span class="zyf_117_n">5</span>];
+
+nums.<span class="zyf_117_br">forEach</span>(n => console.log(n));
+<span class="zyf_117_c">// 挨个执行，不返回值</span>
+
+nums.<span class="zyf_117_br">some</span>(n => n > <span class="zyf_117_n">3</span>);  <span class="zyf_117_c">// true（有一个 >3）</span>
+nums.<span class="zyf_117_br">every</span>(n => n > <span class="zyf_117_n">0</span>);  <span class="zyf_117_c">// true（全部 >0）</span>
+nums.<span class="zyf_117_br">includes</span>(<span class="zyf_117_n">3</span>);           <span class="zyf_117_c">// true</span>
+nums.<span class="zyf_117_br">indexOf</span>(<span class="zyf_117_n">4</span>);          <span class="zyf_117_c">// 3（下标）</span>
+nums.<span class="zyf_117_br">find</span>(n => n > <span class="zyf_117_n">3</span>);     <span class="zyf_117_c">// 4（第一个命中值）</span>
+nums.<span class="zyf_117_br">findIndex</span>(n => n > <span class="zyf_117_n">3</span>);  <span class="zyf_117_c">// 3（第一个命中下标）</span>
+                </div>
+                <div class="zyf_117_run">
+                    <button onclick="zyf_117_demoSome()">some(n>3)</button>
+                    <button onclick="zyf_117_demoEvery()">every(n>0)</button>
+                    <button onclick="zyf_117_demoIncludes()">includes(3)</button>
+                    <button onclick="zyf_117_demoFind()">find(n>3)</button>
+                </div>
+                <div class="zyf_117_output" id="zyf_117_outTrav">等待运行…</div>
+            </div>
+            <div class="zyf_117_col">
+                <div class="zyf_117_array-vis" id="zyf_117_arr8"></div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="zyf_117_footer">张艺凡 · 高级网页设计 I · 16-1 JS 数组方法可视化</footer>
+
+    <script>
+        let zyf_117_arr1 = ["🍎","🍌","🍓"];
+        let zyf_117_arr2 = ["🐱","🐶","🐰"];
+        let zyf_117_arr3 = [1,2,3,4,5];
+        const zyf_117_arr4 = [1,2,3,4,5];
+        const zyf_117_arr5 = [1,2,3,4,5,6,7,8,9,10];
+        const zyf_117_arr6 = [10,20,30,40,50];
+        let zyf_117_arr7 = [30,5,100,1,20];
+        const zyf_117_arr8 = [1,2,3,4,5];
+
+        function zyf_117_render(id, arr, opts={}) {
+            const el = document.getElementById(id);
+            el.innerHTML = "";
+            arr.forEach((v, i) => {
+                const div = document.createElement("div");
+                div.className = "zyf_117_cell";
+                if (opts.highlight && opts.highlight.includes(i)) div.classList.add("zyf_117_match");
+                if (opts.newIdx !== undefined && opts.newIdx === i) div.classList.add("zyf_117_new");
+                div.innerHTML = `<span class="zyf_117_idx">${i}</span>${v}`;
+                el.appendChild(div);
+            });
+        }
+        function zyf_117_resetAll() {
+            zyf_117_arr1 = ["🍎","🍌","🍓"];
+            zyf_117_arr2 = ["🐱","🐶","🐰"];
+            zyf_117_arr3 = [1,2,3,4,5];
+            zyf_117_arr7 = [30,5,100,1,20];
+            zyf_117_render("zyf_117_arr1", zyf_117_arr1);
+            zyf_117_render("zyf_117_arr2", zyf_117_arr2);
+            zyf_117_render("zyf_117_arr3", zyf_117_arr3);
+            zyf_117_render("zyf_117_arr4a", zyf_117_arr4);
+            document.getElementById("zyf_117_arr4b").innerHTML = '<span style="color:#6b7394">点击上面按钮运行 map…</span>';
+            zyf_117_render("zyf_117_arr5a", zyf_117_arr5);
+            document.getElementById("zyf_117_arr5b").innerHTML = '<span style="color:#6b7394">点击上面按钮运行 filter…</span>';
+            zyf_117_render("zyf_117_arr6", zyf_117_arr6);
+            zyf_117_render("zyf_117_arr7", zyf_117_arr7);
+            zyf_117_render("zyf_117_arr8", zyf_117_arr8);
+            ["outPushPop","outShift","outSplice","outMap","outFilter","outReduce","outSort","outTrav"]
+                .forEach(id => document.getElementById("zyf_117_"+id).textContent = "等待运行…");
+        }
+        zyf_117_resetAll();
+
+        // ① push / pop
+        function zyf_117_push() {
+            zyf_117_arr1.push("🍇");
+            zyf_117_render("zyf_117_arr1", zyf_117_arr1, { newIdx: zyf_117_arr1.length - 1 });
+            document.getElementById("zyf_117_outPushPop").textContent = `push("🍇") → 新数组：[${zyf_117_arr1.join(",")}]  长度=${zyf_117_arr1.length}`;
+        }
+        function zyf_117_pop() {
+            if (zyf_117_arr1.length === 0) { document.getElementById("zyf_117_outPushPop").textContent = "数组已空"; return; }
+            const v = zyf_117_arr1.pop();
+            zyf_117_render("zyf_117_arr1", zyf_117_arr1);
+            document.getElementById("zyf_117_outPushPop").textContent = `pop() → 弹出：${v}  剩余：[${zyf_117_arr1.join(",")}]`;
+        }
+
+        // ② shift / unshift
+        function zyf_117_shift() {
+            if (zyf_117_arr2.length === 0) { document.getElementById("zyf_117_outShift").textContent = "数组已空"; return; }
+            const v = zyf_117_arr2.shift();
+            zyf_117_render("zyf_117_arr2", zyf_117_arr2);
+            document.getElementById("zyf_117_outShift").textContent = `shift() → 弹出：${v}  剩余：[${zyf_117_arr2.join(",")}]`;
+        }
+        function zyf_117_unshift() {
+            zyf_117_arr2.unshift("🐼");
+            zyf_117_render("zyf_117_arr2", zyf_117_arr2, { newIdx: 0 });
+            document.getElementById("zyf_117_outShift").textContent = `unshift("🐼") → 新数组：[${zyf_117_arr2.join(",")}]`;
+        }
+
+        // ③ splice
+        function zyf_117_splice() {
+            const s = Number(document.getElementById("zyf_117_spStart").value);
+            const d = Number(document.getElementById("zyf_117_spDel").value);
+            const ins = document.getElementById("zyf_117_spIns").value;
+            const removed = zyf_117_arr3.splice(s, d, ins);
+            zyf_117_render("zyf_117_arr3", zyf_117_arr3);
+            document.getElementById("zyf_117_outSplice").textContent
+                = `splice(${s}, ${d}, "${ins}")\n删除了 [${removed.join(",")}]\n新数组 [${zyf_117_arr3.join(",")}]`;
+        }
+
+        // ④ map
+        function zyf_117_map2() {
+            const r = zyf_117_arr4.map(n => n * 2);
+            zyf_117_render("zyf_117_arr4b", r);
+            document.getElementById("zyf_117_outMap").textContent = `原数组 [${zyf_117_arr4.join(",")}]\nmap(n*2) → [${r.join(",")}]`;
+        }
+        function zyf_117_mapSq() {
+            const r = zyf_117_arr4.map(n => n * n);
+            zyf_117_render("zyf_117_arr4b", r);
+            document.getElementById("zyf_117_outMap").textContent = `原数组 [${zyf_117_arr4.join(",")}]\nmap(n²) → [${r.join(",")}]`;
+        }
+
+        // ⑤ filter
+        function zyf_117_filter() {
+            const cond = document.getElementById("zyf_117_fCond").value;
+            let pred;
+            if (cond === "even") pred = n => n % 2 === 0;
+            else if (cond === "gt3") pred = n => n > 3;
+            else pred = n => n < 4;
+            const hit = zyf_117_arr5.map(pred).map((b, i) => b ? i : -1).filter(i => i >= 0);
+            const r = zyf_117_arr5.filter(pred);
+            zyf_117_render("zyf_117_arr5a", zyf_117_arr5, { highlight: hit });
+            zyf_117_render("zyf_117_arr5b", r);
+            document.getElementById("zyf_117_outFilter").textContent
+                = `原数组 [${zyf_117_arr5.join(",")}]\n命中下标 [${hit.join(",")}]  →  [${r.join(",")}]  长度 ${r.length}`;
+        }
+
+        // ⑥ reduce（带过程动画）
+        function zyf_117_runReduce(label, reducer, init) {
+            let acc = init;
+            const steps = [`acc=${init}`];
+            zyf_117_arr6.forEach((v, i) => {
+                acc = reducer(acc, v, i);
+                steps.push(`step${i+1}: acc(prev=${steps[steps.length-1].split("=")[1]}) + cur=${v} → ${acc}`);
+            });
+            document.getElementById("zyf_117_outReduce").textContent = `${label} → ${acc}`;
+            document.getElementById("zyf_117_reduceLog").textContent = steps.join("\n");
+        }
+        function zyf_117_reduceSum()  { zyf_117_runReduce("求和 sum", (a,b)=>a+b, 0); }
+        function zyf_117_reduceMul() { zyf_117_runReduce("求积 product", (a,b)=>a*b, 1); }
+        function zyf_117_reduceMax() { zyf_117_runReduce("求最大值", (a,b)=>Math.max(a,b), -Infinity); }
+
+        // ⑦ sort / reverse
+        function zyf_117_sortAsc() { zyf_117_arr7.sort((a,b)=>a-b); zyf_117_render("zyf_117_arr7", zyf_117_arr7); document.getElementById("zyf_117_outSort").textContent = `sort 升序 → [${zyf_117_arr7.join(",")}]`; }
+        function zyf_117_sortDesc(){ zyf_117_arr7.sort((a,b)=>b-a); zyf_117_render("zyf_117_arr7", zyf_117_arr7); document.getElementById("zyf_117_outSort").textContent = `sort 降序 → [${zyf_117_arr7.join(",")}]`; }
+        function zyf_117_reverse()  { zyf_117_arr7.reverse();     zyf_117_render("zyf_117_arr7", zyf_117_arr7); document.getElementById("zyf_117_outSort").textContent = `reverse  → [${zyf_117_arr7.join(",")}]`; }
+        function zyf_117_reset7()   { zyf_117_arr7 = [30,5,100,1,20]; zyf_117_render("zyf_117_arr7", zyf_117_arr7); document.getElementById("zyf_117_outSort").textContent = "已重置为 [30,5,100,1,20]"; }
+
+        // ⑧ 遍历
+        function zyf_117_show(matchedIdxs, msg) {
+            zyf_117_render("zyf_117_arr8", zyf_117_arr8, { highlight: matchedIdxs });
+            document.getElementById("zyf_117_outTrav").textContent = msg;
+        }
+        function zyf_117_demoSome()    { const hit = zyf_117_arr8.map(n => n > 3).map((b,i)=>b?i:-1).filter(i=>i>=0); zyf_117_show(hit.slice(0,1), `some(n>3) → ${hit.length>0}  命中第一个下标=${hit[0]}`); }
+        function zyf_117_demoEvery()   { zyf_117_show([], `every(n>0) → ${zyf_117_arr8.every(n=>n>0)}  全部 >0？`); }
+        function zyf_117_demoIncludes(){ const hit = zyf_117_arr8.includes(3) ? [2] : []; zyf_117_show(hit, `includes(3) → ${zyf_117_arr8.includes(3)}  下标=${zyf_117_arr8.indexOf(3)}`); }
+        function zyf_117_demoFind()    { const hit = zyf_117_arr8.map(n => n > 3).map((b,i)=>b?i:-1).filter(i=>i>=0); zyf_117_show(hit.slice(0,1), `find(n>3) → 第一个命中值=${zyf_117_arr8[hit[0]]}  下标=${hit[0]}`); }
+    </script>
+</body>
+</html>
