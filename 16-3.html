@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<!-- 姓名：张艺凡 / 日期：2026-10-29 / 功能名称：16-3 短视频内容卡片 -->
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>16-3 短视频卡片 · 张艺凡</title>
+<style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+        font-family: "Microsoft YaHei", "PingFang SC", Arial, sans-serif;
+        background: linear-gradient(160deg, #0a0e1c 0%, #1a1140 100%);
+        min-height: 100vh; color: #e8ebf8;
+        padding: 40px 20px;
+        display: flex; justify-content: center; align-items: flex-start;
+    }
+
+    /* 卡片外框 */
+    .zyf_117_card {
+        width: 360px;
+        background: #1e2236;
+        border-radius: 18px;
+        overflow: hidden;
+        box-shadow:
+            0 20px 60px rgba(0,0,0,0.55),
+            0 0 0 1px rgba(148, 163, 255, 0.15);
+    }
+
+    /* 顶部用户条 */
+    .zyf_117_topbar {
+        display: flex; align-items: center; gap: 10px;
+        padding: 12px 14px 0;
+    }
+    .zyf_117_avatar {
+        width: 36px; height: 36px; border-radius: 50%;
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        display: flex; align-items: center; justify-content: center;
+        font-size: 18px; color: #fff; font-weight: bold;
+        box-shadow: 0 0 0 2px rgba(160,107,255,0.35);
+    }
+
+    /* 视频主区域（背景 + 袋鼠） */
+    .zyf_117_video {
+        position: relative;
+        height: 420px;
+        background: linear-gradient(180deg, #e8e5f0 0%, #ede8f5 45%, #d6d0e2 100%);
+        margin: 12px;
+        border-radius: 12px;
+        overflow: hidden;
+        display: flex; align-items: flex-end; justify-content: center;
+    }
+
+    /* CSS 画的袋鼠 */
+    .zyf_117_kangaroo {
+        position: relative;
+        width: 260px; height: 340px;
+        margin-bottom: -4px;
+    }
+    /* 身体 */
+    .zyf_117_kg-body {
+        position: absolute;
+        left: 50%; bottom: 20px;
+        transform: translateX(-50%);
+        width: 180px; height: 200px;
+        background: linear-gradient(180deg, #ffd93d 0%, #ffb703 100%);
+        border-radius: 50% 50% 45% 45% / 55% 55% 45% 45%;
+        box-shadow: 0 12px 30px rgba(255,183,3,0.35);
+    }
+    /* 肚子 */
+    .zyf_117_kg-belly {
+        position: absolute;
+        left: 50%; bottom: 30px;
+        transform: translateX(-50%);
+        width: 120px; height: 110px;
+        background: linear-gradient(180deg, #fff3a0 0%, #ffe766 100%);
+        border-radius: 50%;
+    }
+    /* 头 */
+    .zyf_117_kg-head {
+        position: absolute;
+        left: 50%; top: 10px;
+        transform: translateX(-50%);
+        width: 130px; height: 120px;
+        background: linear-gradient(180deg, #ffd93d 0%, #ffb703 100%);
+        border-radius: 50% 50% 48% 48%;
+    }
+    /* 左耳 */
+    .zyf_117_kg-ear-l {
+        position: absolute;
+        top: -28px; left: 18px;
+        width: 36px; height: 60px;
+        background: linear-gradient(180deg, #ffd93d, #ffb703);
+        border-radius: 50% 50% 30% 30%;
+        transform: rotate(-15deg);
+        transform-origin: bottom center;
+    }
+    .zyf_117_kg-ear-l::after {
+        content: ""; position: absolute;
+        top: 12px; left: 8px;
+        width: 20px; height: 40px;
+        background: #ff9aa2;
+        border-radius: 50% 50% 30% 30%;
+    }
+    /* 右耳 */
+    .zyf_117_kg-ear-r {
+        position: absolute;
+        top: -28px; right: 18px;
+        width: 36px; height: 60px;
+        background: linear-gradient(180deg, #ffd93d, #ffb703);
+        border-radius: 50% 50% 30% 30%;
+        transform: rotate(15deg);
+        transform-origin: bottom center;
+    }
+    .zyf_117_kg-ear-r::after {
+        content: ""; position: absolute;
+        top: 12px; left: 8px;
+        width: 20px; height: 40px;
+        background: #ff9aa2;
+        border-radius: 50% 50% 30% 30%;
+    }
+    /* 眼睛 */
+    .zyf_117_kg-eye {
+        position: absolute;
+        top: 40px;
+        width: 22px; height: 24px;
+        background: #fff;
+        border-radius: 50%;
+    }
+    .zyf_117_kg-eye::after {
+        content: ""; position: absolute;
+        top: 4px; left: 6px;
+        width: 12px; height: 14px;
+        background: #1a1a2e;
+        border-radius: 50%;
+    }
+    .zyf_117_kg-eye::before {
+        content: ""; position: absolute;
+        top: 5px; left: 9px;
+        width: 5px; height: 6px;
+        background: #fff;
+        border-radius: 50%;
+        z-index: 2;
+    }
+    .zyf_117_kg-eye-l { left: 28px; }
+    .zyf_117_kg-eye-r { right: 28px; }
+    /* 鼻子 */
+    .zyf_117_kg-nose {
+        position: absolute;
+        top: 72px; left: 50%;
+        transform: translateX(-50%);
+        width: 16px; height: 12px;
+        background: linear-gradient(180deg, #ff6b6b, #d63031);
+        border-radius: 50% 50% 45% 45%;
+    }
+    /* 嘴 */
+    .zyf_117_kg-mouth {
+        position: absolute;
+        top: 86px; left: 50%;
+        transform: translateX(-50%);
+        width: 24px; height: 8px;
+        border-bottom: 2px solid #d63031;
+        border-radius: 0 0 50% 50%;
+    }
+    /* 腮红 */
+    .zyf_117_kg-blush {
+        position: absolute;
+        top: 68px;
+        width: 18px; height: 10px;
+        background: rgba(255, 154, 162, 0.6);
+        border-radius: 50%;
+    }
+    .zyf_117_kg-blush-l { left: 10px; }
+    .zyf_117_kg-blush-r { right: 10px; }
+
+    /* 字幕条（叠加在袋鼠身上） */
+    .zyf_117_captions {
+        position: absolute;
+        right: 16px; bottom: 80px;
+        display: flex; flex-direction: column; gap: 8px;
+        max-width: 180px;
+    }
+    .zyf_117_caption {
+        background: rgba(255, 255, 255, 0.92);
+        color: #1a1a2e;
+        padding: 7px 14px;
+        border-radius: 22px;
+        font-size: 0.88rem;
+        font-weight: 600;
+        letter-spacing: 0.5px;
+        box-shadow: 0 4px 14px rgba(0,0,0,0.18);
+    }
+
+    /* 底部发布者信息 + 话题 */
+    .zyf_117_bottom {
+        padding: 12px 14px 14px;
+    }
+    .zyf_117_tags {
+        display: flex; flex-wrap: wrap; gap: 6px;
+        margin-bottom: 12px;
+    }
+    .zyf_117_tag {
+        color: #8cb4ff;
+        font-size: 0.82rem;
+        font-weight: 500;
+    }
+    .zyf_117_author {
+        display: flex; align-items: center; gap: 8px;
+    }
+    .zyf_117_author-ava {
+        width: 24px; height: 24px; border-radius: 50%;
+        background: linear-gradient(135deg, #f472b6, #a06bff);
+        display: flex; align-items: center; justify-content: center;
+        font-size: 12px; color: #fff; font-weight: bold;
+    }
+    .zyf_117_author-name {
+        font-size: 0.88rem; color: #cdd5f0; font-weight: 500;
+    }
+    .zyf_117_time {
+        margin-left: auto;
+        font-size: 0.78rem; color: #6b7394;
+    }
+
+    /* 右侧互动按钮（点赞评论分享） */
+    .zyf_117_actions {
+        position: absolute;
+        right: -46px; bottom: 140px;
+        display: flex; flex-direction: column; gap: 22px;
+        align-items: center;
+    }
+    .zyf_117_action {
+        display: flex; flex-direction: column; align-items: center; gap: 4px;
+        cursor: pointer;
+    }
+    .zyf_117_action-icon {
+        width: 44px; height: 44px; border-radius: 50%;
+        background: rgba(30, 34, 54, 0.85);
+        border: 1px solid rgba(148,163,255,0.25);
+        display: flex; align-items: center; justify-content: center;
+        font-size: 20px;
+        transition: transform .2s;
+    }
+    .zyf_117_action:hover .zyf_117_action-icon { transform: scale(1.1); }
+    .zyf_117_action-count {
+        font-size: 0.72rem; color: #cdd5f0;
+    }
+
+    @media (max-width: 420px) {
+        .zyf_117_card { width: 100%; }
+        .zyf_117_video { height: 360px; }
+        .zyf_117_kangaroo { transform: scale(0.9); }
+        .zyf_117_actions { right: -38px; bottom: 120px; }
+    }
+</style>
+</head>
+<body>
+    <div class="zyf_117_card">
+
+        <!-- 视频主区域（袋鼠 + 字幕） -->
+        <div class="zyf_117_video">
+
+            <!-- CSS 袋鼠 -->
+            <div class="zyf_117_kangaroo">
+                <div class="zyf_117_kg-body"></div>
+                <div class="zyf_117_kg-belly"></div>
+
+                <div class="zyf_117_kg-head">
+                    <div class="zyf_117_kg-ear-l"></div>
+                    <div class="zyf_117_kg-ear-r"></div>
+                    <div class="zyf_117_kg-eye zyf_117_kg-eye-l"></div>
+                    <div class="zyf_117_kg-eye zyf_117_kg-eye-r"></div>
+                    <div class="zyf_117_kg-blush zyf_117_kg-blush-l"></div>
+                    <div class="zyf_117_kg-blush zyf_117_kg-blush-r"></div>
+                    <div class="zyf_117_kg-nose"></div>
+                    <div class="zyf_117_kg-mouth"></div>
+                </div>
+            </div>
+
+            <!-- 叠加字幕 -->
+            <div class="zyf_117_captions">
+                <div class="zyf_117_caption">骑手随口一句肥嘟嘟</div>
+                <div class="zyf_117_caption">直接让自己赛博永生了</div>
+            </div>
+
+            <!-- 右侧互动按钮 -->
+            <div class="zyf_117_actions">
+                <div class="zyf_117_action">
+                    <div class="zyf_117_action-icon">❤️</div>
+                    <span class="zyf_117_action-count">2.3w</span>
+                </div>
+                <div class="zyf_117_action">
+                    <div class="zyf_117_action-icon">💬</div>
+                    <span class="zyf_117_action-count">5680</span>
+                </div>
+                <div class="zyf_117_action">
+                    <div class="zyf_117_action-icon">⭐</div>
+                    <span class="zyf_117_action-count">8920</span>
+                </div>
+                <div class="zyf_117_action">
+                    <div class="zyf_117_action-icon">➤</div>
+                    <span class="zyf_117_action-count">分享</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- 底部话题 + 发布者 -->
+        <div class="zyf_117_bottom">
+            <div class="zyf_117_tags">
+                <span class="zyf_117_tag">#胆子真是肥嘟嘟呢</span>
+                <span class="zyf_117_tag">#美团</span>
+                <span class="zyf_117_tag">#搞笑</span>
+                <span class="zyf_117_tag">#外卖小哥</span>
+                <span class="zyf_117_tag">#胆子真是肥嘟嘟的</span>
+                <span class="zyf_117_tag">#梗</span>
+            </div>
+            <div class="zyf_117_author">
+                <div class="zyf_117_author-ava">江</div>
+                <div class="zyf_117_author-name">江南大师姐</div>
+                <div class="zyf_117_time">25分钟前</div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
