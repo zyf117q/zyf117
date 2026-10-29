@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<!-- 姓名：张艺凡 / 日期：2026-10-29 / 功能名称：16-2 JS 对象与字符串可视化 -->
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>16-2 JS 对象 &amp; 字符串 · 张艺凡</title>
+<style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+        font-family: "Microsoft YaHei", "PingFang SC", Arial, sans-serif;
+        background: linear-gradient(160deg, #0a0e1c 0%, #1a1140 100%);
+        min-height: 100vh; color: #e8ebf8; padding: 40px 20px;
+    }
+    .zyf_117_header { text-align: center; margin-bottom: 36px; }
+    .zyf_117_header h1 {
+        font-size: 2rem;
+        background: linear-gradient(90deg, #5d8bff, #a06bff, #c95cff);
+        -webkit-background-clip: text; background-clip: text; color: transparent;
+        letter-spacing: 4px;
+    }
+    .zyf_117_header p { margin-top: 10px; color: #98a0bd; font-size: 0.95rem; }
+
+    .zyf_117_section {
+        max-width: 1180px; margin: 0 auto 38px;
+        background: rgba(148, 163, 255, 0.06);
+        border: 1px solid rgba(148, 163, 255, 0.20);
+        border-radius: 14px; padding: 24px 26px;
+    }
+    .zyf_117_section h2 {
+        font-size: 1.25rem; margin-bottom: 6px;
+        color: #f0c4ff; border-left: 4px solid #a06bff; padding-left: 12px;
+    }
+    .zyf_117_section h2.zyf_117_str { border-left-color: #f472b6; color: #fda4af; }
+    .zyf_117_desc { color: #98a0bd; margin-bottom: 16px; font-size: 0.88rem; }
+
+    .zyf_117_row { display: flex; gap: 24px; flex-wrap: wrap; }
+    .zyf_117_col { flex: 1; min-width: 320px; }
+
+    .zyf_117_code {
+        background: rgba(8, 12, 28, 0.85);
+        border: 1px solid rgba(148, 163, 255, 0.18);
+        border-radius: 10px; padding: 14px 16px;
+        font-family: Consolas, Monaco, "Courier New", monospace;
+        font-size: 0.83rem; line-height: 1.7; overflow-x: auto;
+        color: #cdd5f0;
+    }
+    .zyf_117_code .zyf_117_kw { color: #c792ea; font-weight: bold; }
+    .zyf_117_code .zyf_117_br { color: #82aaff; }
+    .zyf_117_code .zyf_117_s  { color: #c3e88d; }
+    .zyf_117_code .zyf_117_c  { color: #6b7394; font-style: italic; }
+    .zyf_117_code .zyf_117_n  { color: #f78c6c; }
+
+    /* 对象可视化 */
+    .zyf_117_obj-box {
+        background: rgba(8, 12, 28, 0.85);
+        border: 1.5px solid rgba(93,139,255,0.45);
+        border-radius: 10px; padding: 18px 20px;
+        font-family: Consolas, Monaco, "Courier New", monospace;
+        font-size: 0.9rem; line-height: 1.9;
+    }
+    .zyf_117_obj-row { display: flex; align-items: center; gap: 8px; padding: 2px 0; }
+    .zyf_117_key {
+        color: #82aaff; font-weight: bold; min-width: 70px; text-align: right;
+    }
+    .zyf_117_colon { color: #6b7394; }
+    .zyf_117_val  { color: #c3e88d; }
+    .zyf_117_val.zyf_117_num  { color: #f78c6c; }
+    .zyf_117_val.zyf_117_bool { color: #ffcb6b; }
+    .zyf_117_val.zyf_117_null { color: #ff6b6b; font-style: italic; }
+    .zyf_117_curly { color: #a06bff; font-weight: bold; }
+
+    /* 字符串可视化 */
+    .zyf_117_str-box {
+        background: rgba(8, 12, 28, 0.85);
+        border: 1.5px solid rgba(244,114,182,0.40);
+        border-radius: 10px; padding: 16px 18px;
+        font-family: Consolas, Monaco, "Courier New", monospace;
+    }
+    .zyf_117_str-view {
+        font-size: 1.05rem; letter-spacing: 1px; line-height: 2.2;
+        padding: 10px 0; overflow-x: auto; white-space: nowrap;
+    }
+    .zyf_117_ch {
+        display: inline-block; width: 26px; height: 34px;
+        text-align: center; line-height: 34px; margin: 0 1px;
+        border-radius: 5px;
+        background: rgba(160, 107, 255, 0.18);
+        border: 1px solid rgba(160, 107, 255, 0.45);
+        color: #e8ebf8; transition: all .25s;
+        position: relative;
+    }
+    .zyf_117_ch.zyf_117_match {
+        background: rgba(244,114,182,0.45); border-color: #f472b6;
+        box-shadow: 0 0 10px rgba(244,114,182,0.50); color: #fff;
+    }
+    .zyf_117_ch.zyf_117_new {
+        background: rgba(134,239,172,0.35); border-color: #86efac;
+        color: #86efac;
+    }
+
+    .zyf_117_run { display: flex; align-items: center; gap: 10px; margin-top: 14px; flex-wrap: wrap; }
+    .zyf_117_run button {
+        background: linear-gradient(90deg, #5d8bff, #a06bff);
+        color: #fff; border: none; padding: 7px 16px; border-radius: 8px;
+        cursor: pointer; font-size: 0.85rem; font-weight: 600; letter-spacing: 1px;
+        transition: opacity .2s;
+    }
+    .zyf_117_run button.zyf_117_pink { background: linear-gradient(90deg, #f472b6, #ec4899); }
+    .zyf_117_run button.zyf_117_reset { background: linear-gradient(90deg, #6b7394, #3a4160); }
+    .zyf_117_run button:hover { opacity: 0.85; }
+    .zyf_117_run input[type="text"], .zyf_117_run input[type="number"], .zyf_117_run select {
+        padding: 6px 10px; border-radius: 6px;
+        border: 1px solid rgba(148, 163, 255, 0.40);
+        background: rgba(10, 14, 28, 0.8); color: #e8ebf8; font-size: 0.85rem;
+    }
+
+    .zyf_117_output {
+        margin-top: 12px; min-height: 36px; padding: 10px 14px;
+        background: rgba(244, 114, 182, 0.08);
+        border: 1px solid rgba(244, 114, 182, 0.30);
+        border-radius: 8px; color: #f9a8d4;
+        font-family: Consolas, Monaco, monospace; font-size: 0.83rem;
+        white-space: pre-wrap; word-break: break-all;
+    }
+    .zyf_117_result {
+        margin-top: 10px; padding: 10px 14px;
+        background: rgba(134, 239, 172, 0.10);
+        border: 1px solid rgba(134, 239, 172, 0.30);
+        border-radius: 8px; color: #86efac;
+        font-family: Consolas, Monaco, monospace; font-size: 0.83rem;
+        white-space: pre-wrap;
+    }
+
+    .zyf_117_badge {
+        display: inline-block; padding: 2px 9px; border-radius: 20px;
+        font-size: 0.72rem; margin-right: 6px;
+    }
+    .zyf_117_badge.zyf_117_obj { background: rgba(93,139,255,0.20); color: #93c5fd; border: 1px solid rgba(93,139,255,0.35); }
+    .zyf_117_badge.zyf_117_str { background: rgba(244,114,182,0.20); color: #f9a8d4; border: 1px solid rgba(244,114,182,0.35); }
+
+    .zyf_117_part {
+        border-top: 2px dashed rgba(148, 163, 255, 0.18);
+        margin: 26px 0 10px; padding-top: 24px;
+    }
+
+    .zyf_117_footer {
+        text-align: center; margin-top: 40px; color: #6b7394;
+        font-size: 0.85rem; letter-spacing: 2px;
+    }
+
+    @media (max-width: 700px) {
+        .zyf_117_section { padding: 18px; }
+        .zyf_117_row { flex-direction: column; gap: 18px; }
+        .zyf_117_ch { width: 20px; height: 28px; line-height: 28px; font-size: 0.82rem; }
+    }
+</style>
+</head>
+<body>
+    <header class="zyf_117_header">
+        <h1>JS 对象 &amp; 字符串</h1>
+        <p>Object · Property · String · IndexOf · Split · Replace · Template Literal  /  张艺凡</p>
+    </header>
+
+    <!-- ================ 第一部分：对象 ================ -->
+
+    <section class="zyf_117_section">
+        <h2>🟦 一、对象（Object）可视化</h2>
+        <p class="zyf_117_desc">
+            <span class="zyf_117_badge zyf_117_obj">对象</span>
+            对象是 key-value（键-值对）的集合，key 永远是字符串，value 可以是任意类型
+        </p>
+
+        <div class="zyf_117_part">
+            <h3 style="color:#93c5fd;font-size:1rem;margin-bottom:12px">① 创建 &amp; 访问属性</h3>
+            <div class="zyf_117_row">
+                <div class="zyf_117_col">
+                    <div class="zyf_117_code">
+<span class="zyf_117_kw">const</span> user = {
+  name: <span class="zyf_117_s">"张艺凡"</span>,
+  age: <span class="zyf_117_n">20</span>,
+  grade: <span class="zyf_117_s">"大二"</span>,
+  isAdmin: <span class="zyf_117_kw">false</span>,
+  score: <span class="zyf_117_kw">null</span>
+};
+
+user.name          <span class="zyf_117_c">// "张艺凡"  点语法</span>
+user[<span class="zyf_117_s">"age"</span>]    <span class="zyf_117_c">// 20        方括号语法</span>
+user[<span class="zyf_117_s">"na"</span>+<span class="zyf_117_s">"me"</span>]  <span class="zyf_117_c">// "张艺凡"  动态 key</span>
+                    </div>
+                </div>
+                <div class="zyf_117_col">
+                    <div class="zyf_117_obj-box" id="zyf_117_objView">
+                        <!-- JS 填充 -->
+                    </div>
+                    <div class="zyf_117_run">
+                        <button onclick="zyf_117_accName()">user.name</button>
+                        <button onclick="zyf_117_accAge()">user["age"]</button>
+                        <button onclick="zyf_117_accGrade()">user["grade"]</button>
+                        <button onclick="zyf_117_accAll()">一次性输出所有</button>
+                    </div>
+                    <div class="zyf_117_output" id="zyf_117_objAccessOut">点击上面按钮试试…</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="zyf_117_part">
+            <h3 style="color:#93c5fd;font-size:1rem;margin-bottom:12px">② 增删改属性</h3>
+            <div class="zyf_117_row">
+                <div class="zyf_117_col">
+                    <div class="zyf_117_code">
+<span class="zyf_117_c">// 改</span>
+user.age = <span class="zyf_117_n">21</span>;
+
+<span class="zyf_117_c">// 增</span>
+user.email = <span class="zyf_117_s">"zyf@yl.com"</span>;
+
+<span class="zyf_117_c">// 删</span>
+<span class="zyf_117_kw">delete</span> user.score;
+                    </div>
+                    <div class="zyf_117_run">
+                        <button class="zyf_117_pink" onclick="zyf_117_objSet()">改 age 为 21</button>
+                        <button class="zyf_117_pink" onclick="zyf_117_objAdd()">加 email</button>
+                        <button class="zyf_117_pink" onclick="zyf_117_objDel()">删 score</button>
+                        <button class="zyf_117_reset" onclick="zyf_117_objReset()">🔄 Reset</button>
+                    </div>
+                    <div class="zyf_117_output" id="zyf_117_objMutOut">点击按钮修改 user 对象…</div>
+                </div>
+                <div class="zyf_117_col">
+                    <div class="zyf_117_obj-box" id="zyf_117_objBox2">
+                        <!-- JS 填充 -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="zyf_117_part">
+            <h3 style="color:#93c5fd;font-size:1rem;margin-bottom:12px">③ Object.keys / values / entries</h3>
+            <div class="zyf_117_row">
+                <div class="zyf_117_col">
+                    <div class="zyf_117_code">
+<span class="zyf_117_kw">const</span> book = { title: <span class="zyf_117_s">"JS 红宝书"</span>, price: <span class="zyf_117_n">99</span>, pages: <span class="zyf_117_n">800</span> };
+
+Object.<span class="zyf_117_br">keys</span>(book);
+<span class="zyf_117_c">// ["title", "price", "pages"]</span>
+
+Object.<span class="zyf_117_br">values</span>(book);
+<span class="zyf_117_c">// ["JS 红宝书", 99, 800]</span>
+
+Object.<span class="zyf_117_br">entries</span>(book);
+<span class="zyf_117_c">// [["title","JS 红宝书"], ["price",99], ["pages",800]]</span>
+                    </div>
+                    <div class="zyf_117_run">
+                        <button onclick="zyf_117_objKeys()">Object.keys</button>
+                        <button onclick="zyf_117_objVals()">Object.values</button>
+                        <button onclick="zyf_117_objEnt()">Object.entries</button>
+                        <button onclick="zyf_117_objFromEnt()">Object.fromEntries</button>
+                    </div>
+                    <div class="zyf_117_result" id="zyf_117_objStatOut">点击运行…</div>
+                </div>
+                <div class="zyf_117_col">
+                    <div class="zyf_117_obj-box" id="zyf_117_bookBox"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="zyf_117_part">
+            <h3 style="color:#93c5fd;font-size:1rem;margin-bottom:12px">④ 展开运算符 / 合并 / JSON</h3>
+            <div class="zyf_117_row">
+                <div class="zyf_117_col">
+                    <div class="zyf_117_code">
+<span class="zyf_117_kw">const</span> base   = { a: <span class="zyf_117_n">1</span>, b: <span class="zyf_117_n">2</span> };
+<span class="zyf_117_kw">const</span> extra  = { b: <span class="zyf_117_n">200</span>, c: <span class="zyf_117_n">3</span> };
+
+<span class="zyf_117_kw">const</span> merged  = { ...base, ...extra };
+<span class="zyf_117_c">// {a:1, b:200, c:3}  后面覆盖前面</span>
+
+<span class="zyf_117_kw">const</span> jsonStr = JSON.<span class="zyf_117_br">stringify</span>(merged);
+<span class="zyf_117_kw">const</span> back    = JSON.<span class="zyf_117_br">parse</span>(jsonStr);
+                    </div>
+                    <div class="zyf_117_run">
+                        <button onclick="zyf_117_mergeObj()">展开合并 base+extra</button>
+                        <button onclick="zyf_117_jsonRound()">JSON 序列化 ⇄ 反序列化</button>
+                    </div>
+                    <div class="zyf_117_result" id="zyf_117_mergeOut">点击运行…</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ================ 第二部分：字符串 ================ -->
+
+    <section class="zyf_117_section">
+        <h2 class="zyf_117_str">🟥 二、字符串（String）可视化</h2>
+        <p class="zyf_117_desc">
+            <span class="zyf_117_badge zyf_117_str">字符串</span>
+            字符串是**只读**的字符序列，所有方法都返回新字符串，原字符串不变
+        </p>
+
+        <div class="zyf_117_part">
+            <h3 style="color:#fda4af;font-size:1rem;margin-bottom:12px">① 字符访问 &amp; length</h3>
+            <div class="zyf_117_row">
+                <div class="zyf_117_col">
+                    <div class="zyf_117_code">
+<span class="zyf_117_kw">const</span> s = <span class="zyf_117_s">"Hello 张艺凡"</span>;
+s.<span class="zyf_117_br">length</span>         <span class="zyf_117_c">// 10（中文占 1）</span>
+s[<span class="zyf_117_n">0</span>]             <span class="zyf_117_c">// "H"</span>
+s.<span class="zyf_117_br">charAt</span>(<span class="zyf_117_n">1</span>)       <span class="zyf_117_c">// "e"</span>
+s.<span class="zyf_117_br">charCodeAt</span>(<span class="zyf_117_n">0</span>)   <span class="zyf_117_c">// 72（H 的 ASCII）</span>
+                    </div>
+                </div>
+                <div class="zyf_117_col">
+                    <div class="zyf_117_str-box">
+                        <div class="zyf_117_str-view" id="zyf_117_strView1"></div>
+                    </div>
+                    <div class="zyf_117_run">
+                        第 <input type="number" id="zyf_117_idx" value="0" min="0" max="9" style="width:60px"> 个字符
+                        <button class="zyf_117_pink" onclick="zyf_117_charAt()">查看</button>
+                    </div>
+                    <div class="zyf_117_output" id="zyf_117_charOut">等待运行…</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="zyf_117_part">
+            <h3 style="color:#fda4af;font-size:1rem;margin-bottom:12px">② indexOf / includes / startsWith / endsWith</h3>
+            <div class="zyf_117_row">
+                <div class="zyf_117_col">
+                    <div class="zyf_117_code">
+<span class="zyf_117_kw">const</span> s = <span class="zyf_117_s">"Hello JavaScript"</span>;
+s.<span class="zyf_117_br">indexOf</span>(<span class="zyf_117_s">"ava"</span>);      <span class="zyf_117_c">// 8</span>
+s.<span class="zyf_117_br">includes</span>(<span class="zyf_117_s">"Java"</span>);     <span class="zyf_117_c">// true</span>
+s.<span class="zyf_117_br">startsWith</span>(<span class="zyf_117_s">"Hell"</span>);  <span class="zyf_117_c">// true</span>
+s.<span class="zyf_117_br">endsWith</span>(<span class="zyf_117_s">"Script"</span>);  <span class="zyf_117_c">// true</span>
+                    </div>
+                </div>
+                <div class="zyf_117_col">
+                    <div class="zyf_117_str-box">
+                        <div class="zyf_117_str-view" id="zyf_117_strView2"></div>
+                    </div>
+                    <div class="zyf_117_run">
+                        <input type="text" id="zyf_117_srch" value="ava" style="width:110px">
+                        <button class="zyf_117_pink" onclick="zyf_117_idxOf()">indexOf</button>
+                        <button class="zyf_117_pink" onclick="zyf_117_inc()">includes</button>
+                        <button class="zyf_117_pink" onclick="zyf_117_starts()">startsWith</button>
+                        <button class="zyf_117_pink" onclick="zyf_117_ends()">endsWith</button>
+                    </div>
+                    <div class="zyf_117_output" id="zyf_117_srchOut">等待运行…</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="zyf_117_part">
+            <h3 style="color:#fda4af;font-size:1rem;margin-bottom:12px">③ slice / substring / substr —— 截取</h3>
+            <div class="zyf_117_row">
+                <div class="zyf_117_col">
+                    <div class="zyf_117_code">
+<span class="zyf_117_kw">const</span> s = <span class="zyf_117_s">"Hello JavaScript"</span>;
+s.<span class="zyf_117_br">slice</span>(<span class="zyf_117_n">6</span>);            <span class="zyf_117_c">// "JavaScript"</span>
+s.<span class="zyf_117_br">slice</span>(<span class="zyf_117_n">-6</span>);           <span class="zyf_117_c">// "Script"（负数从末尾数）</span>
+s.<span class="zyf_117_br">slice</span>(<span class="zyf_117_n">0</span>, <span class="zyf_117_n">5</span>);     <span class="zyf_117_c">// "Hello"</span>
+<span class="zyf_117_c">// slice 支持负数，substring 不支持</span>
+                    </div>
+                </div>
+                <div class="zyf_117_col">
+                    <div class="zyf_117_str-box">
+                        <div class="zyf_117_str-view" id="zyf_117_strView3"></div>
+                    </div>
+                    <div class="zyf_117_run">
+                        start <input type="number" id="zyf_117_slS" value="6" style="width:60px">
+                        end <input type="number" id="zyf_117_slE" value="" style="width:60px" placeholder="可选">
+                        <button class="zyf_117_pink" onclick="zyf_117_slice()">slice(start, end)</button>
+                    </div>
+                    <div class="zyf_117_result" id="zyf_117_sliceOut">结果显示在这里…</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="zyf_117_part">
+            <h3 style="color:#fda4af;font-size:1rem;margin-bottom:12px">④ replace / toCase / trim —— 变换</h3>
+            <div class="zyf_117_row">
+                <div class="zyf_117_col">
+                    <div class="zyf_117_code">
+<span class="zyf_117_kw">let</span> s = <span class="zyf_117_s">"  Hello JS  "</span>;
+s.<span class="zyf_117_br">trim</span>();               <span class="zyf_117_c">// "Hello JS"</span>
+s.<span class="zyf_117_br">toUpperCase</span>();        <span class="zyf_117_c">// "  HELLO JS  "</span>
+s.<span class="zyf_117_br">toLowerCase</span>();        <span class="zyf_117_c">// "  hello js  "</span>
+s.<span class="zyf_117_br">replace</span>(<span class="zyf_117_s">"JS"</span>, <span class="zyf_117_s">"JavaScript"</span>);
+<span class="zyf_117_c">// "  Hello JavaScript  "</span>
+                    </div>
+                </div>
+                <div class="zyf_117_col">
+                    <div class="zyf_117_str-box">
+                        <div class="zyf_117_str-view" id="zyf_117_strView4"></div>
+                    </div>
+                    <div class="zyf_117_run">
+                        <button class="zyf_117_pink" onclick="zyf_117_trim()">trim()</button>
+                        <button class="zyf_117_pink" onclick="zyf_117_up()">toUpperCase()</button>
+                        <button class="zyf_117_pink" onclick="zyf_117_lo()">toLowerCase()</button>
+                        <button class="zyf_117_pink" onclick="zyf_117_rep()">replace("JS","TS")</button>
+                        <button class="zyf_117_reset" onclick="zyf_117_strReset()">🔄 Reset</button>
+                    </div>
+                    <div class="zyf_117_result" id="zyf_117_transOut">结果显示在这里…</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="zyf_117_part">
+            <h3 style="color:#fda4af;font-size:1rem;margin-bottom:12px">⑤ split / join —— 字符串 ⇄ 数组</h3>
+            <div class="zyf_117_row">
+                <div class="zyf_117_col">
+                    <div class="zyf_117_code">
+<span class="zyf_117_kw">const</span> date = <span class="zyf_117_s">"2026-10-29"</span>;
+<span class="zyf_117_kw">const</span> parts = date.<span class="zyf_117_br">split</span>(<span class="zyf_117_s">"-"</span>);
+<span class="zyf_117_c">// ["2026", "10", "29"]</span>
+
+parts.<span class="zyf_117_br">join</span>(<span class="zyf_117_s">"/"</span>);
+<span class="zyf_117_c">// "2026/10/29"</span>
+                    </div>
+                    <div class="zyf_117_run">
+                        分隔符：<input type="text" id="zyf_117_spSep" value="-" style="width:70px">
+                        <button class="zyf_117_pink" onclick="zyf_117_split()">split()</button>
+                        连接符：<input type="text" id="zyf_117_spJoin" value="/" style="width:70px">
+                        <button class="zyf_117_pink" onclick="zyf_117_join()">join()</button>
+                    </div>
+                </div>
+                <div class="zyf_117_col">
+                    <div class="zyf_117_str-box">
+                        <div class="zyf_117_str-view" id="zyf_117_strView5"></div>
+                    </div>
+                    <div class="zyf_117_result" id="zyf_117_splitOut">结果显示在这里…</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="zyf_117_part">
+            <h3 style="color:#fda4af;font-size:1rem;margin-bottom:12px">⑥ 模板字符串（Template Literal）</h3>
+            <div class="zyf_117_row">
+                <div class="zyf_117_col">
+                    <div class="zyf_117_code">
+<span class="zyf_117_kw">const</span> name = <span class="zyf_117_s">"张艺凡"</span>;
+<span class="zyf_117_kw">const</span> age  = <span class="zyf_117_n">20</span>;
+
+<span class="zyf_117_kw">const</span> msg = <span class="zyf_117_s">`我是 </span>${name}<span class="zyf_117_s">，今年 </span>${age}<span class="zyf_117_s"> 岁。`</span>;
+<span class="zyf_117_c">// "我是 张艺凡，今年 20 岁。"</span>
+
+<span class="zyf_117_kw">const</span> multi = <span class="zyf_117_s">`第一行
+第二行
+第三行：${</span>age + <span class="zyf_117_n">1</span>}<span class="zyf_117_s">}`</span>;
+<span class="zyf_117_c">// 直接支持多行和表达式</span>
+                    </div>
+                </div>
+                <div class="zyf_117_col">
+                    <div class="zyf_117_run">
+                        名字：<input type="text" id="zyf_117_tplName" value="张艺凡" style="width:120px">
+                        年龄：<input type="number" id="zyf_117_tplAge" value="20" style="width:70px">
+                        <button class="zyf_117_pink" onclick="zyf_117_tpl()">生成模板字符串</button>
+                    </div>
+                    <div class="zyf_117_result" id="zyf_117_tplOut">结果显示在这里…</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="zyf_117_footer">张艺凡 · 高级网页设计 I · 16-2 JS 对象与字符串</footer>
+
+    <script>
+        // ============ 对象 ============
+        let zyf_117_user = { name: "张艺凡", age: 20, grade: "大二", isAdmin: false, score: null };
+        const zyf_117_book = { title: "JS 红宝书", price: 99, pages: 800 };
+
+        function zyf_117_renderObj(id, obj) {
+            const el = document.getElementById(id);
+            const keys = Object.keys(obj);
+            el.innerHTML = "";
+            const open = document.createElement("div");
+            open.innerHTML = `<span class="zyf_117_curly">{</span>`;
+            el.appendChild(open);
+            keys.forEach(k => {
+                const v = obj[k];
+                const row = document.createElement("div");
+                row.className = "zyf_117_obj-row";
+                let cls = "";
+                if (typeof v === "number") cls = "zyf_117_num";
+                else if (typeof v === "boolean") cls = "zyf_117_bool";
+                else if (v === null) cls = "zyf_117_null";
+                row.innerHTML = `<span class="zyf_117_key">${k}</span><span class="zyf_117_colon">:</span><span class="zyf_117_val ${cls}">${JSON.stringify(v)}</span>`;
+                el.appendChild(row);
+            });
+            const close = document.createElement("div");
+            close.innerHTML = `<span class="zyf_117_curly">}</span>`;
+            el.appendChild(close);
+        }
+        zyf_117_renderObj("zyf_117_objView", zyf_117_user);
+        zyf_117_renderObj("zyf_117_objBox2", zyf_117_user);
+        zyf_117_renderObj("zyf_117_bookBox", zyf_117_book);
+
+        function zyf_117_accName()  { document.getElementById("zyf_117_objAccessOut").textContent = `user.name = "${zyf_117_user.name}"`; }
+        function zyf_117_accAge()   { document.getElementById("zyf_117_objAccessOut").textContent = `user["age"] = ${zyf_117_user.age}`; }
+        function zyf_117_accGrade(){ document.getElementById("zyf_117_objAccessOut").textContent = `user["grade"] = "${zyf_117_user.grade}"`; }
+        function zyf_117_accAll()   { document.getElementById("zyf_117_objAccessOut").textContent = JSON.stringify(zyf_117_user, null, 2); }
+
+        function zyf_117_objSet() { zyf_117_user.age = 21; zyf_117_renderObj("zyf_117_objBox2", zyf_117_user); zyf_117_renderObj("zyf_117_objView", zyf_117_user); document.getElementById("zyf_117_objMutOut").textContent = "user.age = 21 ✓"; }
+        function zyf_117_objAdd() { zyf_117_user.email = "zyf@yl.com"; zyf_117_renderObj("zyf_117_objBox2", zyf_117_user); zyf_117_renderObj("zyf_117_objView", zyf_117_user); document.getElementById("zyf_117_objMutOut").textContent = '新增 user.email = "zyf@yl.com" ✓'; }
+        function zyf_117_objDel() { if (zyf_117_user.score !== undefined) { delete zyf_117_user.score; zyf_117_renderObj("zyf_117_objBox2", zyf_117_user); zyf_117_renderObj("zyf_117_objView", zyf_117_user); document.getElementById("zyf_117_objMutOut").textContent = "delete user.score ✓（score 从对象里消失了）"; } else { document.getElementById("zyf_117_objMutOut").textContent = "score 已经不存在了"; } }
+        function zyf_117_objReset() { zyf_117_user = { name: "张艺凡", age: 20, grade: "大二", isAdmin: false, score: null }; zyf_117_renderObj("zyf_117_objBox2", zyf_117_user); zyf_117_renderObj("zyf_117_objView", zyf_117_user); document.getElementById("zyf_117_objMutOut").textContent = "已恢复原始 user 对象"; }
+
+        function zyf_117_objKeys() { document.getElementById("zyf_117_objStatOut").textContent = `Object.keys(book)\n→ ${JSON.stringify(Object.keys(zyf_117_book))}`; }
+        function zyf_117_objVals() { document.getElementById("zyf_117_objStatOut").textContent = `Object.values(book)\n→ ${JSON.stringify(Object.values(zyf_117_book))}`; }
+        function zyf_117_objEnt() { document.getElementById("zyf_117_objStatOut").textContent = `Object.entries(book)\n→ ${JSON.stringify(Object.entries(zyf_117_book))}`; }
+        function zyf_117_objFromEnt() { document.getElementById("zyf_117_objStatOut").textContent = `Object.fromEntries(Object.entries(book))\n→ ${JSON.stringify(Object.fromEntries(Object.entries(zyf_117_book)))}`; }
+
+        function zyf_117_mergeObj() {
+            const base  = { a: 1, b: 2 };
+            const extra = { b: 200, c: 3 };
+            const merged = { ...base, ...extra };
+            document.getElementById("zyf_117_mergeOut").textContent
+                = `base   = ${JSON.stringify(base)}\nextra  = ${JSON.stringify(extra)}\nmerged = ${JSON.stringify(merged)}\n↑ 后面的 b:200 覆盖了前面的 b:2`;
+        }
+        function zyf_117_jsonRound() {
+            const obj = { name: "张艺凡", scores: [90, 85, 95] };
+            const str = JSON.stringify(obj);
+            const back = JSON.parse(str);
+            document.getElementById("zyf_117_mergeOut").textContent
+                = `原对象  ${JSON.stringify(obj)}\n↓ stringify\nJSON 字符串 "${str}"\n↓ parse  \n还原   ${JSON.stringify(back)}\nobj === back → ${obj === back} （是两个不同引用）`;
+        }
+
+        // ============ 字符串 ============
+        const zyf_117_s1 = "Hello 张艺凡";
+        const zyf_117_s2 = "Hello JavaScript";
+        let   zyf_117_s4 = "  Hello JS  ";
+        const zyf_117_s5 = "2026-10-29";
+
+        function zyf_117_renderStr(id, s, opts={}) {
+            const el = document.getElementById(id);
+            el.innerHTML = "";
+            [...s].forEach((ch, i) => {
+                const span = document.createElement("span");
+                span.className = "zyf_117_ch";
+                if (opts.highlight && i >= opts.highlight.start && i < opts.highlight.end) span.classList.add("zyf_117_match");
+                if (opts.mark === i) span.classList.add("zyf_117_match");
+                span.textContent = ch === " " ? "␣" : ch;
+                el.appendChild(span);
+            });
+        }
+        zyf_117_renderStr("zyf_117_strView1", zyf_117_s1);
+        zyf_117_renderStr("zyf_117_strView2", zyf_117_s2);
+        zyf_117_renderStr("zyf_117_strView3", zyf_117_s2);
+        zyf_117_renderStr("zyf_117_strView4", zyf_117_s4);
+        zyf_117_renderStr("zyf_117_strView5", zyf_117_s5);
+
+        // ① charAt
+        function zyf_117_charAt() {
+            const i = Number(document.getElementById("zyf_117_idx").value);
+            if (i < 0 || i >= zyf_117_s1.length) { document.getElementById("zyf_117_charOut").textContent = `下标越界：有效范围 0 ~ ${zyf_117_s1.length - 1}`; return; }
+            zyf_117_renderStr("zyf_117_strView1", zyf_117_s1, { mark: i });
+            const ch = zyf_117_s1[i];
+            document.getElementById("zyf_117_charOut").textContent
+                = `s[${i}] = "${ch}"\ncharCodeAt(${i}) = ${zyf_117_s1.charCodeAt(i)}（${ch.charCodeAt(0) > 127 ? "非 ASCII 中文" : "ASCII"}）`;
+        }
+
+        // ② 搜索
+        function zyf_117_searchHighlight(query) {
+            const idx = zyf_117_s2.indexOf(query);
+            if (idx >= 0) zyf_117_renderStr("zyf_117_strView2", zyf_117_s2, { highlight: { start: idx, end: idx + query.length } });
+            else zyf_117_renderStr("zyf_117_strView2", zyf_117_s2);
+        }
+        function zyf_117_idxOf() {
+            const q = document.getElementById("zyf_117_srch").value;
+            const r = zyf_117_s2.indexOf(q);
+            zyf_117_searchHighlight(q);
+            document.getElementById("zyf_117_srchOut").textContent = `indexOf("${q}") → ${r}${r === -1 ? "  （没找到）" : ""}`;
+        }
+        function zyf_117_inc() {
+            const q = document.getElementById("zyf_117_srch").value;
+            const r = zyf_117_s2.includes(q);
+            zyf_117_searchHighlight(q);
+            document.getElementById("zyf_117_srchOut").textContent = `includes("${q}") → ${r}`;
+        }
+        function zyf_117_starts() {
+            const q = document.getElementById("zyf_117_srch").value;
+            const r = zyf_117_s2.startsWith(q);
+            if (r) zyf_117_renderStr("zyf_117_strView2", zyf_117_s2, { highlight: { start: 0, end: q.length } });
+            else zyf_117_renderStr("zyf_117_strView2", zyf_117_s2);
+            document.getElementById("zyf_117_srchOut").textContent = `startsWith("${q}") → ${r}`;
+        }
+        function zyf_117_ends() {
+            const q = document.getElementById("zyf_117_srch").value;
+            const r = zyf_117_s2.endsWith(q);
+            if (r) zyf_117_renderStr("zyf_117_strView2", zyf_117_s2, { highlight: { start: zyf_117_s2.length - q.length, end: zyf_117_s2.length } });
+            else zyf_117_renderStr("zyf_117_strView2", zyf_117_s2);
+            document.getElementById("zyf_117_srchOut").textContent = `endsWith("${q}") → ${r}`;
+        }
+
+        // ③ slice
+        function zyf_117_slice() {
+            const s = Number(document.getElementById("zyf_117_slS").value);
+            const eStr = document.getElementById("zyf_117_slE").value.trim();
+            const hasEnd = eStr !== "";
+            const result = hasEnd ? zyf_117_s2.slice(s, Number(eStr)) : zyf_117_s2.slice(s);
+            document.getElementById("zyf_117_sliceOut").textContent
+                = `slice(${s}${hasEnd ? ", " + eStr : ""})\n→ "${result}"`;
+        }
+
+        // ④ 变换
+        function zyf_117_renderS4() { zyf_117_renderStr("zyf_117_strView4", zyf_117_s4); }
+        function zyf_117_trans(msg, newVal) {
+            zyf_117_s4 = newVal; zyf_117_renderS4();
+            document.getElementById("zyf_117_transOut").textContent = msg;
+        }
+        function zyf_117_trim()    { zyf_117_trans(`原 "${"  Hello JS  "}"\ntrim() → "${zyf_117_s4.trim()}"`, zyf_117_s4.trim()); }
+        function zyf_117_up()      { zyf_117_trans(`原 "${zyf_117_s4}"\ntoUpperCase() → "${zyf_117_s4.toUpperCase()}"`, zyf_117_s4.toUpperCase()); }
+        function zyf_117_lo()      { zyf_117_trans(`原 "${zyf_117_s4}"\ntoLowerCase() → "${zyf_117_s4.toLowerCase()}"`, zyf_117_s4.toLowerCase()); }
+        function zyf_117_rep()     { zyf_117_trans(`原 "${zyf_117_s4}"\nreplace("JS","TS") → "${zyf_117_s4.replace("JS","TS")}"`, zyf_117_s4.replace("JS","TS")); }
+        function zyf_117_strReset(){ zyf_117_s4 = "  Hello JS  "; zyf_117_renderS4(); document.getElementById("zyf_117_transOut").textContent = '已恢复 "  Hello JS  "'; }
+
+        // ⑤ split / join
+        function zyf_117_split() {
+            const sep = document.getElementById("zyf_117_spSep").value || "-";
+            const parts = zyf_117_s5.split(sep);
+            document.getElementById("zyf_117_splitOut").textContent
+                = `"${zyf_117_s5}".split("${sep}")\n→ ${JSON.stringify(parts)}`;
+        }
+        function zyf_117_join() {
+            const sep = document.getElementById("zyf_117_spJoin").value || "/";
+            const parts = zyf_117_s5.split("-");
+            const joined = parts.join(sep);
+            document.getElementById("zyf_117_splitOut").textContent
+                = `["2026","10","29"].join("${sep}")\n→ "${joined}"`;
+        }
+
+        // ⑥ 模板
+        function zyf_117_tpl() {
+            const name = document.getElementById("zyf_117_tplName").value;
+            const age  = Number(document.getElementById("zyf_117_tplAge").value);
+            const msg = `我是 ${name}，今年 ${age} 岁。`;
+            const multi = `第一行\n第二行\n第三行：${age + 1}`;
+            document.getElementById("zyf_117_tplOut").textContent
+                = `单行模板：\n  \`我是 \${name}，今年 \${age} 岁。\`\n  → "${msg}"\n\n多行模板：\n\`\n第一行\n第二行\n第三行：\${age+1}\n\`\n→\n${multi}`;
+        }
+    </script>
+</body>
+</html>
