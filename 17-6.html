@@ -18,28 +18,33 @@
         background: linear-gradient(90deg, #5d8bff, #a06bff);
         -webkit-background-clip: text; background-clip: text; color: transparent;
     }
-    .zyf_117_header p { color: #98a0bd; font-size: 0.85rem; margin-top: 8px; }
+    .zyf_117_header p { color: #98a0bd; font-size: 0.82rem; margin-top: 8px; line-height: 1.7; }
+    .zyf_117_header code {
+        background: rgba(93,139,255,0.15);
+        border: 1px solid rgba(93,139,255,0.35);
+        padding: 2px 8px; border-radius: 4px; font-size: 0.78rem;
+        color: #93c5fd;
+    }
 
     /* 流程图 */
     .zyf_117_flow {
-        max-width: 860px; margin: 0 auto 22px;
+        max-width: 960px; margin: 0 auto 18px;
         background: rgba(30,34,54,0.8);
         border: 1px solid rgba(148,163,255,0.22);
-        border-radius: 14px; padding: 20px 22px;
+        border-radius: 14px; padding: 18px 22px;
     }
     .zyf_117_flow h2 {
-        font-size: 1.05rem; margin-bottom: 14px;
+        font-size: 1rem; margin-bottom: 14px;
         color: #f0c4ff; border-left: 4px solid #a06bff; padding-left: 12px;
     }
 
-    .zyf_117_pipeline { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
     .zyf_117_step {
-        padding: 10px 14px;
+        padding: 12px 16px; margin-bottom: 10px;
         background: rgba(8,12,28,0.7);
         border: 1px solid rgba(148,163,255,0.25);
         border-radius: 10px;
-        font-size: 0.88rem; color: #98a0bd;
-        transition: all .3s;
+        font-size: 0.85rem; color: #98a0bd;
+        transition: all .3s; position: relative;
     }
     .zyf_117_step.zyf_117_running {
         border-color: #5d8bff; background: rgba(93,139,255,0.15);
@@ -49,33 +54,60 @@
         border-color: #86efac; background: rgba(134,239,172,0.12);
         color: #86efac;
     }
-    .zyf_117_step.zyf_117_parallel {
+    .zyf_117_step.zyf_117_par {
         border-color: #f472b6; background: rgba(244,114,182,0.10);
         color: #f9a8d4;
     }
-    .zyf_117_arrow { color: #6b7394; font-size: 1.2rem; font-weight: bold; }
+    .zyf_117_step.zyf_117_par.zyf_117_running {
+        border-color: #f472b6; box-shadow: 0 0 14px rgba(244,114,182,0.45);
+        background: rgba(244,114,182,0.18);
+    }
+    .zyf_117_step.zyf_117_par.zyf_117_done {
+        border-color: #86efac; background: rgba(134,239,172,0.12);
+        color: #86efac;
+    }
+    .zyf_117_step-title {
+        font-weight: 600; font-size: 0.95rem; margin-bottom: 4px;
+    }
+    .zyf_117_step-sub {
+        font-size: 0.75rem; color: #6b7394; font-family: Consolas, Monaco, monospace;
+    }
+    .zyf_117_step-code {
+        position: absolute; right: 14px; top: 50%; transform: translateY(-50%);
+        font-family: Consolas, Monaco, monospace; font-size: 0.72rem;
+        color: #6b7394; background: rgba(8,12,28,0.55);
+        padding: 4px 10px; border-radius: 5px; border: 1px solid rgba(148,163,255,0.15);
+    }
+    .zyf_117_arrow {
+        text-align: center; color: #6b7394; font-size: 1rem; margin: 2px 0;
+    }
+
+    .zyf_117_race-box {
+        display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
+    }
+    .zyf_117_race-box .zyf_117_step { margin-bottom: 0; }
 
     /* 进度条 */
     .zyf_117_progress {
-        max-width: 860px; margin: 0 auto 16px;
+        max-width: 960px; margin: 0 auto 14px;
         height: 26px; background: rgba(8,12,28,0.8);
         border: 1px solid rgba(148,163,255,0.22);
         border-radius: 13px; overflow: hidden; position: relative;
     }
     .zyf_117_progress-fill {
         height: 100%; width: 0%;
-        background: linear-gradient(90deg, #5d8bff, #a06bff, #f472b6);
+        background: linear-gradient(90deg, #5d8bff, #a06bff, #f472b6, #86efac);
         transition: width .3s;
     }
     .zyf_117_progress-text {
         position: absolute; inset: 0;
         display: flex; align-items: center; justify-content: center;
-        font-size: 0.78rem; color: #e8ebf8;
+        font-size: 0.78rem; color: #e8ebf8; font-weight: 600;
     }
 
-    /* 控制按钮 */
+    /* 按钮 */
     .zyf_117_ctrl-row {
-        max-width: 860px; margin: 0 auto 16px;
+        max-width: 960px; margin: 0 auto 14px;
         display: flex; gap: 10px; flex-wrap: wrap;
     }
     .zyf_117_ctrl-row button {
@@ -84,21 +116,23 @@
         cursor: pointer; font-size: 0.85rem; font-weight: 600; letter-spacing: 1px;
     }
     .zyf_117_ctrl-row button.zyf_117_pink { background: linear-gradient(90deg, #f472b6, #ec4899); }
+    .zyf_117_ctrl-row button.zyf_117_green { background: linear-gradient(90deg, #10b981, #059669); }
     .zyf_117_ctrl-row button:hover { opacity: 0.85; }
 
     /* 日志 */
     .zyf_117_logbox {
-        max-width: 860px; margin: 0 auto;
+        max-width: 960px; margin: 0 auto;
         background: rgba(8,12,28,0.85); border: 1px solid rgba(148,163,255,0.22);
-        border-radius: 12px; padding: 16px;
+        border-radius: 12px; padding: 14px 16px;
         font-family: Consolas, Monaco, monospace;
-        font-size: 0.82rem; line-height: 1.8;
+        font-size: 0.8rem; line-height: 1.9;
         max-height: 340px; overflow-y: auto;
     }
-    .zyf_117_logbox .zyf_117_l { color: #98a0bd; }
+    .zyf_117_logbox .zyf_117_l { color: #6b7394; }
     .zyf_117_logbox .zyf_117_ok { color: #86efac; }
     .zyf_117_logbox .zyf_117_go { color: #93c5fd; }
     .zyf_117_logbox .zyf_117_par { color: #f9a8d4; }
+    .zyf_117_logbox .zyf_117_race { color: #fbbf24; }
 
     footer { text-align: center; margin-top: 32px; color: #6b7394; font-size: 0.85rem; letter-spacing: 2px; }
 </style>
@@ -106,23 +140,86 @@
 <body>
     <div class="zyf_117_header">
         <h1>🍜 包饺子流程（Promise + async/await）</h1>
-        <p style="color:#98a0bd;font-size:0.85rem;margin-top:6px">顺序：买原料 → 取原料 → <span style="color:#f9a8d4">和面 ‖ 剁馅</span>（并行） → 包饺子 → 吃饺子</p>
+        <p>
+            ① <code>Promise.race(线上, 线下)</code> 谁先完算谁<br>
+            ② 取原料 → ③ <code>Promise.all(和面, 和馅)</code> 并行 → ④ 包饺子 → ⑤ 煮饺子 → ⑥ 吃饺子
+        </p>
     </div>
 
     <!-- 流程图 -->
     <div class="zyf_117_flow">
-        <h2>流程节点</h2>
-        <div class="zyf_117_pipeline" id="zyf_117_pipe">
-            <div class="zyf_117_step" data-step="buy">🛒 买原料（6s）</div>
-            <span class="zyf_117_arrow">→</span>
-            <div class="zyf_117_step" data-step="take">📦 取原料（3s）</div>
-            <span class="zyf_117_arrow">→</span>
-            <div class="zyf_117_step zyf_117_parallel" data-step="mix">🍞 和面（4s）<br><span style="color:#6b7394;font-size:0.7rem">并行</span></div>
-            <div class="zyf_117_step zyf_117_parallel" data-step="chop">🥬 剁馅（5s）<br><span style="color:#6b7394;font-size:0.7rem">并行</span></div>
-            <span class="zyf_117_arrow">→</span>
-            <div class="zyf_117_step" data-step="wrap">🥟 包饺子（7s）</div>
-            <span class="zyf_117_arrow">→</span>
-            <div class="zyf_117_step" data-step="eat">😋 吃饺子（完成）</div>
+        <h2>流程节点（点击"开始包饺子"看动态）</h2>
+
+        <!-- Step 1: 买原料 Promise.race -->
+        <div class="zyf_117_step" id="zyf_117_s1">
+            <div class="zyf_117_step-title">🛒 ① 买原料（Promise.race）</div>
+            <div class="zyf_117_step-sub">线上 3s vs 线下 6s —— 谁先完成就算买完了</div>
+            <div class="zyf_117_step-code">Promise.race</div>
+        </div>
+        <div class="zyf_117_race-box" id="zyf_117_s1box" style="display:none">
+            <div class="zyf_117_step" id="zyf_117_s1_online">
+                <div class="zyf_117_step-title">📱 线上外卖（3s）</div>
+                <div class="zyf_117_step-sub">手机下单 → 骑手配送</div>
+            </div>
+            <div class="zyf_117_step" id="zyf_117_s1_offline">
+                <div class="zyf_117_step-title">🏪 线下超市（6s）</div>
+                <div class="zyf_117_step-sub">骑车 → 排队 → 拎回家</div>
+            </div>
+        </div>
+
+        <div class="zyf_117_arrow">↓</div>
+
+        <!-- Step 2: 取原料 -->
+        <div class="zyf_117_step" id="zyf_117_s2">
+            <div class="zyf_117_step-title">📦 ② 取原料（4s）</div>
+            <div class="zyf_117_step-sub">从门口/快递柜把面粉、肉馅、白菜拿到厨房</div>
+            <div class="zyf_117_step-code">await</div>
+        </div>
+
+        <div class="zyf_117_arrow">↓</div>
+
+        <!-- Step 3: 和面 + 和馅 Promise.all 并行 -->
+        <div class="zyf_117_step zyf_117_par" id="zyf_117_s3">
+            <div class="zyf_117_step-title">🍞 ③ 和面 + 🥬 和馅（Promise.all 并行）</div>
+            <div class="zyf_117_step-sub">总耗时 = max(6s, 8s) = 8s，而不是 6+8 = 14s</div>
+            <div class="zyf_117_step-code">Promise.all</div>
+        </div>
+        <div class="zyf_117_race-box" id="zyf_117_s3box" style="display:none">
+            <div class="zyf_117_step zyf_117_par" id="zyf_117_s3_dough">
+                <div class="zyf_117_step-title">🍞 和面（6s）</div>
+                <div class="zyf_117_step-sub">面粉 + 水 + 揉面 + 醒面</div>
+            </div>
+            <div class="zyf_117_step zyf_117_par" id="zyf_117_s3_filling">
+                <div class="zyf_117_step-title">🥬 和馅（8s）</div>
+                <div class="zyf_117_step-sub">切白菜 + 剁肉馅 + 加调料</div>
+            </div>
+        </div>
+
+        <div class="zyf_117_arrow">↓</div>
+
+        <!-- Step 4: 包饺子 -->
+        <div class="zyf_117_step" id="zyf_117_s4">
+            <div class="zyf_117_step-title">🥟 ④ 包饺子（10s）</div>
+            <div class="zyf_117_step-sub">擀皮 → 包馅 → 捏褶子 → 码齐</div>
+            <div class="zyf_117_step-code">await</div>
+        </div>
+
+        <div class="zyf_117_arrow">↓</div>
+
+        <!-- Step 5: 煮饺子 -->
+        <div class="zyf_117_step" id="zyf_117_s5">
+            <div class="zyf_117_step-title">🔥 ⑤ 煮饺子（8s）</div>
+            <div class="zyf_117_step-sub">水烧开 → 下饺子 → 点三次凉水 → 浮起捞出</div>
+            <div class="zyf_117_step-code">await</div>
+        </div>
+
+        <div class="zyf_117_arrow">↓</div>
+
+        <!-- Step 6: 吃饺子 -->
+        <div class="zyf_117_step" id="zyf_117_s6">
+            <div class="zyf_117_step-title">😋 ⑥ 吃饺子（3s）</div>
+            <div class="zyf_117_step-sub">蘸醋 → 吹一口 → 咬一口 → 真香</div>
+            <div class="zyf_117_step-code">await</div>
         </div>
     </div>
 
@@ -140,36 +237,35 @@
 
     <!-- 日志 -->
     <div class="zyf_117_logbox" id="zyf_117_log">
-        <div class="zyf_117_l">// 日志区 —— 点击"开始包饺子"看流程执行顺序</div>
+        <div class="zyf_117_l">// 日志区 —— 点击"开始包饺子"看每个 Promise 节点执行</div>
     </div>
 
-    <footer>张艺凡 · 高级网页设计 I · 17-6 Promise + async/await</footer>
+    <footer>张艺凡 · 高级网页设计 I · 17-6 Promise + async/await（包饺子）</footer>
 
     <script>
-        // ========== 工具：sleep（Promise 版 setTimeout）==========
-        function zyf_117_sleep(ms, label) {
+        // ========== sleep：Promise 包装 setTimeout ==========
+        function zyf_117_sleep(ms, label, nodeId) {
             return new Promise(resolve => {
-                zyf_117_log(`<span class="zyf_117_go">⏱ ${label}</span> 开始，预计 ${ms}ms`);
+                if (nodeId) {
+                    const el = document.getElementById(nodeId);
+                    if (el) el.classList.add("zyf_117_running");
+                }
+                zyf_117_log(`<span class="zyf_117_go">⏱ ${label}</span> 开始 (${ms}ms)`);
                 setTimeout(() => {
+                    if (nodeId) {
+                        const el = document.getElementById(nodeId);
+                        if (el) {
+                            el.classList.remove("zyf_117_running");
+                            el.classList.add("zyf_117_done");
+                        }
+                    }
                     zyf_117_log(`<span class="zyf_117_ok">✓ ${label}</span> 完成`);
                     resolve();
                 }, ms);
             });
         }
 
-        // ========== 高亮/进度更新 ==========
-        const zyf_117_total = 5; // buy, take, parallel, wrap, eat
-        let zyf_117_done = 0;
-        function zyf_117_highlight(step, cls) {
-            const el = document.querySelector(`.zyf_117_step[data-step="${step}"]`);
-            if (el) el.className = "zyf_117_step " + cls;
-        }
-        function zyf_117_progress() {
-            zyf_117_done++;
-            const pct = Math.round(zyf_117_done / zyf_117_total * 100);
-            document.getElementById("zyf_117_fill").style.width = pct + "%";
-            document.getElementById("zyf_117_fillText").textContent = `${pct}% — ${zyf_117_done}/${zyf_117_total}`;
-        }
+        // ========== 日志 ==========
         function zyf_117_log(msg) {
             const box = document.getElementById("zyf_117_log");
             const t = new Date().toLocaleTimeString();
@@ -177,53 +273,24 @@
             box.scrollTop = box.scrollHeight;
         }
 
-        // ========== 异步流程 ==========
-        async function zyf_117_makeDumplings() {
-            zyf_117_reset(false);
-            zyf_117_log(`<span class="zyf_117_go">🍳 async function makeDumplings() 启动</span>`);
-
-            // 1. 买原料
-            zyf_117_highlight("buy", "zyf_117_running");
-            await zyf_117_sleep(1500, "🛒 买原料");
-            zyf_117_highlight("buy", "zyf_117_done");
-            zyf_117_progress();
-
-            // 2. 取原料
-            zyf_117_highlight("take", "zyf_117_running");
-            await zyf_117_sleep(800, "📦 取原料");
-            zyf_117_highlight("take", "zyf_117_done");
-            zyf_117_progress();
-
-            // 3. 和面 和 剁馅 —— 并行！Promise.all
-            zyf_117_highlight("mix", "zyf_117_running");
-            zyf_117_highlight("chop", "zyf_117_running");
-            zyf_117_log(`<span class="zyf_117_par">⚡ Promise.all(和面, 剁馅) 并行开始</span>`);
-            await Promise.all([
-                zyf_117_sleep(1200, "🍞 和面"),
-                zyf_117_sleep(1500, "🥬 剁馅")
-            ]);
-            zyf_117_highlight("mix", "zyf_117_done");
-            zyf_117_highlight("chop", "zyf_117_done");
-            zyf_117_progress();
-
-            // 4. 包饺子
-            zyf_117_highlight("wrap", "zyf_117_running");
-            await zyf_117_sleep(2000, "🥟 包饺子");
-            zyf_117_highlight("wrap", "zyf_117_done");
-            zyf_117_progress();
-
-            // 5. 吃饺子
-            zyf_117_highlight("eat", "zyf_117_running");
-            await zyf_117_sleep(1000, "😋 吃饺子");
-            zyf_117_highlight("eat", "zyf_117_done");
-            zyf_117_progress();
-
-            zyf_117_log(`<span class="zyf_117_ok">🎉 全部完成！Promise 链顺序执行 + Promise.all 并行</span>`);
+        // ========== 进度 ==========
+        const zyf_117_TOTAL_STEPS = 6; // s1/race, s2, s3/all, s4, s5, s6
+        let zyf_117_done = 0;
+        function zyf_117_progress(label) {
+            zyf_117_done++;
+            const pct = Math.round(zyf_117_done / zyf_117_TOTAL_STEPS * 100);
+            document.getElementById("zyf_117_fill").style.width = pct + "%";
+            document.getElementById("zyf_117_fillText").textContent = `${pct}% — ${label}`;
         }
 
+        // ========== 重置 ==========
         function zyf_117_reset(addLog = true) {
             document.querySelectorAll(".zyf_117_step").forEach(el => {
-                el.className = "zyf_117_step" + (el.classList.contains("zyf_117_parallel") ? " zyf_117_parallel" : "");
+                el.classList.remove("zyf_117_running", "zyf_117_done");
+            });
+            // 给 race / all 内部子节点恢复 pink 底色
+            ["zyf_117_s3_dough", "zyf_117_s3_filling"].forEach(id => {
+                document.getElementById(id).classList.add("zyf_117_par");
             });
             zyf_117_done = 0;
             document.getElementById("zyf_117_fill").style.width = "0%";
@@ -231,13 +298,63 @@
             if (addLog) {
                 document.getElementById("zyf_117_log").innerHTML = `<div class="zyf_117_l">// 日志已清空</div>`;
             }
+            zyf_117_running = false;
         }
 
+        // ========== 主流程 ==========
         let zyf_117_running = false;
-        function zyf_117_run() {
+        async function zyf_117_makeDumplings() {
             if (zyf_117_running) return;
             zyf_117_running = true;
-            zyf_117_makeDumplings().then(() => { zyf_117_running = false; });
+            zyf_117_reset(false);
+            document.getElementById("zyf_117_s1box").style.display = "grid";
+            document.getElementById("zyf_117_s3box").style.display = "grid";
+            zyf_117_log(`<span class="zyf_117_go">🍳 async function makeDumplings() 启动</span>`);
+
+            // —— ① 买原料 —— Promise.race(线上, 线下)
+            const s1 = document.getElementById("zyf_117_s1");
+            s1.classList.add("zyf_117_running");
+            zyf_117_log(`<span class="zyf_117_race">⚔ Promise.race 开始 —— 线上 3s vs 线下 6s</span>`);
+            const buyRes = await Promise.race([
+                zyf_117_sleep(3000, "📱 线上外卖下单", "zyf_117_s1_online").then(() => "线上"),
+                zyf_117_sleep(6000, "🏪 线下超市采购", "zyf_117_s1_offline").then(() => "线下")
+            ]);
+            s1.classList.remove("zyf_117_running");
+            s1.classList.add("zyf_117_done");
+            zyf_117_log(`<span class="zyf_117_race">🏆 Promise.race 胜者：<b>${buyRes}</b>（因为 3s < 6s，线下的 Promise 还在后台等，但已不再阻塞流程）</span>`);
+            zyf_117_progress(`买原料（${buyRes}）完成`);
+
+            // —— ② 取原料 ——
+            await zyf_117_sleep(4000, "📦 取原料", "zyf_117_s2");
+            zyf_117_progress("取原料完成");
+
+            // —— ③ 和面 + 和馅 —— Promise.all 并行
+            const s3 = document.getElementById("zyf_117_s3");
+            s3.classList.add("zyf_117_running");
+            zyf_117_log(`<span class="zyf_117_par">⚡ Promise.all 开始 —— 和面 6s ‖ 和馅 8s 并行</span>`);
+            await Promise.all([
+                zyf_117_sleep(6000, "🍞 和面", "zyf_117_s3_dough"),
+                zyf_117_sleep(8000, "🥬 和馅", "zyf_117_s3_filling")
+            ]);
+            s3.classList.remove("zyf_117_running");
+            s3.classList.add("zyf_117_done");
+            zyf_117_log(`<span class="zyf_117_par">⚡ Promise.all 全部完成 —— 总耗时 ≈ 8s（取 max，不是 6+8=14）</span>`);
+            zyf_117_progress("和面+和馅完成");
+
+            // —— ④ 包饺子 ——
+            await zyf_117_sleep(10000, "🥟 包饺子", "zyf_117_s4");
+            zyf_117_progress("包饺子完成");
+
+            // —— ⑤ 煮饺子 ——
+            await zyf_117_sleep(8000, "🔥 煮饺子", "zyf_117_s5");
+            zyf_117_progress("煮饺子完成");
+
+            // —— ⑥ 吃饺子 ——
+            await zyf_117_sleep(3000, "😋 吃饺子", "zyf_117_s6");
+            zyf_117_progress("全部完成！真香");
+
+            zyf_117_log(`<span class="zyf_117_ok">🎉 全部完成！Promise.race + Promise.all + async/await 全部演示到位</span>`);
+            zyf_117_running = false;
         }
     </script>
 </body>
