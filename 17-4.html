@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<!-- 姓名：张艺凡 / 日期：2026-11-02 / 功能名称：17-4 远程接口测试 get/post -->
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>17-4 远程接口测试 · 张艺凡</title>
+<style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+        font-family: "Microsoft YaHei", "PingFang SC", Arial, sans-serif;
+        background: linear-gradient(160deg, #0a0e1c 0%, #1a1140 100%);
+        min-height: 100vh; color: #e8ebf8; padding: 36px 20px;
+    }
+    .zyf_117_header { text-align: center; margin-bottom: 26px; }
+    .zyf_117_header h1 {
+        font-size: 1.8rem;
+        background: linear-gradient(90deg, #5d8bff, #a06bff);
+        -webkit-background-clip: text; background-clip: text; color: transparent;
+    }
+
+    .zyf_117_box {
+        max-width: 820px; margin: 0 auto 20px;
+        background: rgba(30,34,54,0.8);
+        border: 1px solid rgba(148,163,255,0.22);
+        border-radius: 14px; padding: 20px 22px;
+    }
+    .zyf_117_box h2 {
+        font-size: 1.05rem; margin-bottom: 12px;
+        color: #f0c4ff; border-left: 4px solid #a06bff; padding-left: 12px;
+    }
+    .zyf_117_box h2.zyf_117_post { border-left-color: #f472b6; color: #fda4af; }
+
+    .zyf_117_row { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; margin-bottom: 10px; }
+    .zyf_117_row select, .zyf_117_row input, .zyf_117_row textarea {
+        background: rgba(8,12,28,0.85); border: 1px solid rgba(148,163,255,0.35);
+        border-radius: 8px; color: #cdd5f0; padding: 8px 12px; font-size: 0.85rem;
+        font-family: Consolas, Monaco, monospace;
+    }
+    .zyf_117_row input[type="text"] { flex: 1; min-width: 280px; }
+    .zyf_117_data { width: 100%; min-height: 90px; resize: vertical; }
+
+    .zyf_117_btn {
+        background: linear-gradient(90deg, #5d8bff, #a06bff);
+        color: #fff; border: none; padding: 8px 18px; border-radius: 8px;
+        cursor: pointer; font-size: 0.85rem; font-weight: 600;
+    }
+    .zyf_117_btn:hover { opacity: 0.85; }
+    .zyf_117_btn.zyf_117_pink { background: linear-gradient(90deg, #f472b6, #ec4899); }
+
+    .zyf_117_out {
+        margin-top: 14px; border-radius: 8px; overflow: hidden;
+    }
+    .zyf_117_statusline {
+        display: flex; gap: 14px; padding: 8px 14px;
+        background: rgba(8,12,28,0.85);
+        border: 1px solid rgba(148,163,255,0.18);
+        border-radius: 8px 8px 0 0;
+        font-family: Consolas, Monaco, monospace; font-size: 0.82rem;
+    }
+    .zyf_117_method { font-weight: bold; color: #93c5fd; }
+    .zyf_117_code { font-weight: bold; }
+    .zyf_117_code.zyf_117_ok { color: #86efac; }
+    .zyf_117_code.zyf_117_err { color: #ff6b6b; }
+
+    .zyf_117_body {
+        background: rgba(8,12,28,0.85); border-radius: 0 0 8px 8px;
+        border: 1px solid rgba(148,163,255,0.18); border-top: none;
+        padding: 14px; font-family: Consolas, Monaco, monospace;
+        font-size: 0.82rem; line-height: 1.7; color: #cdd5f0;
+        max-height: 260px; overflow-y: auto;
+    }
+    .zyf_117_errbox {
+        background: rgba(255,107,107,0.10); border: 1px solid rgba(255,107,107,0.35);
+        color: #ff6b6b; padding: 10px 14px; border-radius: 8px;
+        font-family: Consolas, Monaco, monospace; font-size: 0.82rem;
+        margin-top: 10px; display: none;
+    }
+    .zyf_117_errbox.zyf_117_show { display: block; }
+
+    footer { text-align: center; margin-top: 32px; color: #6b7394; font-size: 0.85rem; letter-spacing: 2px; }
+</style>
+</head>
+<body>
+    <div class="zyf_117_header">
+        <h1>远程接口测试工具</h1>
+        <p style="color:#98a0bd;font-size:0.85rem;margin-top:6px">GET / POST · https://jsonplaceholder.typicode.com/posts</p>
+    </div>
+
+    <!-- GET -->
+    <section class="zyf_117_box">
+        <h2>① GET 请求（获取数据）</h2>
+        <div class="zyf_117_row">
+            <input type="text" id="zyf_117_getUrl" value="https://jsonplaceholder.typicode.com/posts/1">
+            <button class="zyf_117_btn" onclick="zyf_117_doGet()">📥 GET</button>
+        </div>
+        <div id="zyf_117_getOut" class="zyf_117_out">
+            <div class="zyf_117_statusline"><span class="zyf_117_method">GET</span><span class="zyf_117_code">—</span><span>⏳ 等待请求…</span></div>
+            <div class="zyf_117_body">点击 GET 按钮执行请求</div>
+        </div>
+        <div class="zyf_117_errbox" id="zyf_117_getErr"></div>
+    </section>
+
+    <!-- POST -->
+    <section class="zyf_117_box">
+        <h2 class="zyf_117_post">② POST 请求（提交数据）</h2>
+        <div class="zyf_117_row">
+            <input type="text" id="zyf_117_postUrl" value="https://jsonplaceholder.typicode.com/posts">
+            <button class="zyf_117_btn zyf_117_pink" onclick="zyf_117_doPost()">📤 POST</button>
+        </div>
+        <textarea class="zyf_117_data" id="zyf_117_postData">{
+  "title": "张艺凡的测试文章",
+  "body": "这是通过 fetch POST 发送的内容",
+  "userId": 1
+}</textarea>
+        <div id="zyf_117_postOut" class="zyf_117_out" style="margin-top:10px">
+            <div class="zyf_117_statusline"><span class="zyf_117_method">POST</span><span class="zyf_117_code">—</span><span>⏳ 等待请求…</span></div>
+            <div class="zyf_117_body">点击 POST 按钮提交数据</div>
+        </div>
+        <div class="zyf_117_errbox" id="zyf_117_postErr"></div>
+    </section>
+
+    footer { text-align: center; margin-top: 32px; color: #6b7394; font-size: 0.85rem; letter-spacing: 2px; }
+
+    <footer>张艺凡 · 高级网页设计 I · 17-4 远程接口测试</footer>
+
+    <script>
+        function zyf_117_renderOut(boxId, errId, method, url, status, statusText, body, err) {
+            const box = document.getElementById(boxId);
+            const errBox = document.getElementById(errId);
+            if (err) {
+                box.innerHTML = `
+                    <div class="zyf_117_statusline"><span class="zyf_117_method">${method}</span><span class="zyf_117_code zyf_117_err">ERROR</span><span>${url}</span></div>
+                    <div class="zyf_117_body" style="color:#ff6b6b">请求失败：${err.message}</div>
+                `;
+                errBox.textContent = err.stack || String(err);
+                errBox.classList.add("zyf_117_show");
+            } else {
+                errBox.classList.remove("zyf_117_show");
+                const codeCls = status >= 200 && status < 300 ? "zyf_117_ok" : "zyf_117_err";
+                const pretty = typeof body === "string" ? body : JSON.stringify(body, null, 2);
+                box.innerHTML = `
+                    <div class="zyf_117_statusline"><span class="zyf_117_method">${method}</span><span class="zyf_117_code ${codeCls}">${status} ${statusText}</span><span>${url}</span></div>
+                    <div class="zyf_117_body">${pretty}</div>
+                `;
+            }
+        }
+
+        async function zyf_117_doGet() {
+            const url = document.getElementById("zyf_117_getUrl").value.trim();
+            const box = document.getElementById("zyf_117_getOut");
+            const errBox = document.getElementById("zyf_117_getErr");
+            box.innerHTML = `<div class="zyf_117_statusline"><span class="zyf_117_method">GET</span><span class="zyf_117_code">—</span><span>⏳ 请求中…</span></div>`;
+            errBox.classList.remove("zyf_117_show");
+            try {
+                const res = await fetch(url, { method: "GET" });
+                const text = await res.text();
+                let body;
+                try { body = JSON.parse(text); } catch { body = text; }
+                zyf_117_renderOut("zyf_117_getOut", "zyf_117_getErr", "GET", url, res.status, res.statusText, body);
+            } catch (e) {
+                zyf_117_renderOut("zyf_117_getOut", "zyf_117_getErr", "GET", url, 0, "NETWORK", null, e);
+            }
+        }
+
+        async function zyf_117_doPost() {
+            const url = document.getElementById("zyf_117_postUrl").value.trim();
+            let data;
+            try { data = JSON.parse(document.getElementById("zyf_117_postData").value); }
+            catch (e) {
+                document.getElementById("zyf_117_postErr").textContent = "❌ POST Body 不是合法 JSON：" + e.message;
+                document.getElementById("zyf_117_postErr").classList.add("zyf_117_show");
+                return;
+            }
+            document.getElementById("zyf_117_postErr").classList.remove("zyf_117_show");
+            const box = document.getElementById("zyf_117_postOut");
+            box.innerHTML = `<div class="zyf_117_statusline"><span class="zyf_117_method">POST</span><span class="zyf_117_code">—</span><span>⏳ 发送中…</span></div>`;
+            try {
+                const res = await fetch(url, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(data)
+                });
+                const body = await res.json();
+                zyf_117_renderOut("zyf_117_postOut", "zyf_117_postErr", "POST", url, res.status, res.statusText, body);
+            } catch (e) {
+                zyf_117_renderOut("zyf_117_postOut", "zyf_117_postErr", "POST", url, 0, "NETWORK", null, e);
+            }
+        }
+
+        // 自动跑一次 GET
+        window.onload = zyf_117_doGet;
+    </script>
+</body>
+</html>

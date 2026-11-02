@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<!-- 姓名：张艺凡 / 日期：2026-11-02 / 功能名称：17-3 远程商品列表 -->
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>17-3 商品列表 · 张艺凡</title>
+<style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+        font-family: "Microsoft YaHei", "PingFang SC", Arial, sans-serif;
+        background: linear-gradient(160deg, #0a0e1c 0%, #1a1140 100%);
+        min-height: 100vh; color: #e8ebf8; padding: 36px 20px;
+    }
+    .zyf_117_header { text-align: center; margin-bottom: 24px; }
+    .zyf_117_header h1 {
+        font-size: 1.8rem;
+        background: linear-gradient(90deg, #5d8bff, #a06bff);
+        -webkit-background-clip: text; background-clip: text; color: transparent;
+    }
+
+    .zyf_117_grid {
+        max-width: 1100px; margin: 0 auto;
+        display: grid; gap: 16px;
+        grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    }
+    .zyf_117_card {
+        background: rgba(30,34,54,0.8);
+        border: 1px solid rgba(148,163,255,0.22);
+        border-radius: 12px; overflow: hidden;
+        cursor: pointer; transition: transform .2s, box-shadow .2s;
+    }
+    .zyf_117_card:hover { transform: translateY(-4px); box-shadow: 0 14px 30px rgba(93,139,255,0.25); }
+    .zyf_117_img {
+        width: 100%; height: 160px; object-fit: cover;
+        background: rgba(8,12,28,0.6);
+    }
+    .zyf_117_info { padding: 12px 14px; }
+    .zyf_117_title {
+        font-size: 0.92rem; font-weight: 600;
+        color: #e8ebf8; margin-bottom: 6px;
+        overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+    }
+    .zyf_117_meta { display: flex; justify-content: space-between; align-items: center; font-size: 0.8rem; }
+    .zyf_117_price { color: #f472b6; font-weight: 700; font-size: 1rem; }
+    .zyf_117_cat { color: #98a0bd; }
+    .zyf_117_id { color: #6b7394; font-size: 0.72rem; }
+
+    .zyf_117_btn {
+        display: block; width: 100%; padding: 8px;
+        background: linear-gradient(90deg, #5d8bff, #a06bff);
+        color: #fff; border: none; cursor: pointer;
+        font-size: 0.82rem; font-weight: 600; letter-spacing: 1px;
+        text-align: center; text-decoration: none;
+    }
+
+    .zyf_117_pager { max-width: 1100px; margin: 24px auto; display: flex; gap: 10px; justify-content: center; align-items: center; }
+    .zyf_117_pager button {
+        background: rgba(93,139,255,0.18); color: #93c5fd;
+        border: 1px solid rgba(93,139,255,0.35); padding: 8px 14px;
+        border-radius: 8px; cursor: pointer; font-size: 0.85rem;
+    }
+    .zyf_117_pager button:hover { background: rgba(93,139,255,0.35); }
+    .zyf_117_pager button:disabled { opacity: 0.3; cursor: not-allowed; }
+    .zyf_117_pager span { color: #98a0bd; font-size: 0.85rem; }
+
+    footer { text-align: center; margin-top: 32px; color: #6b7394; font-size: 0.85rem; letter-spacing: 2px; }
+</style>
+</head>
+<body>
+    <div class="zyf_117_header">
+        <h1>远程商品列表（DummyJSON）</h1>
+        <p style="color:#98a0bd;font-size:0.85rem;margin-top:6px">点击任意卡片 → 跳转到详情页查看完整信息</p>
+    </div>
+
+    <div class="zyf_117_grid" id="zyf_117_grid">⏳ 加载中…</div>
+    <div class="zyf_117_pager" id="zyf_117_pager"></div>
+
+    <footer>张艺凡 · 高级网页设计 I · 17-3 商品列表 + 详情</footer>
+
+    <script>
+        const zyf_117_PAGE_SIZE = 8;
+        let zyf_117_products = [];
+        let zyf_117_page = 0;
+
+        async function zyf_117_load() {
+            try {
+                const res = await fetch(`https://dummyjson.com/products?limit=100`);
+                const data = await res.json();
+                zyf_117_products = data.products;
+                zyf_117_render();
+            } catch (e) {
+                document.getElementById("zyf_117_grid").innerHTML = `<div style="color:#ff6b6b">加载失败：${e.message}</div>`;
+            }
+        }
+
+        function zyf_117_render() {
+            const grid = document.getElementById("zyf_117_grid");
+            const start = zyf_117_page * zyf_117_PAGE_SIZE;
+            const end = start + zyf_117_PAGE_SIZE;
+            const pageData = zyf_117_products.slice(start, end);
+
+            grid.innerHTML = pageData.map(p => `
+                <div class="zyf_117_card" onclick="location.href='17-3-detail.html?id=${p.id}'">
+                    <img class="zyf_117_img" src="${p.thumbnail}" alt="">
+                    <div class="zyf_117_info">
+                        <div class="zyf_117_id">#${p.id}</div>
+                        <div class="zyf_117_title">${p.title}</div>
+                        <div class="zyf_117_meta">
+                            <span class="zyf_117_price">$${p.price}</span>
+                            <span class="zyf_117_cat">${p.category}</span>
+                        </div>
+                    </div>
+                    <button class="zyf_117_btn">查看详情 →</button>
+                </div>
+            `).join("");
+
+            const totalPages = Math.ceil(zyf_117_products.length / zyf_117_PAGE_SIZE);
+            document.getElementById("zyf_117_pager").innerHTML = `
+                <button ${zyf_117_page === 0 ? "disabled" : ""} onclick="zyf_117_page--;zyf_117_render()">← 上一页</button>
+                <span>第 ${zyf_117_page + 1} / ${totalPages} 页  (共 ${zyf_117_products.length} 个商品)</span>
+                <button ${zyf_117_page === totalPages - 1 ? "disabled" : ""} onclick="zyf_117_page++;zyf_117_render()">下一页 →</button>
+            `;
+        }
+
+        zyf_117_load();
+    </script>
+</body>
+</html>

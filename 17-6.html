@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<!-- 姓名：张艺凡 / 日期：2026-11-02 / 功能名称：17-6 Promise + async/await 包饺子 -->
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>17-6 包饺子 Promise · 张艺凡</title>
+<style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+        font-family: "Microsoft YaHei", "PingFang SC", Arial, sans-serif;
+        background: linear-gradient(160deg, #0a0e1c 0%, #1a1140 100%);
+        min-height: 100vh; color: #e8ebf8; padding: 36px 20px;
+    }
+    .zyf_117_header { text-align: center; margin-bottom: 24px; }
+    .zyf_117_header h1 {
+        font-size: 1.8rem;
+        background: linear-gradient(90deg, #5d8bff, #a06bff);
+        -webkit-background-clip: text; background-clip: text; color: transparent;
+    }
+    .zyf_117_header p { color: #98a0bd; font-size: 0.85rem; margin-top: 8px; }
+
+    /* 流程图 */
+    .zyf_117_flow {
+        max-width: 860px; margin: 0 auto 22px;
+        background: rgba(30,34,54,0.8);
+        border: 1px solid rgba(148,163,255,0.22);
+        border-radius: 14px; padding: 20px 22px;
+    }
+    .zyf_117_flow h2 {
+        font-size: 1.05rem; margin-bottom: 14px;
+        color: #f0c4ff; border-left: 4px solid #a06bff; padding-left: 12px;
+    }
+
+    .zyf_117_pipeline { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+    .zyf_117_step {
+        padding: 10px 14px;
+        background: rgba(8,12,28,0.7);
+        border: 1px solid rgba(148,163,255,0.25);
+        border-radius: 10px;
+        font-size: 0.88rem; color: #98a0bd;
+        transition: all .3s;
+    }
+    .zyf_117_step.zyf_117_running {
+        border-color: #5d8bff; background: rgba(93,139,255,0.15);
+        color: #93c5fd; box-shadow: 0 0 14px rgba(93,139,255,0.4);
+    }
+    .zyf_117_step.zyf_117_done {
+        border-color: #86efac; background: rgba(134,239,172,0.12);
+        color: #86efac;
+    }
+    .zyf_117_step.zyf_117_parallel {
+        border-color: #f472b6; background: rgba(244,114,182,0.10);
+        color: #f9a8d4;
+    }
+    .zyf_117_arrow { color: #6b7394; font-size: 1.2rem; font-weight: bold; }
+
+    /* 进度条 */
+    .zyf_117_progress {
+        max-width: 860px; margin: 0 auto 16px;
+        height: 26px; background: rgba(8,12,28,0.8);
+        border: 1px solid rgba(148,163,255,0.22);
+        border-radius: 13px; overflow: hidden; position: relative;
+    }
+    .zyf_117_progress-fill {
+        height: 100%; width: 0%;
+        background: linear-gradient(90deg, #5d8bff, #a06bff, #f472b6);
+        transition: width .3s;
+    }
+    .zyf_117_progress-text {
+        position: absolute; inset: 0;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 0.78rem; color: #e8ebf8;
+    }
+
+    /* 控制按钮 */
+    .zyf_117_ctrl-row {
+        max-width: 860px; margin: 0 auto 16px;
+        display: flex; gap: 10px; flex-wrap: wrap;
+    }
+    .zyf_117_ctrl-row button {
+        background: linear-gradient(90deg, #5d8bff, #a06bff);
+        color: #fff; border: none; padding: 10px 22px; border-radius: 8px;
+        cursor: pointer; font-size: 0.85rem; font-weight: 600; letter-spacing: 1px;
+    }
+    .zyf_117_ctrl-row button.zyf_117_pink { background: linear-gradient(90deg, #f472b6, #ec4899); }
+    .zyf_117_ctrl-row button:hover { opacity: 0.85; }
+
+    /* 日志 */
+    .zyf_117_logbox {
+        max-width: 860px; margin: 0 auto;
+        background: rgba(8,12,28,0.85); border: 1px solid rgba(148,163,255,0.22);
+        border-radius: 12px; padding: 16px;
+        font-family: Consolas, Monaco, monospace;
+        font-size: 0.82rem; line-height: 1.8;
+        max-height: 340px; overflow-y: auto;
+    }
+    .zyf_117_logbox .zyf_117_l { color: #98a0bd; }
+    .zyf_117_logbox .zyf_117_ok { color: #86efac; }
+    .zyf_117_logbox .zyf_117_go { color: #93c5fd; }
+    .zyf_117_logbox .zyf_117_par { color: #f9a8d4; }
+
+    footer { text-align: center; margin-top: 32px; color: #6b7394; font-size: 0.85rem; letter-spacing: 2px; }
+</style>
+</head>
+<body>
+    <div class="zyf_117_header">
+        <h1>🍜 包饺子流程（Promise + async/await）</h1>
+        <p style="color:#98a0bd;font-size:0.85rem;margin-top:6px">顺序：买原料 → 取原料 → <span style="color:#f9a8d4">和面 ‖ 剁馅</span>（并行） → 包饺子 → 吃饺子</p>
+    </div>
+
+    <!-- 流程图 -->
+    <div class="zyf_117_flow">
+        <h2>流程节点</h2>
+        <div class="zyf_117_pipeline" id="zyf_117_pipe">
+            <div class="zyf_117_step" data-step="buy">🛒 买原料（6s）</div>
+            <span class="zyf_117_arrow">→</span>
+            <div class="zyf_117_step" data-step="take">📦 取原料（3s）</div>
+            <span class="zyf_117_arrow">→</span>
+            <div class="zyf_117_step zyf_117_parallel" data-step="mix">🍞 和面（4s）<br><span style="color:#6b7394;font-size:0.7rem">并行</span></div>
+            <div class="zyf_117_step zyf_117_parallel" data-step="chop">🥬 剁馅（5s）<br><span style="color:#6b7394;font-size:0.7rem">并行</span></div>
+            <span class="zyf_117_arrow">→</span>
+            <div class="zyf_117_step" data-step="wrap">🥟 包饺子（7s）</div>
+            <span class="zyf_117_arrow">→</span>
+            <div class="zyf_117_step" data-step="eat">😋 吃饺子（完成）</div>
+        </div>
+    </div>
+
+    <!-- 进度条 -->
+    <div class="zyf_117_progress">
+        <div class="zyf_117_progress-fill" id="zyf_117_fill"></div>
+        <div class="zyf_117_progress-text" id="zyf_117_fillText">0% — 等待开始</div>
+    </div>
+
+    <!-- 按钮 -->
+    <div class="zyf_117_ctrl-row">
+        <button class="zyf_117_pink" onclick="zyf_117_run()">🚀 开始包饺子</button>
+        <button onclick="zyf_117_reset()">🔄 重置</button>
+    </div>
+
+    <!-- 日志 -->
+    <div class="zyf_117_logbox" id="zyf_117_log">
+        <div class="zyf_117_l">// 日志区 —— 点击"开始包饺子"看流程执行顺序</div>
+    </div>
+
+    <footer>张艺凡 · 高级网页设计 I · 17-6 Promise + async/await</footer>
+
+    <script>
+        // ========== 工具：sleep（Promise 版 setTimeout）==========
+        function zyf_117_sleep(ms, label) {
+            return new Promise(resolve => {
+                zyf_117_log(`<span class="zyf_117_go">⏱ ${label}</span> 开始，预计 ${ms}ms`);
+                setTimeout(() => {
+                    zyf_117_log(`<span class="zyf_117_ok">✓ ${label}</span> 完成`);
+                    resolve();
+                }, ms);
+            });
+        }
+
+        // ========== 高亮/进度更新 ==========
+        const zyf_117_total = 5; // buy, take, parallel, wrap, eat
+        let zyf_117_done = 0;
+        function zyf_117_highlight(step, cls) {
+            const el = document.querySelector(`.zyf_117_step[data-step="${step}"]`);
+            if (el) el.className = "zyf_117_step " + cls;
+        }
+        function zyf_117_progress() {
+            zyf_117_done++;
+            const pct = Math.round(zyf_117_done / zyf_117_total * 100);
+            document.getElementById("zyf_117_fill").style.width = pct + "%";
+            document.getElementById("zyf_117_fillText").textContent = `${pct}% — ${zyf_117_done}/${zyf_117_total}`;
+        }
+        function zyf_117_log(msg) {
+            const box = document.getElementById("zyf_117_log");
+            const t = new Date().toLocaleTimeString();
+            box.innerHTML += `<div>[${t}] ${msg}</div>`;
+            box.scrollTop = box.scrollHeight;
+        }
+
+        // ========== 异步流程 ==========
+        async function zyf_117_makeDumplings() {
+            zyf_117_reset(false);
+            zyf_117_log(`<span class="zyf_117_go">🍳 async function makeDumplings() 启动</span>`);
+
+            // 1. 买原料
+            zyf_117_highlight("buy", "zyf_117_running");
+            await zyf_117_sleep(1500, "🛒 买原料");
+            zyf_117_highlight("buy", "zyf_117_done");
+            zyf_117_progress();
+
+            // 2. 取原料
+            zyf_117_highlight("take", "zyf_117_running");
+            await zyf_117_sleep(800, "📦 取原料");
+            zyf_117_highlight("take", "zyf_117_done");
+            zyf_117_progress();
+
+            // 3. 和面 和 剁馅 —— 并行！Promise.all
+            zyf_117_highlight("mix", "zyf_117_running");
+            zyf_117_highlight("chop", "zyf_117_running");
+            zyf_117_log(`<span class="zyf_117_par">⚡ Promise.all(和面, 剁馅) 并行开始</span>`);
+            await Promise.all([
+                zyf_117_sleep(1200, "🍞 和面"),
+                zyf_117_sleep(1500, "🥬 剁馅")
+            ]);
+            zyf_117_highlight("mix", "zyf_117_done");
+            zyf_117_highlight("chop", "zyf_117_done");
+            zyf_117_progress();
+
+            // 4. 包饺子
+            zyf_117_highlight("wrap", "zyf_117_running");
+            await zyf_117_sleep(2000, "🥟 包饺子");
+            zyf_117_highlight("wrap", "zyf_117_done");
+            zyf_117_progress();
+
+            // 5. 吃饺子
+            zyf_117_highlight("eat", "zyf_117_running");
+            await zyf_117_sleep(1000, "😋 吃饺子");
+            zyf_117_highlight("eat", "zyf_117_done");
+            zyf_117_progress();
+
+            zyf_117_log(`<span class="zyf_117_ok">🎉 全部完成！Promise 链顺序执行 + Promise.all 并行</span>`);
+        }
+
+        function zyf_117_reset(addLog = true) {
+            document.querySelectorAll(".zyf_117_step").forEach(el => {
+                el.className = "zyf_117_step" + (el.classList.contains("zyf_117_parallel") ? " zyf_117_parallel" : "");
+            });
+            zyf_117_done = 0;
+            document.getElementById("zyf_117_fill").style.width = "0%";
+            document.getElementById("zyf_117_fillText").textContent = "0% — 等待开始";
+            if (addLog) {
+                document.getElementById("zyf_117_log").innerHTML = `<div class="zyf_117_l">// 日志已清空</div>`;
+            }
+        }
+
+        let zyf_117_running = false;
+        function zyf_117_run() {
+            if (zyf_117_running) return;
+            zyf_117_running = true;
+            zyf_117_makeDumplings().then(() => { zyf_117_running = false; });
+        }
+    </script>
+</body>
+</html>

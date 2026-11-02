@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<!-- 姓名：张艺凡 / 日期：2026-11-02 / 功能名称：17-5 JS 两种定时器 -->
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>17-5 JS 定时器 · 张艺凡</title>
+<style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+        font-family: "Microsoft YaHei", "PingFang SC", Arial, sans-serif;
+        background: linear-gradient(160deg, #0a0e1c 0%, #1a1140 100%);
+        min-height: 100vh; color: #e8ebf8; padding: 36px 20px;
+    }
+    .zyf_117_header { text-align: center; margin-bottom: 24px; }
+    .zyf_117_header h1 {
+        font-size: 1.8rem;
+        background: linear-gradient(90deg, #5d8bff, #a06bff);
+        -webkit-background-clip: text; background-clip: text; color: transparent;
+    }
+
+    .zyf_117_grid { max-width: 920px; margin: 0 auto; display: grid; gap: 20px; grid-template-columns: 1fr 1fr; }
+    @media (max-width: 700px) { .zyf_117_grid { grid-template-columns: 1fr; } }
+
+    .zyf_117_box {
+        background: rgba(30,34,54,0.8);
+        border: 1px solid rgba(148,163,255,0.22);
+        border-radius: 14px; padding: 20px 22px;
+    }
+    .zyf_117_box h2 {
+        font-size: 1.05rem; margin-bottom: 10px;
+        color: #f0c4ff; border-left: 4px solid #a06bff; padding-left: 12px;
+    }
+    .zyf_117_box h2.zyf_117_setit { border-left-color: #f472b6; color: #fda4af; }
+    .zyf_117_desc { color: #98a0bd; font-size: 0.82rem; margin-bottom: 12px; line-height: 1.6; }
+
+    .zyf_117_display {
+        background: rgba(8,12,28,0.85); border: 1px solid rgba(148,163,255,0.20);
+        border-radius: 10px; padding: 14px; text-align: center;
+        font-family: Consolas, Monaco, monospace; font-size: 2rem; font-weight: bold;
+        margin-bottom: 14px; color: #86efac;
+    }
+    .zyf_117_display.zyf_117_pink { color: #f9a8d4; }
+
+    .zyf_117_ctrl { display: flex; gap: 8px; flex-wrap: wrap; }
+    .zyf_117_btn {
+        flex: 1; min-width: 80px;
+        background: linear-gradient(90deg, #5d8bff, #a06bff);
+        color: #fff; border: none; padding: 8px; border-radius: 8px;
+        cursor: pointer; font-size: 0.82rem; font-weight: 600;
+    }
+    .zyf_117_btn.zyf_117_stop { background: linear-gradient(90deg, #f472b6, #ec4899); }
+    .zyf_117_btn.zyf_117_pink { background: linear-gradient(90deg, #f472b6, #ec4899); }
+    .zyf_117_btn:hover { opacity: 0.85; }
+
+    .zyf_117_controls-row { display: flex; gap: 8px; margin-bottom: 12px; font-size: 0.82rem; align-items: center; flex-wrap: wrap; }
+    .zyf_117_controls-row label { color: #98a0bd; }
+    .zyf_117_controls-row input[type="number"] {
+        width: 70px; background: rgba(8,12,28,0.85); border: 1px solid rgba(148,163,255,0.35);
+        border-radius: 6px; color: #cdd5f0; padding: 4px 8px;
+    }
+
+    footer { text-align: center; margin-top: 32px; color: #6b7394; font-size: 0.85rem; letter-spacing: 2px; }
+</style>
+</head>
+<body>
+    <div class="zyf_117_header">
+        <h1>JS 两种定时器</h1>
+        <p style="color:#98a0bd;font-size:0.85rem;margin-top:6px">setTimeout（一次性） · setInterval（循环） / 张艺凡</p>
+    </div>
+
+    <div class="zyf_117_grid">
+        <!-- setTimeout -->
+        <section class="zyf_117_box">
+            <h2>① setTimeout（延时一次）</h2>
+            <p class="zyf_117_desc">到达设定时间后只执行<strong>一次</strong>回调函数</p>
+
+            <div class="zyf_117_display" id="zyf_117_stNum">0</div>
+
+            <div class="zyf_117_controls-row">
+                <label>延时</label>
+                <input type="number" id="zyf_117_stMs" value="2000" min="100" step="100">
+                <span style="color:#98a0bd">毫秒</span>
+            </div>
+
+            <div class="zyf_117_ctrl">
+                <button class="zyf_117_btn" onclick="zyf_117_stStart()">▶ 开始倒计时</button>
+                <button class="zyf_117_btn zyf_117_stop" onclick="zyf_117_stClear()">■ clearTimeout</button>
+            </div>
+            <p style="color:#6b7394;font-size:0.72rem;margin-top:8px" id="zyf_117_stLog">状态：等待点击</p>
+        </section>
+
+        <!-- setInterval -->
+        <section class="zyf_117_box">
+            <h2 class="zyf_117_setit">② setInterval（循环执行）</h2>
+            <p class="zyf_117_desc">每隔设定时间<strong>循环执行</strong>回调，直到 clearInterval 停止</p>
+
+            <div class="zyf_117_display zyf_117_pink" id="zyf_117_siNum">0</div>
+
+            <div class="zyf_117_controls-row">
+                <label>间隔</label>
+                <input type="number" id="zyf_117_siMs" value="500" min="100" step="100">
+                <span style="color:#98a0bd">毫秒</span>
+                <label style="margin-left:8px">最大值</label>
+                <input type="number" id="zyf_117_siMax" value="20" min="2" step="1">
+            </div>
+
+            <div class="zyf_117_ctrl">
+                <button class="zyf_117_btn zyf_117_pink" onclick="zyf_117_siStart()">▶ 开始累加</button>
+                <button class="zyf_117_btn zyf_117_stop" onclick="zyf_117_siClear()">■ clearInterval</button>
+            </div>
+            <p style="color:#6b7394;font-size:0.72rem;margin-top:8px" id="zyf_117_siLog">状态：等待点击</p>
+        </section>
+    </div>
+
+    <footer>张艺凡 · 高级网页设计 I · 17-5 JS 两种定时器</footer>
+
+    <script>
+        // ========== setTimeout ==========
+        let zyf_117_stHandle = null;
+        function zyf_117_stStart() {
+            zyf_117_stClear();
+            const ms = Number(document.getElementById("zyf_117_stMs").value);
+            let remain = ms;
+            document.getElementById("zyf_117_stLog").textContent = `⏳ ${ms}ms 后执行 setTimeout(…, ${ms})`;
+
+            // 显示倒计时
+            const tick = setInterval(() => {
+                remain -= 100;
+                document.getElementById("zyf_117_stNum").textContent = Math.max(0, remain);
+            }, 100);
+
+            zyf_117_stHandle = setTimeout(() => {
+                clearInterval(tick);
+                document.getElementById("zyf_117_stNum").textContent = "✓ 执行!";
+                document.getElementById("zyf_117_stLog").textContent = `✅ setTimeout 触发！回调执行完毕`;
+            }, ms);
+        }
+        function zyf_117_stClear() {
+            if (zyf_117_stHandle) {
+                clearTimeout(zyf_117_stHandle);
+                zyf_117_stHandle = null;
+                document.getElementById("zyf_117_stLog").textContent = "⏹ 已 clearTimeout 取消";
+                document.getElementById("zyf_117_stNum").textContent = 0;
+            }
+        }
+
+        // ========== setInterval ==========
+        let zyf_117_siHandle = null;
+        let zyf_117_siVal = 0;
+        function zyf_117_siStart() {
+            zyf_117_siClear();
+            const ms = Number(document.getElementById("zyf_117_siMs").value);
+            const max = Number(document.getElementById("zyf_117_siMax").value);
+            zyf_117_siVal = 0;
+            document.getElementById("zyf_117_siNum").textContent = zyf_117_siVal;
+            document.getElementById("zyf_117_siLog").textContent = `🔁 每 ${ms}ms 执行一次，最大 ${max}`;
+
+            zyf_117_siHandle = setInterval(() => {
+                zyf_117_siVal++;
+                document.getElementById("zyf_117_siNum").textContent = zyf_117_siVal;
+                if (zyf_117_siVal >= max) {
+                    clearInterval(zyf_117_siHandle);
+                    zyf_117_siHandle = null;
+                    document.getElementById("zyf_117_siLog").textContent = `✅ 到达最大值 ${max}，自动停止`;
+                }
+            }, ms);
+        }
+        function zyf_117_siClear() {
+            if (zyf_117_siHandle) {
+                clearInterval(zyf_117_siHandle);
+                zyf_117_siHandle = null;
+                document.getElementById("zyf_117_siLog").textContent = "⏹ 已 clearInterval 取消";
+            }
+        }
+    </script>
+</body>
+</html>

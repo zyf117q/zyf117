@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<!-- 姓名：张艺凡 / 日期：2026-11-02 / 功能名称：17-2 fetch 获取接口数据 -->
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>17-2 fetch 接口数据 · 张艺凡</title>
+<style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+        font-family: "Microsoft YaHei", "PingFang SC", Arial, sans-serif;
+        background: linear-gradient(160deg, #0a0e1c 0%, #1a1140 100%);
+        min-height: 100vh; color: #e8ebf8; padding: 40px 20px;
+    }
+    .zyf_117_header { text-align: center; margin-bottom: 28px; }
+    .zyf_117_header h1 {
+        font-size: 2rem;
+        background: linear-gradient(90deg, #5d8bff, #a06bff);
+        -webkit-background-clip: text; background-clip: text; color: transparent;
+        letter-spacing: 4px;
+    }
+    .zyf_117_header p { margin-top: 10px; color: #98a0bd; font-size: 0.9rem; }
+
+    .zyf_117_box {
+        max-width: 960px; margin: 0 auto 22px;
+        background: rgba(30,34,54,0.8);
+        border: 1px solid rgba(148,163,255,0.2);
+        border-radius: 14px; padding: 20px 22px;
+    }
+    .zyf_117_box h2 {
+        font-size: 1.1rem; margin-bottom: 12px;
+        color: #f0c4ff; border-left: 4px solid #a06bff; padding-left: 12px;
+    }
+    .zyf_117_ctrl { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 12px; align-items: center; }
+    .zyf_117_ctrl input {
+        flex: 1; min-width: 200px; padding: 8px 12px;
+        background: rgba(8,12,28,0.85);
+        border: 1px solid rgba(148,163,255,0.35);
+        border-radius: 8px; color: #e8ebf8; font-size: 0.85rem;
+    }
+    .zyf_117_btn {
+        background: linear-gradient(90deg, #5d8bff, #a06bff);
+        color: #fff; border: none; padding: 8px 18px; border-radius: 8px;
+        cursor: pointer; font-size: 0.85rem; font-weight: 600;
+    }
+    .zyf_117_btn:hover { opacity: 0.85; }
+    .zyf_117_btn:disabled { opacity: 0.4; cursor: wait; }
+
+    .zyf_117_status {
+        padding: 10px 14px; border-radius: 8px; margin-bottom: 12px;
+        font-family: Consolas, Monaco, monospace; font-size: 0.82rem;
+    }
+    .zyf_117_status.zyf_117_ok  { background: rgba(134,239,172,0.10); border: 1px solid rgba(134,239,172,0.35); color: #86efac; }
+    .zyf_117_status.zyf_117_err { background: rgba(255,107,107,0.12); border: 1px solid rgba(255,107,107,0.40); color: #ff6b6b; }
+    .zyf_117_status.zyf_117_wait { background: rgba(252,211,77,0.10); border: 1px solid rgba(252,211,77,0.30); color: #fbbf24; }
+
+    table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+    th {
+        text-align: left; padding: 10px 12px;
+        background: rgba(93,139,255,0.18); color: #93c5fd;
+        border: 1px solid rgba(148,163,255,0.25); font-weight: 600;
+    }
+    td { padding: 8px 12px; border: 1px solid rgba(148,163,255,0.15); color: #cdd5f0; }
+    tr:hover td { background: rgba(93,139,255,0.06); }
+
+    footer { text-align: center; margin-top: 40px; color: #6b7394; font-size: 0.85rem; letter-spacing: 2px; }
+</style>
+</head>
+<body>
+    <header class="zyf_117_header">
+        <h1>fetch 接口数据获取</h1>
+        <p>fetch + async/await + try-catch · 跨域请求  /  张艺凡</p>
+    </header>
+
+    <section class="zyf_117_box">
+        <h2>① 获取 DummyJSON 商品列表（跨域演示）</h2>
+        <div class="zyf_117_ctrl">
+            <input type="text" id="zyf_117_url" value="https://dummyjson.com/products?limit=8">
+            <button class="zyf_117_btn" onclick="zyf_117_fetchList()">📥 fetch 获取</button>
+        </div>
+        <div class="zyf_117_status" id="zyf_117_status">等待请求…</div>
+        <div id="zyf_117_table"></div>
+    </section>
+
+    <section class="zyf_117_box">
+        <h2>② 获取 DummyJSON 单个商品（按 ID）</h2>
+        <div class="zyf_117_ctrl">
+            <input type="number" id="zyf_117_id" value="1" min="1">
+            <button class="zyf_117_btn" onclick="zyf_117_fetchOne()">🔍 fetch 详情</button>
+        </div>
+        <div id="zyf_117_one"></div>
+    </section>
+
+    <section class="zyf_117_box">
+        <h2>③ 原生 fetch 代码</h2>
+        <pre style="background:rgba(8,12,28,0.85);border:1px solid rgba(148,163,255,0.18);border-radius:10px;padding:14px;font-family:Consolas,Monaco,monospace;font-size:0.82rem;line-height:1.7;color:#cdd5f0;overflow-x:auto">
+<span style="color:#c792ea;font-weight:bold">async function</span> <span style="color:#82aaff">fetchProducts</span>(url) {
+  <span style="color:#c792ea;font-weight:bold">try</span> {
+    <span style="color:#c792ea;font-weight:bold">const</span> res = <span style="color:#c792ea;font-weight:bold">await</span> <span style="color:#82aaff">fetch</span>(url);
+    <span style="color:#c792ea;font-weight:bold">if</span> (!res.ok) <span style="color:#c792ea;font-weight:bold">throw new</span> Error(<span style="color:#c3e88d">`HTTP ${res.status}`</span>);
+    <span style="color:#c792ea;font-weight:bold">return await</span> res.<span style="color:#82aaff">json</span>();
+  } <span style="color:#c792ea;font-weight:bold">catch</span> (err) {
+    console.<span style="color:#82aaff">error</span>(err);
+  }
+}
+        </pre>
+    </section>
+
+    <footer>张艺凡 · 高级网页设计 I · 17-2 fetch 接口数据</footer>
+
+    <script>
+        async function zyf_117_fetchList() {
+            const url = document.getElementById("zyf_117_url").value.trim();
+            const statusBox = document.getElementById("zyf_117_status");
+            const tableBox  = document.getElementById("zyf_117_table");
+            statusBox.className = "zyf_117_status zyf_117_wait";
+            statusBox.textContent = "⏳ 请求中…";
+            tableBox.innerHTML = "";
+            try {
+                const t0 = performance.now();
+                const res = await fetch(url);
+                if (!res.ok) throw new Error(`HTTP ${res.status} ${res.statusText}`);
+                const data = await res.json();
+                const t1 = performance.now();
+                const list = data.products || data || [];
+
+                let html = `<table><thead><tr>
+                    <th>ID</th><th>标题</th><th>品牌</th><th>分类</th><th>价格</th><th>评分</th>
+                </tr></thead><tbody>`;
+                list.forEach(p => {
+                    html += `<tr>
+                        <td>${p.id}</td>
+                        <td>${p.title || "—"}</td>
+                        <td>${p.brand || "—"}</td>
+                        <td>${p.category || "—"}</td>
+                        <td>$${p.price ?? "—"}</td>
+                        <td>${p.rating ?? "—"}</td>
+                    </tr>`;
+                });
+                html += "</tbody></table>";
+                tableBox.innerHTML = html;
+
+                statusBox.className = "zyf_117_status zyf_117_ok";
+                statusBox.textContent = `✅ 成功！获取 ${list.length} 条数据  耗时 ${(t1-t0).toFixed(0)}ms  CORS 允许跨域访问`;
+            } catch (e) {
+                statusBox.className = "zyf_117_status zyf_117_err";
+                statusBox.textContent = `❌ 失败：${e.message}`;
+            }
+        }
+
+        async function zyf_117_fetchOne() {
+            const id = document.getElementById("zyf_117_id").value;
+            const box = document.getElementById("zyf_117_one");
+            box.innerHTML = `<div class="zyf_117_status zyf_117_wait">⏳ 获取商品 #${id}…</div>`;
+            try {
+                const res = await fetch(`https://dummyjson.com/products/${id}`);
+                if (!res.ok) throw new Error(`HTTP ${res.status}`);
+                const p = await res.json();
+                box.innerHTML = `<div class="zyf_117_status zyf_117_ok">✅ ${p.title} / $${p.price} / 评分 ${p.rating}</div>
+                    <div style="background:rgba(8,12,28,0.85);border:1px solid rgba(148,163,255,0.18);border-radius:10px;padding:14px;font-family:Consolas,Monaco,monospace;font-size:0.82rem;color:#cdd5f0">
+${JSON.stringify(p, null, 2)}
+                    </div>`;
+            } catch (e) {
+                box.innerHTML = `<div class="zyf_117_status zyf_117_err">❌ 失败：${e.message}</div>`;
+            }
+        }
+
+        // 自动加载
+        window.onload = zyf_117_fetchList;
+    </script>
+</body>
+</html>

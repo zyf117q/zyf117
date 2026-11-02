@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<!-- 姓名：张艺凡 / 日期：2026-11-02 / 功能名称：17-3-detail 商品详情 -->
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>17-3 商品详情 · 张艺凡</title>
+<style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+        font-family: "Microsoft YaHei", "PingFang SC", Arial, sans-serif;
+        background: linear-gradient(160deg, #0a0e1c 0%, #1a1140 100%);
+        min-height: 100vh; color: #e8ebf8; padding: 36px 20px;
+    }
+    .zyf_117_back {
+        max-width: 760px; margin: 0 auto 20px;
+    }
+    .zyf_117_back a {
+        color: #93c5fd; text-decoration: none; font-size: 0.85rem;
+        display: inline-block; padding: 6px 14px;
+        background: rgba(93,139,255,0.12);
+        border: 1px solid rgba(93,139,255,0.30); border-radius: 6px;
+    }
+    .zyf_117_back a:hover { background: rgba(93,139,255,0.25); }
+
+    .zyf_117_card {
+        max-width: 760px; margin: 0 auto;
+        background: rgba(30,34,54,0.8);
+        border: 1px solid rgba(148,163,255,0.25);
+        border-radius: 14px; overflow: hidden;
+    }
+    .zyf_117_hero {
+        width: 100%; height: 320px; object-fit: cover;
+        background: rgba(8,12,28,0.6);
+    }
+    .zyf_117_body { padding: 24px 28px 28px; }
+    .zyf_117_id { color: #6b7394; font-size: 0.78rem; }
+    .zyf_117_title { font-size: 1.5rem; margin: 6px 0 10px; font-weight: 700; }
+    .zyf_117_desc { color: #98a0bd; font-size: 0.9rem; line-height: 1.7; margin-bottom: 18px; }
+
+    .zyf_117_grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 18px; }
+    .zyf_117_kv {
+        background: rgba(8,12,28,0.7); border-radius: 8px; padding: 10px 14px;
+        border: 1px solid rgba(148,163,255,0.18);
+    }
+    .zyf_117_kv .zyf_117_k { font-size: 0.75rem; color: #6b7394; }
+    .zyf_117_kv .zyf_117_v { font-size: 1rem; color: #cdd5f0; font-weight: 600; margin-top: 2px; }
+    .zyf_117_price { color: #f472b6; font-size: 1.3rem; }
+    .zyf_117_stock_low { color: #fca5a5; }
+    .zyf_117_stock_high { color: #86efac; }
+
+    .zyf_117_gallery { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px; }
+    .zyf_117_gallery img {
+        width: 72px; height: 72px; object-fit: cover;
+        border-radius: 8px; border: 1px solid rgba(148,163,255,0.20);
+        cursor: pointer; transition: transform .2s;
+    }
+    .zyf_117_gallery img:hover { transform: scale(1.1); }
+
+    footer { text-align: center; margin-top: 32px; color: #6b7394; font-size: 0.85rem; letter-spacing: 2px; }
+</style>
+</head>
+<body>
+    <div class="zyf_117_back"><a href="17-3.html">← 返回商品列表</a></div>
+
+    <div class="zyf_117_card">
+        <div id="zyf_117_loading" style="padding:40px;text-align:center;color:#98a0bd">⏳ 加载中…</div>
+    </div>
+
+    <footer>张艺凡 · 高级网页设计 I · 17-3 商品列表 + 详情</footer>
+
+    <script>
+        async function zyf_117_loadDetail() {
+            const params = new URLSearchParams(location.search);
+            const id = params.get("id") || 1;
+            const box = document.querySelector(".zyf_117_card");
+            try {
+                const res = await fetch(`https://dummyjson.com/products/${id}`);
+                if (!res.ok) throw new Error(`HTTP ${res.status}`);
+                const p = await res.json();
+                const stockClass = p.stock < 30 ? "zyf_117_stock_low" : "zyf_117_stock_high";
+                box.innerHTML = `
+                    <img class="zyf_117_hero" src="${p.images?.[0] || p.thumbnail}" alt="">
+                    <div class="zyf_117_body">
+                        <div class="zyf_117_id">商品 ID #${p.id}  ·  ${p.brand || "无品牌"}</div>
+                        <h1 class="zyf_117_title">${p.title}</h1>
+                        <p class="zyf_117_desc">${p.description}</p>
+
+                        <div class="zyf_117_grid2">
+                            <div class="zyf_117_kv"><div class="zyf_117_k">价格</div><div class="zyf_117_v zyf_117_price">$${p.price}</div></div>
+                            <div class="zyf_117_kv"><div class="zyf_117_k">分类</div><div class="zyf_117_v">${p.category}</div></div>
+                            <div class="zyf_117_kv"><div class="zyf_117_k">评分</div><div class="zyf_117_v">⭐ ${p.rating}</div></div>
+                            <div class="zyf_117_kv"><div class="zyf_117_k">库存</div><div class="zyf_117_v ${stockClass}">${p.stock} 件</div></div>
+                            <div class="zyf_117_kv"><div class="zyf_117_k">折扣</div><div class="zyf_117_v">${p.discountPercentage}%</div></div>
+                            <div class="zyf_117_kv"><div class="zyf_117_k">重量</div><div class="zyf_117_v">${p.weight} g</div></div>
+                        </div>
+
+                        ${p.images && p.images.length > 1 ? `
+                        <div style="font-size:0.82rem;color:#98a0bd;margin-bottom:6px">商品图片集（${p.images.length} 张）：</div>
+                        <div class="zyf_117_gallery">
+                            ${p.images.map(u => `<img src="${u}" alt="">`).join("")}
+                        </div>` : ""}
+                    </div>
+                `;
+            } catch (e) {
+                box.innerHTML = `<div style="padding:40px;color:#ff6b6b;text-align:center">❌ 加载失败：${e.message}</div>`;
+            }
+        }
+        zyf_117_loadDetail();
+    </script>
+</body>
+</html>

@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<!-- 姓名：张艺凡 / 日期：2026-11-02 / 功能名称：17-1 JSON 展示 -->
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>17-1 JSON 展示 · 张艺凡</title>
+<style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+        font-family: "Microsoft YaHei", "PingFang SC", Arial, sans-serif;
+        background: linear-gradient(160deg, #0a0e1c 0%, #1a1140 100%);
+        min-height: 100vh; color: #e8ebf8; padding: 40px 20px;
+    }
+    .zyf_117_header { text-align: center; margin-bottom: 30px; }
+    .zyf_117_header h1 {
+        font-size: 2rem;
+        background: linear-gradient(90deg, #5d8bff, #a06bff);
+        -webkit-background-clip: text; background-clip: text; color: transparent;
+        letter-spacing: 4px;
+    }
+    .zyf_117_header p { margin-top: 10px; color: #98a0bd; font-size: 0.9rem; }
+
+    .zyf_117_box {
+        max-width: 900px; margin: 0 auto 24px;
+        background: rgba(30,34,54,0.8);
+        border: 1px solid rgba(148,163,255,0.2);
+        border-radius: 14px; padding: 22px 24px;
+    }
+    .zyf_117_box h2 {
+        font-size: 1.15rem; margin-bottom: 14px;
+        color: #f0c4ff; border-left: 4px solid #a06bff; padding-left: 12px;
+    }
+
+    .zyf_117_input {
+        width: 100%; min-height: 140px;
+        background: rgba(8,12,28,0.85);
+        border: 1px solid rgba(148,163,255,0.25);
+        border-radius: 10px;
+        color: #cdd5f0; font-family: Consolas, Monaco, monospace;
+        font-size: 0.85rem; padding: 12px; resize: vertical;
+    }
+    .zyf_117_btn {
+        background: linear-gradient(90deg, #5d8bff, #a06bff);
+        color: #fff; border: none; padding: 8px 20px; border-radius: 8px;
+        cursor: pointer; font-size: 0.85rem; font-weight: 600; letter-spacing: 1px;
+        margin-top: 12px; margin-right: 8px;
+    }
+    .zyf_117_btn:hover { opacity: 0.85; }
+    .zyf_117_btn.zyf_117_reset { background: linear-gradient(90deg, #6b7394, #3a4160); }
+
+    .zyf_117_out {
+        margin-top: 14px; padding: 16px 18px;
+        background: rgba(8,12,28,0.85);
+        border: 1px solid rgba(148,163,255,0.2);
+        border-radius: 10px;
+        font-family: Consolas, Monaco, monospace;
+        font-size: 0.85rem; line-height: 1.7; overflow-x: auto;
+    }
+    .zyf_117_out .zyf_117_kw { color: #c792ea; font-weight: bold; }
+    .zyf_117_out .zyf_117_s  { color: #c3e88d; }
+    .zyf_117_out .zyf_117_n  { color: #f78c6c; }
+    .zyf_117_out .zyf_117_bool { color: #ffcb6b; }
+    .zyf_117_out .zyf_117_null { color: #ff6b6b; font-style: italic; }
+    .zyf_117_out .zyf_117_key { color: #82aaff; }
+
+    .zyf_117_err {
+        margin-top: 14px; padding: 10px 14px;
+        background: rgba(255,107,107,0.12);
+        border: 1px solid rgba(255,107,107,0.4);
+        border-radius: 8px; color: #ff6b6b;
+        font-family: Consolas, Monaco, monospace; font-size: 0.82rem;
+        min-height: 36px;
+    }
+
+    .zyf_117_preview {
+        margin-top: 14px; padding: 16px 18px;
+        background: rgba(93,139,255,0.08);
+        border: 1px solid rgba(93,139,255,0.25);
+        border-radius: 10px;
+    }
+    .zyf_117_preview-item {
+        padding: 6px 0; border-bottom: 1px dashed rgba(148,163,255,0.15);
+        display: flex; gap: 10px; align-items: center;
+    }
+    .zyf_117_preview-item:last-child { border-bottom: none; }
+    .zyf_117_k { color: #93c5fd; font-weight: bold; min-width: 80px; }
+    .zyf_117_v { color: #cdd5f0; }
+
+    footer { text-align: center; margin-top: 40px; color: #6b7394; font-size: 0.85rem; letter-spacing: 2px; }
+</style>
+</head>
+<body>
+    <header class="zyf_117_header">
+        <h1>JSON 展示</h1>
+        <p>JSON 解析 · 格式化 · 高亮 · 可视化预览  /  张艺凡</p>
+    </header>
+
+    <section class="zyf_117_box">
+        <h2>① 原始 JSON 字符串</h2>
+        <textarea class="zyf_117_input" id="zyf_117_raw">{"name":"张艺凡","age":20,"grade":"大二","scores":[92,85,98],"isAdmin":false,"email":null}</textarea>
+        <div>
+            <button class="zyf_117_btn" onclick="zyf_117_parse()">🔍 解析并展示</button>
+            <button class="zyf_117_btn zyf_117_reset" onclick="zyf_117_resetJson()">🔄 重置示例</button>
+        </div>
+        <div class="zyf_117_err" id="zyf_117_errBox">等待解析…</div>
+    </section>
+
+    <section class="zyf_117_box">
+        <h2>② 格式化后（JSON.stringify(obj, null, 2)）</h2>
+        <pre class="zyf_117_out" id="zyf_117_pretty">点击上面按钮查看结果…</pre>
+    </section>
+
+    <section class="zyf_117_box">
+        <h2>③ 语法高亮版</h2>
+        <pre class="zyf_117_out" id="zyf_117_hl">等待解析…</pre>
+    </section>
+
+    <section class="zyf_117_box">
+        <h2>④ 可视化预览（键值对）</h2>
+        <div class="zyf_117_preview" id="zyf_117_preview">点击上面按钮查看结果…</div>
+    </section>
+
+    <footer>张艺凡 · 高级网页设计 I · 17-1 JSON 展示</footer>
+
+    <script>
+        const zyf_117_demo = '{"name":"张艺凡","age":20,"grade":"大二","scores":[92,85,98],"isAdmin":false,"email":null}';
+
+        function zyf_117_resetJson() {
+            document.getElementById("zyf_117_raw").value = zyf_117_demo;
+        }
+
+        function zyf_117_highlight(str) {
+            // 简单正则高亮
+            return str
+                .replace(/("(?:\\.|[^"\\])*")(\s*:)?/g, (m, p1, p2) => {
+                    if (p2) return `<span class="zyf_117_key">${p1}</span><span style="color:#6b7394">${p2}</span>`;
+                    return `<span class="zyf_117_s">${p1}</span>`;
+                })
+                .replace(/\b(true|false)\b/g, '<span class="zyf_117_bool">$1</span>')
+                .replace(/\bnull\b/g, '<span class="zyf_117_null">null</span>')
+                .replace(/\b(\d+)\b/g, '<span class="zyf_117_n">$1</span>')
+                .replace(/([\{\}\[\],])/g, '<span class="zyf_117_kw">$1</span>');
+        }
+
+        function zyf_117_formatVal(v) {
+            if (v === null) return "<span class='zyf_117_null'>null</span>";
+            if (typeof v === "boolean") return `<span class='zyf_117_bool'>${v}</span>`;
+            if (typeof v === "number") return `<span class='zyf_117_n'>${v}</span>`;
+            if (typeof v === "string") return `<span class='zyf_117_s'>${v}</span>`;
+            if (Array.isArray(v)) return `<span style='color:#cdd5f0'>[ ${v.map(x => zyf_117_formatVal(x)).join(", ")} ]</span>`;
+            return `<span style='color:#cdd5f0'>${JSON.stringify(v)}</span>`;
+        }
+
+        function zyf_117_renderPreview(obj) {
+            const el = document.getElementById("zyf_117_preview");
+            el.innerHTML = "";
+            if (typeof obj !== "object" || obj === null) {
+                el.innerHTML = "不是对象类型";
+                return;
+            }
+            Object.keys(obj).forEach(k => {
+                const div = document.createElement("div");
+                div.className = "zyf_117_preview-item";
+                div.innerHTML = `<span class="zyf_117_k">${k}</span><span>→</span><span class="zyf_117_v">${zyf_117_formatVal(obj[k])}</span>`;
+                el.appendChild(div);
+            });
+        }
+
+        function zyf_117_parse() {
+            const raw = document.getElementById("zyf_117_raw").value.trim();
+            const errBox = document.getElementById("zyf_117_errBox");
+            try {
+                const obj = JSON.parse(raw);
+                const pretty = JSON.stringify(obj, null, 2);
+                document.getElementById("zyf_117_pretty").textContent = pretty;
+                document.getElementById("zyf_117_hl").innerHTML = zyf_117_highlight(pretty);
+                zyf_117_renderPreview(obj);
+                errBox.textContent = `✅ 解析成功！类型：${Array.isArray(obj) ? "Array" : typeof obj}  ${typeof obj === "object" ? `，键数：${Object.keys(obj).length}` : ""}`;
+                errBox.style.borderColor = "rgba(134,239,172,0.4)";
+                errBox.style.background = "rgba(134,239,172,0.10)";
+                errBox.style.color = "#86efac";
+            } catch (e) {
+                errBox.textContent = `❌ 解析失败：${e.message}`;
+                errBox.style.borderColor = "rgba(255,107,107,0.4)";
+                errBox.style.background = "rgba(255,107,107,0.12)";
+                errBox.style.color = "#ff6b6b";
+                document.getElementById("zyf_117_pretty").textContent = "—";
+                document.getElementById("zyf_117_hl").textContent = "—";
+                document.getElementById("zyf_117_preview").textContent = "—";
+            }
+        }
+
+        // 页面加载时自动跑一次
+        zyf_117_parse();
+    </script>
+</body>
+</html>
