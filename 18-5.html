@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<!-- 姓名：张艺凡 / 日期：2026-11-05 / 功能名称：18-5 Mermaid 智能客服流程图 + ER 图 -->
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>18-5 Mermaid 流程图 + ER 图 · 张艺凡</title>
+<script src="cdn/mermaid/mermaid.min.js"></script>
+<style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+        font-family: "Microsoft YaHei", sans-serif;
+        background:
+            radial-gradient(ellipse at 0% 0%, rgba(34,197,94,0.14) 0%, transparent 55%),
+            radial-gradient(ellipse at 100% 100%, rgba(6,182,212,0.14) 0%, transparent 55%),
+            #05060f;
+        min-height: 100vh; color: #cdd5f0; padding: 30px;
+    }
+    .zyf_117_header { margin-bottom: 24px; }
+    .zyf_117_title { font-size: 0.78rem; letter-spacing: 3px; color: rgba(255,255,255,0.55); }
+    .zyf_117_title b { color: #e6c87a; }
+    .zyf_117_sub { font-size: 0.72rem; color: rgba(255,255,255,0.4); margin-top: 6px; letter-spacing: 1px; }
+
+    .zyf_117_grid { display: grid; gap: 22px; max-width: 1500px; margin: 0 auto; }
+    @media (min-width: 1100px) { .zyf_117_grid { grid-template-columns: 1fr 1fr; } }
+    @media (max-width: 1099px) { .zyf_117_grid { grid-template-columns: 1fr; } }
+
+    .zyf_117_card {
+        background: rgba(255,255,255,0.025);
+        border: 1px solid rgba(255,255,255,0.08);
+        border-radius: 14px; padding: 22px; overflow: auto;
+    }
+    .zyf_117_card h3 {
+        font-size: 0.92rem; color: #e6c87a; font-weight: 600;
+        margin-bottom: 14px; letter-spacing: 2px;
+    }
+    .zyf_117_card h3::before {
+        content: ""; display: inline-block; width: 3px; height: 14px;
+        background: #e6c87a; margin-right: 10px; vertical-align: middle; border-radius: 2px;
+    }
+    .zyf_117_card .zyf_117_desc {
+        font-size: 0.72rem; color: rgba(255,255,255,0.45);
+        margin-bottom: 16px; line-height: 1.7;
+    }
+    .zyf_117_mermaid {
+        background: rgba(0,0,0,0.3);
+        border: 1px solid rgba(255,255,255,0.06);
+        border-radius: 10px; padding: 16px;
+        overflow-x: auto; text-align: center;
+    }
+    footer { text-align: center; padding: 30px; color: rgba(255,255,255,0.25); font-size: 0.7rem; letter-spacing: 4px; }
+
+    /* Mermaid 深色覆盖 */
+    .mermaid svg { background: transparent !important; }
+</style>
+</head>
+<body>
+    <div class="zyf_117_header">
+        <div class="zyf_117_title">MERMAID · FLOW + ER  /  <b>张艺凡</b></div>
+        <div class="zyf_117_sub">18-5 · 本地 mermaid.min.js · 智能客服系统流程图 + 数据库 ER 图</div>
+    </div>
+
+    <div class="zyf_117_grid">
+        <!-- 图 1：流程图 -->
+        <div class="zyf_117_card">
+            <h3>① 智能客服对话流程图</h3>
+            <div class="zyf_117_desc">用户消息 → 意图识别 → 槽位抽取 → RAG 检索 / 工具调用 → 回复生成 → 对话管理</div>
+            <div class="zyf_117_mermaid">
+<pre class="mermaid">
+flowchart TD
+    A([👤 用户发消息]) --> B{意图识别 BERT}
+    B -->|咨询商品| C[槽位提取 BiLSTM]
+    B -->|订单查询| D[调用订单服务 API]
+    B -->|闲聊| E[NLG LLM 生成回复]
+    B -->|投诉/复杂| F[转人工 HITL]
+
+    C --> G[RAG 向量检索]
+    G --> H[Prompt 增强拼接]
+    H --> I[LLM 生成回复]
+
+    D --> J[订单服务返回]
+    J --> K[模板渲染回复]
+
+    E --> I
+
+    I --> L{对话管理 FSM}
+    K --> L
+
+    L -->|命中多轮| M[上下文记忆 Attention]
+    M --> N[下一轮对话]
+    L -->|结束| O([✅ 返回用户])
+
+    F --> P[人工客服接管]
+    P --> M
+
+    style A fill:#1e40af,color:#fff,stroke:#3b82f6
+    style O fill:#16a34a,color:#fff,stroke:#22c55e
+    style F fill:#dc2626,color:#fff,stroke:#ef4444
+    style B fill:#a855f7,color:#fff,stroke:#c084fc
+    style C fill:#a855f7,color:#fff,stroke:#c084fc
+    style G fill:#22c55e,color:#fff,stroke:#4ade80
+    style I fill:#e6c87a,color:#000,stroke:#fcd34d
+    style L fill:#06b6d4,color:#fff,stroke:#22d3ee
+    style M fill:#06b6d4,color:#fff,stroke:#22d3ee
+</pre>
+            </div>
+        </div>
+
+        <!-- 图 2：ER 图 -->
+        <div class="zyf_117_card">
+            <h3>② 智能客服系统 ER 图（数据库设计）</h3>
+            <div class="zyf_117_desc">用户 · 会话 · 消息 · FAQ · 知识条目 · 反馈 · 人工工单</div>
+            <div class="zyf_117_mermaid">
+<pre class="mermaid">
+erDiagram
+    USER ||--o{ SESSION : "发起"
+    USER ||--o{ FEEDBACK : "提交"
+    SESSION ||--o{ MESSAGE : "包含"
+    MESSAGE }o--|| SESSION : "属于"
+    MESSAGE }o--|| FAQ : "命中"
+    FAQ ||--o{ MESSAGE : "被命中"
+    FAQ }o--|| KNOWLEDGE : "关联"
+    KNOWLEDGE ||--o{ FAQ : "包含"
+    FEEDBACK }o--|| MESSAGE : "针对"
+    FEEDBACK }o--|| USER : "来自"
+    TICKET ||--o{ MESSAGE : "关联"
+    TICKET }o--|| USER : "转人工"
+
+    USER {
+        bigint id PK
+        varchar nickname
+        varchar open_id
+        tinyint level
+        datetime created_at
+    }
+    SESSION {
+        bigint id PK
+        bigint user_id FK
+        varchar intent
+        tinyint status
+        datetime start_time
+    }
+    MESSAGE {
+        bigint id PK
+        bigint session_id FK
+        tinyint role
+        text content
+        bigint faq_id FK
+        float confidence
+        datetime created_at
+    }
+    FAQ {
+        bigint id PK
+        text question
+        text answer
+        int hit_count
+        tinyint status
+    }
+    KNOWLEDGE {
+        bigint id PK
+        varchar title
+        text content
+        varchar vector_id
+        tinyint source
+    }
+    FEEDBACK {
+        bigint id PK
+        bigint user_id FK
+        bigint message_id FK
+        tinyint rating
+        text comment
+    }
+    TICKET {
+        bigint id PK
+        bigint session_id FK
+        bigint assignee_id
+        tinyint priority
+        tinyint status
+    }
+</pre>
+            </div>
+        </div>
+    </div>
+
+<footer>高级网页设计 I · 18-5 Mermaid 流程图 + ER 图 · 本地 CDN</footer>
+
+<script>
+    mermaid.initialize({
+        startOnLoad: true,
+        theme: "dark",
+        securityLevel: "loose",
+        flowchart: { htmlLabels: true, curve: "basis", nodeSpacing: 40, rankSpacing: 50 },
+        er: { layoutDirection: "TB", useMaxWidth: true }
+    });
+</script>
+</body>
+</html>

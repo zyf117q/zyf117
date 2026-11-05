@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<!-- 姓名：张艺凡 / 日期：2026-11-05 / 功能名称：18-7 ECharts 数据大屏 -->
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>18-7 数据大屏 · 张艺凡</title>
+<script src="cdn/echarts/echarts.min.js"></script>
+<style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { height: 100%; overflow: hidden; }
+    body {
+        font-family: "Microsoft YaHei", sans-serif;
+        background:
+            radial-gradient(ellipse at 50% -100%, rgba(59,130,246,0.22) 0%, transparent 60%),
+            radial-gradient(ellipse at 50% 200%, rgba(168,85,247,0.18) 0%, transparent 60%),
+            #04060f;
+        color: #cdd5f0;
+    }
+
+    /* ====== 顶部标题 ====== */
+    .zyf_117_top {
+        height: 64px; display: flex; align-items: center; justify-content: space-between;
+        padding: 0 28px; border-bottom: 1px solid rgba(91,140,255,0.15);
+        background: linear-gradient(180deg, rgba(59,130,246,0.08) 0%, transparent 100%);
+        position: relative;
+    }
+    .zyf_117_top::before, .zyf_117_top::after {
+        content: ""; position: absolute; bottom: -1px; width: 180px; height: 2px;
+        background: linear-gradient(90deg, transparent, #5b8cff, transparent);
+    }
+    .zyf_117_top::before { left: 28px; }
+    .zyf_117_top::after  { right: 28px; }
+    .zyf_117_title {
+        font-size: 22px; font-weight: 700; letter-spacing: 10px;
+        background: linear-gradient(90deg, #e6c87a, #fff, #e6c87a);
+        -webkit-background-clip: text; background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+    .zyf_117_clock {
+        font-family: "JetBrains Mono", Consolas, monospace;
+        font-size: 14px; color: rgba(255,255,255,0.7); letter-spacing: 2px;
+    }
+    .zyf_117_clock b { color: #e6c87a; font-weight: 600; }
+
+    /* ====== 大屏主体 ====== */
+    .zyf_117_main {
+        height: calc(100vh - 64px);
+        display: grid;
+        grid-template-columns: 320px 1fr 320px;
+        gap: 14px; padding: 14px;
+    }
+    .zyf_117_col { display: flex; flex-direction: column; gap: 14px; min-height: 0; }
+
+    .zyf_117_panel {
+        background: linear-gradient(135deg, rgba(59,130,246,0.06) 0%, rgba(168,85,247,0.04) 100%);
+        border: 1px solid rgba(91,140,255,0.18);
+        border-radius: 10px; padding: 14px 16px;
+        position: relative; overflow: hidden;
+    }
+    .zyf_117_panel::before, .zyf_117_panel::after {
+        content: ""; position: absolute; width: 14px; height: 14px;
+        border: 1px solid #5b8cff;
+    }
+    .zyf_117_panel::before { top: -1px; left: -1px; border-right: none; border-bottom: none; }
+    .zyf_117_panel::after  { bottom: -1px; right: -1px; border-left: none; border-top: none; }
+
+    .zyf_117_panel h4 {
+        font-size: 13px; color: #e6c87a; font-weight: 600;
+        margin-bottom: 10px; letter-spacing: 2px;
+    }
+    .zyf_117_panel h4::before {
+        content: ""; display: inline-block; width: 3px; height: 12px;
+        background: #e6c87a; margin-right: 8px; vertical-align: middle; border-radius: 2px;
+    }
+
+    .zyf_117_canvas { width: 100%; height: 100%; }
+    .zyf_117_flex1 { flex: 1; min-height: 0; }
+
+    /* ====== 数字卡 ====== */
+    .zyf_117_kpis {
+        display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
+    }
+    .zyf_117_kpi {
+        background: rgba(255,255,255,0.03); border: 1px solid rgba(91,140,255,0.2);
+        border-radius: 8px; padding: 10px 12px; text-align: center;
+    }
+    .zyf_117_kpi .num {
+        font-size: 20px; font-weight: 700; color: #e6c87a;
+        font-family: "JetBrains Mono", Consolas, monospace;
+        text-shadow: 0 0 10px rgba(230,200,122,0.4);
+    }
+    .zyf_117_kpi .lbl { font-size: 11px; color: rgba(255,255,255,0.55); margin-top: 2px; }
+    .zyf_117_kpi .trend { font-size: 10px; margin-top: 2px; }
+    .zyf_117_kpi .trend.up { color: #22c55e; }
+    .zyf_117_kpi .trend.down { color: #ef4444; }
+
+    /* ====== 实时滚动消息 ====== */
+    .zyf_117_scroll {
+        height: 160px; overflow: hidden; position: relative;
+    }
+    .zyf_117_scroll ul { list-style: none; }
+    .zyf_117_scroll li {
+        padding: 6px 0; font-size: 12px; color: rgba(255,255,255,0.72);
+        border-bottom: 1px dashed rgba(255,255,255,0.08);
+        display: flex; justify-content: space-between;
+        animation: fadeUp 0.3s ease;
+    }
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+
+    @media (max-width: 1200px) {
+        .zyf_117_main { grid-template-columns: 260px 1fr 260px; }
+    }
+    @media (max-width: 900px) {
+        html, body { height: auto; overflow: auto; }
+        .zyf_117_main { grid-template-columns: 1fr; height: auto; }
+        .zyf_117_col { min-height: 300px; }
+    }
+</style>
+</head>
+<body>
+    <!-- 顶部 -->
+    <div class="zyf_117_top">
+        <div style="color: rgba(255,255,255,0.55); font-size: 12px; letter-spacing: 3px;">ZYF · DATA VISUALIZATION</div>
+        <div class="zyf_117_title">电 商 运 营 实 时 数 据 大 屏</div>
+        <div class="zyf_117_clock" id="zyf_117_clock">2026-11-05 <b id="zyf_117_time">00:00:00</b></div>
+    </div>
+
+    <!-- 主体三列 -->
+    <div class="zyf_117_main">
+        <!-- 左列 -->
+        <div class="zyf_117_col">
+            <div class="zyf_117_panel">
+                <h4>核心指标</h4>
+                <div class="zyf_117_kpis">
+                    <div class="zyf_117_kpi"><div class="num" id="zyf_117_kpi1">0</div><div class="lbl">今日 GMV(万)</div><div class="trend up">↑ 12.8%</div></div>
+                    <div class="zyf_117_kpi"><div class="num" id="zyf_117_kpi2">0</div><div class="lbl">订单数</div><div class="trend up">↑ 8.3%</div></div>
+                    <div class="zyf_117_kpi"><div class="num" id="zyf_117_kpi3">0</div><div class="lbl">活跃用户(千)</div><div class="trend up">↑ 5.6%</div></div>
+                    <div class="zyf_117_kpi"><div class="num" id="zyf_117_kpi4">0</div><div class="lbl">转化率</div><div class="trend down">↓ 0.4%</div></div>
+                </div>
+            </div>
+            <div class="zyf_117_panel zyf_117_flex1">
+                <h4>各品类销售额 TOP6</h4>
+                <div id="zyf_117_chart_bar" class="zyf_117_canvas"></div>
+            </div>
+        </div>
+
+        <!-- 中列 -->
+        <div class="zyf_117_col">
+            <div class="zyf_117_panel zyf_117_flex1" style="flex: 2;">
+                <h4>全国各省销售额分布（地理信息图）</h4>
+                <div id="zyf_117_chart_map" class="zyf_117_canvas"></div>
+            </div>
+            <div class="zyf_117_panel" style="height: 40%;">
+                <h4>近 12 个月 GMV 与订单数趋势</h4>
+                <div id="zyf_117_chart_line" class="zyf_117_canvas"></div>
+            </div>
+        </div>
+
+        <!-- 右列 -->
+        <div class="zyf_117_col">
+            <div class="zyf_117_panel">
+                <h4>品类销售占比</h4>
+                <div id="zyf_117_chart_pie" class="zyf_117_canvas" style="height: 240px;"></div>
+            </div>
+            <div class="zyf_117_panel zyf_117_flex1">
+                <h4>实时订单流水</h4>
+                <div class="zyf_117_scroll"><ul id="zyf_117_scroll"></ul></div>
+            </div>
+        </div>
+    </div>
+
+<script>
+    // ====== 时钟 ======
+    function zyf_117_updateClock() {
+        const now = new Date();
+        document.getElementById("zyf_117_time").textContent =
+            now.toLocaleTimeString("zh-CN", { hour12: false });
+        document.getElementById("zyf_117_clock").innerHTML =
+            now.toISOString().slice(0, 10) + " <b>" + now.toLocaleTimeString("zh-CN", { hour12: false }) + "</b>";
+    }
+    setInterval(zyf_117_updateClock, 1000); zyf_117_updateClock();
+
+    // ====== 数字动画 ======
+    function zyf_117_countUp(id, target, decimals = 0) {
+        const el = document.getElementById(id);
+        const duration = 1500; const start = performance.now();
+        function step(now) {
+            const p = Math.min(1, (now - start) / duration);
+            const v = target * (1 - Math.pow(1 - p, 3));
+            el.textContent = decimals ? v.toFixed(decimals) : Math.round(v);
+            if (p < 1) requestAnimationFrame(step);
+        }
+        requestAnimationFrame(step);
+    }
+    zyf_117_countUp("zyf_117_kpi1", 5826.4);
+    zyf_117_countUp("zyf_117_kpi2", 128463);
+    zyf_117_countUp("zyf_117_kpi3", 86.7, 1);
+    zyf_117_countUp("zyf_117_kpi4", 3.86, 2);
+
+    // ====== 实时滚动 ======
+    const zyf_117_msgs = [
+        ["刚刚", "北京用户 ***1234 下单 ¥2,399"],
+        ["5秒前", "上海用户 ***5678 下单 ¥1,599"],
+        ["12秒前", "广州用户 ***9012 下单 ¥498"],
+        ["18秒前", "深圳用户 ***3456 下单 ¥3,899"],
+        ["25秒前", "成都用户 ***7890 下单 ¥1,299"],
+        ["32秒前", "杭州用户 ***2345 下单 ¥688"],
+        ["41秒前", "武汉用户 ***6789 下单 ¥2,199"],
+        ["53秒前", "西安用户 ***0123 下单 ¥999"],
+        ["1分钟前", "南京用户 ***4567 下单 ¥3,599"],
+        ["2分钟前", "重庆用户 ***8901 下单 ¥1,899"],
+        ["3分钟前", "天津用户 ***2345 下单 ¥498"],
+        ["4分钟前", "苏州用户 ***6789 下单 ¥1,199"],
+    ];
+    const zyf_117_ul = document.getElementById("zyf_117_scroll");
+    zyf_117_ul.innerHTML = zyf_117_msgs.map(m => `<li><span>${m[0]}</span><span style="color:#e6c87a">${m[1]}</span></li>`).join("");
+    setInterval(() => {
+        const now = new Date();
+        const time = now.toLocaleTimeString("zh-CN", { hour12: false });
+        const cities = ["北京","上海","广州","深圳","成都","杭州","武汉","西安","南京","重庆","天津","苏州"];
+        const city = cities[Math.floor(Math.random() * cities.length)];
+        const amt = Math.floor(Math.random() * 50 + 1) * 99 + 99;
+        const li = document.createElement("li");
+        li.innerHTML = `<span>${time}</span><span style="color:#e6c87a">${city}用户 ***${Math.floor(Math.random()*9000+1000)} 下单 ¥${amt.toLocaleString()}</span>`;
+        zyf_117_ul.insertBefore(li, zyf_117_ul.firstChild);
+        if (zyf_117_ul.children.length > 14) zyf_117_ul.removeChild(zyf_117_ul.lastChild);
+    }, 3500);
+
+    // ====== 图表主题 ======
+    const zyf_117_theme = {
+        textStyle: { color: "#cbd5e1" },
+        backgroundColor: "transparent",
+        axisLine: { lineStyle: { color: "rgba(255,255,255,0.2)" } },
+        splitLine: { lineStyle: { color: "rgba(255,255,255,0.06)" } },
+    };
+
+    // ====== 左：TOP6 柱状图 ======
+    echarts.init(document.getElementById("zyf_117_chart_bar")).setOption({
+        ...zyf_117_theme,
+        tooltip: { trigger: "axis" },
+        grid: { left: 60, right: 20, top: 10, bottom: 30 },
+        xAxis: { type: "category", data: ["运动","家居","食品","美妆","服饰","数码"],
+                 axisLine: { lineStyle: { color: "rgba(255,255,255,0.2)" } },
+                 axisLabel: { color: "#cbd5e1" } },
+        yAxis: { type: "value", name: "万元",
+                 splitLine: { lineStyle: { color: "rgba(255,255,255,0.06)" } },
+                 axisLabel: { color: "#94a3b8" } },
+        series: [{
+            type: "bar", barWidth: 18,
+            data: [2750, 2980, 3360, 4120, 3820, 5460],
+            itemStyle: {
+                borderRadius: [4, 4, 0, 0],
+                color: new echarts.graphic.LinearGradient(0,0,0,1,[
+                    { offset:0, color:"#e6c87a" }, { offset:1, color:"#a855f7" }
+                ])
+            },
+            label: { show: true, position: "top", color: "#e6c87a", fontSize: 11 }
+        }]
+    });
+
+    // ====== 中：中国地图（ECharts 内置，不需要外部 GeoJSON）======
+    // 中国省市级行政区列表 + 模拟数据（使用 ECharts 自带的 name 字段做散点图展示）
+    const zyf_117_provinces = [
+        { name: "北京",  val: 8920, coord: [116.41, 39.90] },
+        { name: "上海",  val: 9240, coord: [121.48, 31.23] },
+        { name: "广东",  val: 12860, coord: [113.26, 23.13] },
+        { name: "江苏",  val: 7830, coord: [118.78, 32.04] },
+        { name: "浙江",  val: 7290, coord: [120.15, 30.28] },
+        { name: "四川",  val: 5640, coord: [104.07, 30.67] },
+        { name: "湖北",  val: 4320, coord: [114.30, 30.60] },
+        { name: "山东",  val: 5180, coord: [117.02, 36.67] },
+        { name: "河南",  val: 3980, coord: [113.65, 34.76] },
+        { name: "福建",  val: 3760, coord: [119.30, 26.08] },
+        { name: "湖南",  val: 3420, coord: [112.98, 28.19] },
+        { name: "安徽",  val: 2870, coord: [117.27, 31.86] },
+        { name: "河北",  val: 2540, coord: [114.51, 38.04] },
+        { name: "辽宁",  val: 2310, coord: [123.43, 41.80] },
+        { name: "陕西",  val: 2180, coord: [108.94, 34.26] },
+        { name: "重庆",  val: 3240, coord: [106.55, 29.56] },
+        { name: "天津",  val: 1890, coord: [117.20, 39.13] },
+        { name: "云南",  val: 1650, coord: [102.71, 25.04] },
+        { name: "广西",  val: 1420, coord: [108.33, 22.84] },
+        { name: "山西",  val: 1280, coord: [112.55, 37.87] },
+        { name: "贵州",  val: 1150, coord: [106.63, 26.65] },
+        { name: "江西",  val: 2760, coord: [115.89, 28.68] },
+        { name: "黑龙江", val: 1020, coord: [126.64, 45.75] },
+        { name: "吉林",  val: 870, coord: [125.32, 43.90] },
+        { name: "内蒙古", val: 790, coord: [111.75, 40.84] },
+        { name: "新疆",  val: 620, coord: [87.61, 43.79] },
+        { name: "西藏",  val: 180, coord: [91.13, 29.65] },
+        { name: "甘肃",  val: 540, coord: [103.83, 36.06] },
+        { name: "青海",  val: 260, coord: [101.74, 36.56] },
+        { name: "宁夏",  val: 380, coord: [106.27, 38.47] },
+        { name: "海南",  val: 890, coord: [110.35, 20.02] },
+    ];
+    const zyf_117_mapOpt = {
+        backgroundColor: "transparent",
+        tooltip: {
+            trigger: "item", formatter: p => `${p.name}<br/>销售额：${p.value ? p.value.toLocaleString() : "-"} 万元`,
+            backgroundColor: "rgba(0,0,0,0.8)", borderColor: "#5b8cff", textStyle: { color: "#fff" }
+        },
+        visualMap: {
+            min: 0, max: 13000, left: 20, bottom: 10,
+            textStyle: { color: "#94a3b8" }, calculable: true,
+            inRange: { color: ["#1e3a8a", "#3b82f6", "#a855f7", "#ec4899", "#e6c87a"] }
+        },
+        geo: {
+            map: "china", roam: true, zoom: 1.1,
+            label: { show: true, color: "rgba(255,255,255,0.6)", fontSize: 10 },
+            itemStyle: {
+                areaColor: "#0f1a36", borderColor: "#5b8cff", borderWidth: 1
+            },
+            emphasis: { label: { color: "#e6c87a" }, itemStyle: { areaColor: "#a855f7" } }
+        },
+        series: [{
+            name: "销售额", type: "effectScatter", coordinateSystem: "geo",
+            data: zyf_117_provinces.map(p => ({ name: p.name, value: [...p.coord, p.val] })),
+            symbolSize: v => Math.sqrt(v[2] / 50),
+            showEffectOn: "render", rippleEffect: { brushType: "stroke", scale: 3, period: 4 },
+            label: { show: true, position: "right", formatter: "{b}", color: "#cbd5e1", fontSize: 10 },
+            itemStyle: { color: "#e6c87a", shadowBlur: 10, shadowColor: "#e6c87a" }
+        }]
+    };
+    // 加载中国地图 GeoJSON（ECharts 5 已内置）
+    fetch("cdn/echarts/china.json").then(r => r.json()).then(geoJson => {
+        echarts.registerMap("china", geoJson);
+        echarts.init(document.getElementById("zyf_117_chart_map")).setOption(zyf_117_mapOpt);
+    }).catch(() => {
+        // 备用：用简单散点 + 文字替代
+        const el = document.getElementById("zyf_117_chart_map");
+        el.innerHTML = `<div style="display:flex;align-items:center;justify-content:center;height:100%;color:rgba(255,255,255,0.5);">中国地图 GeoJSON 加载中... 或请放入 cdn/echarts/china.json</div>`;
+    });
+
+    // ====== 中：12 月趋势 ======
+    echarts.init(document.getElementById("zyf_117_chart_line")).setOption({
+        ...zyf_117_theme,
+        tooltip: { trigger: "axis" },
+        legend: { textStyle: { color: "#cbd5e1" }, top: 0, right: 20 },
+        grid: { left: 50, right: 50, top: 40, bottom: 25 },
+        xAxis: {
+            type: "category", boundaryGap: false,
+            data: ["1月","2月","3月","4月","5月","6月","7月","8月","9月","10月","11月","12月"],
+            axisLine: { lineStyle: { color: "rgba(255,255,255,0.2)" } },
+            axisLabel: { color: "#94a3b8", fontSize: 11 }
+        },
+        yAxis: [
+            { type: "value", name: "GMV(万)", nameTextStyle: { color: "#94a3b8" },
+              splitLine: { lineStyle: { color: "rgba(255,255,255,0.06)" } },
+              axisLabel: { color: "#94a3b8" } },
+            { type: "value", name: "订单(千)", nameTextStyle: { color: "#94a3b8" },
+              splitLine: { show: false }, axisLabel: { color: "#94a3b8" } }
+        ],
+        series: [
+            { name: "GMV", type: "line", smooth: true, yAxisIndex: 0,
+              data: [12400, 14800, 17200, 16500, 19800, 22490, 24100, 26800, 25200, 28600, 31200, 35800],
+              itemStyle: { color: "#e6c87a" },
+              areaStyle: { color: new echarts.graphic.LinearGradient(0,0,0,1,[
+                  { offset:0, color:"rgba(230,200,122,0.4)" }, { offset:1, color:"rgba(230,200,122,0)" }
+              ]) } },
+            { name: "订单数", type: "bar", yAxisIndex: 1, barWidth: 14,
+              data: [82, 96, 112, 108, 130, 148, 162, 178, 168, 188, 206, 235],
+              itemStyle: { borderRadius: [4,4,0,0], color: new echarts.graphic.LinearGradient(0,0,0,1,[
+                  { offset:0, color:"#5b8cff" }, { offset:1, color:"rgba(91,140,255,0.1)" }
+              ]) } }
+        ]
+    });
+
+    // ====== 右：饼图 ======
+    echarts.init(document.getElementById("zyf_117_chart_pie")).setOption({
+        backgroundColor: "transparent",
+        tooltip: { trigger: "item", formatter: "{b}: {c}万 ({d}%)" },
+        legend: { orient: "vertical", right: 0, top: "center", textStyle: { color: "#cbd5e1", fontSize: 11 } },
+        series: [{
+            type: "pie", radius: ["40%", "65%"], center: ["40%", "50%"], avoidLabelOverlap: true,
+            itemStyle: { borderColor: "#05060f", borderWidth: 3 },
+            label: { show: false },
+            emphasis: { label: { show: true, fontSize: 13, color: "#fff" } },
+            data: [
+                { value: 3820, name: "服饰", itemStyle: { color: "#5b8cff" } },
+                { value: 5460, name: "数码", itemStyle: { color: "#a855f7" } },
+                { value: 2980, name: "家居", itemStyle: { color: "#22c55e" } },
+                { value: 4120, name: "美妆", itemStyle: { color: "#ec4899" } },
+                { value: 3360, name: "食品", itemStyle: { color: "#e6c87a" } },
+                { value: 2750, name: "运动", itemStyle: { color: "#06b6d4" } },
+            ]
+        }]
+    });
+
+    // 响应式
+    window.addEventListener("resize", () => {
+        document.querySelectorAll("div[id^='zyf_117_chart_']").forEach(el => {
+            const inst = echarts.getInstanceByDom(el);
+            if (inst) inst.resize();
+        });
+    });
+</script>
+</body>
+</html>
