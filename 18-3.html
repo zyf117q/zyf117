@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<!-- 姓名：张艺凡 / 日期：2026-11-05 / 功能名称：18-3 SVG 知识库智能客服架构图 -->
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>18-3 SVG 知识库智能客服架构图 · 张艺凡</title>
+<style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+        font-family: "Microsoft YaHei", sans-serif;
+        background:
+            radial-gradient(ellipse at 0% 0%, rgba(34,197,94,0.12) 0%, transparent 55%),
+            radial-gradient(ellipse at 100% 100%, rgba(6,182,212,0.12) 0%, transparent 55%),
+            #05060f;
+        min-height: 100vh; color: #cdd5f0; padding: 30px;
+    }
+    .zyf_117_header { margin-bottom: 20px; }
+    .zyf_117_title { font-size: 0.78rem; letter-spacing: 3px; color: rgba(255,255,255,0.55); }
+    .zyf_117_title b { color: #e6c87a; }
+    .zyf_117_sub { font-size: 0.72rem; color: rgba(255,255,255,0.4); margin-top: 6px; letter-spacing: 1px; }
+    svg { width: 100%; max-width: 1400px; height: auto; display: block; margin: 0 auto; }
+    .zyf_117_legend {
+        max-width: 1400px; margin: 20px auto 0; display: flex; gap: 20px; flex-wrap: wrap;
+        font-size: 0.72rem; color: rgba(255,255,255,0.55);
+    }
+    .zyf_117_legend span { display: inline-flex; align-items: center; gap: 6px; }
+    .zyf_117_legend i { width: 12px; height: 12px; border-radius: 3px; display: inline-block; }
+    footer { text-align: center; padding: 30px; color: rgba(255,255,255,0.25); font-size: 0.7rem; letter-spacing: 4px; }
+</style>
+</head>
+<body>
+    <div class="zyf_117_header">
+        <div class="zyf_117_title">KNOWLEDGE · BASED AI CUSTOMER SERVICE  /  <b>张艺凡</b></div>
+        <div class="zyf_117_sub">18-3 · 科研方向 · 纯 SVG 绘制 · 智能客服系统总体架构</div>
+    </div>
+
+<svg viewBox="0 0 1400 900" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- 渐变 -->
+    <linearGradient id="gUser"    x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#3b82f6" stop-opacity="0.18"/>
+      <stop offset="100%" stop-color="#3b82f6" stop-opacity="0.04"/>
+    </linearGradient>
+    <linearGradient id="gAccess"   x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#06b6d4" stop-opacity="0.18"/>
+      <stop offset="100%" stop-color="#06b6d4" stop-opacity="0.04"/>
+    </linearGradient>
+    <linearGradient id="gEngine"   x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#a855f7" stop-opacity="0.18"/>
+      <stop offset="100%" stop-color="#a855f7" stop-opacity="0.04"/>
+    </linearGradient>
+    <linearGradient id="gKB"       x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#22c55e" stop-opacity="0.18"/>
+      <stop offset="100%" stop-color="#22c55e" stop-opacity="0.04"/>
+    </linearGradient>
+    <linearGradient id="gManage"   x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#ec4899" stop-opacity="0.18"/>
+      <stop offset="100%" stop-color="#ec4899" stop-opacity="0.04"/>
+    </linearGradient>
+    <!-- 发光滤镜 -->
+    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="3" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <!-- 箭头标记 -->
+    <marker id="arrow" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#93c5fd"/>
+    </marker>
+  </defs>
+
+  <!-- ====== 层背景 ====== -->
+  <!-- 用户层 -->
+  <rect x="40" y="30"  width="1320" height="100" rx="14" fill="url(#gUser)"   stroke="#3b82f6" stroke-opacity="0.35"/>
+  <!-- 接入层 -->
+  <rect x="40" y="170" width="1320" height="100" rx="14" fill="url(#gAccess)"  stroke="#06b6d4" stroke-opacity="0.35"/>
+  <!-- 智能客服引擎 -->
+  <rect x="40" y="310" width="1320" height="230" rx="14" fill="url(#gEngine)"  stroke="#a855f7" stroke-opacity="0.35"/>
+  <!-- 知识库 -->
+  <rect x="40" y="580" width="1320" height="140" rx="14" fill="url(#gKB)"      stroke="#22c55e" stroke-opacity="0.35"/>
+  <!-- 后台管理 -->
+  <rect x="40" y="760" width="1320" height="120" rx="14" fill="url(#gManage)"  stroke="#ec4899" stroke-opacity="0.35"/>
+
+  <!-- ====== 层标签 ====== -->
+  <g font-family="JetBrains Mono, Consolas, monospace" font-size="11" font-weight="600" letter-spacing="2">
+    <text x="58" y="52" fill="#3b82f6" filter="url(#glow)">L1 · USER LAYER 用户层</text>
+    <text x="58" y="192" fill="#06b6d4" filter="url(#glow)">L2 · ACCESS LAYER 接入层</text>
+    <text x="58" y="332" fill="#a855f7" filter="url(#glow)">L3 · AI ENGINE 智能客服引擎</text>
+    <text x="58" y="602" fill="#22c55e" filter="url(#glow)">L4 · KNOWLEDGE BASE 知识库</text>
+    <text x="58" y="782" fill="#ec4899" filter="url(#glow)">L5 · MANAGEMENT 后台管理 / 人工介入</text>
+  </g>
+
+  <!-- ====== 用户层节点 ====== -->
+  <g font-family="Microsoft YaHei, sans-serif">
+    <g>
+      <rect x="120" y="60" width="200" height="42" rx="8" fill="rgba(255,255,255,0.06)" stroke="#3b82f6" stroke-opacity="0.5"/>
+      <circle cx="140" cy="81" r="5" fill="#3b82f6" filter="url(#glow)"/>
+      <text x="158" y="79" fill="#e8ebf8" font-size="12" font-weight="600">Web 端用户</text>
+      <text x="158" y="92" fill="rgba(255,255,255,0.4)" font-size="9">Browser / H5</text>
+    </g>
+    <g>
+      <rect x="360" y="60" width="200" height="42" rx="8" fill="rgba(255,255,255,0.06)" stroke="#3b82f6" stroke-opacity="0.5"/>
+      <circle cx="380" cy="81" r="5" fill="#3b82f6"/>
+      <text x="398" y="79" fill="#e8ebf8" font-size="12" font-weight="600">iOS / Android App</text>
+      <text x="398" y="92" fill="rgba(255,255,255,0.4)" font-size="9">原生应用</text>
+    </g>
+    <g>
+      <rect x="600" y="60" width="200" height="42" rx="8" fill="rgba(255,255,255,0.06)" stroke="#3b82f6" stroke-opacity="0.5"/>
+      <circle cx="620" cy="81" r="5" fill="#3b82f6"/>
+      <text x="638" y="79" fill="#e8ebf8" font-size="12" font-weight="600">微信 / 支付宝小程序</text>
+      <text x="638" y="92" fill="rgba(255,255,255,0.4)" font-size="9">Mini Program</text>
+    </g>
+    <g>
+      <rect x="840" y="60" width="200" height="42" rx="8" fill="rgba(255,255,255,0.06)" stroke="#3b82f6" stroke-opacity="0.5"/>
+      <circle cx="860" cy="81" r="5" fill="#3b82f6"/>
+      <text x="878" y="79" fill="#e8ebf8" font-size="12" font-weight="600">第三方平台</text>
+      <text x="878" y="92" fill="rgba(255,255,255,0.4)" font-size="9">抖音 / 钉钉 / 企业微信</text>
+    </g>
+  </g>
+
+  <!-- ====== 接入层 ====== -->
+  <g font-family="Microsoft YaHei, sans-serif">
+    <g>
+      <rect x="140" y="200" width="280" height="42" rx="8" fill="rgba(255,255,255,0.05)" stroke="#06b6d4" stroke-opacity="0.5"/>
+      <circle cx="160" cy="221" r="5" fill="#06b6d4" filter="url(#glow)"/>
+      <text x="178" y="219" fill="#e8ebf8" font-size="12" font-weight="600">Nginx 反向代理 / 负载均衡</text>
+      <text x="178" y="232" fill="rgba(255,255,255,0.4)" font-size="9">SSL 卸载 · 静态资源缓存</text>
+    </g>
+    <g>
+      <rect x="480" y="200" width="280" height="42" rx="8" fill="rgba(255,255,255,0.05)" stroke="#06b6d4" stroke-opacity="0.5"/>
+      <circle cx="500" cy="221" r="5" fill="#06b6d4"/>
+      <text x="518" y="219" fill="#e8ebf8" font-size="12" font-weight="600">API Gateway (Kong / APISIX)</text>
+      <text x="518" y="232" fill="rgba(255,255,255,0.4)" font-size="9">路由 · 鉴权 · 限流 · 熔断</text>
+    </g>
+    <g>
+      <rect x="820" y="200" width="280" height="42" rx="8" fill="rgba(255,255,255,0.05)" stroke="#06b6d4" stroke-opacity="0.5"/>
+      <circle cx="840" cy="221" r="5" fill="#06b6d4"/>
+      <text x="858" y="219" fill="#e8ebf8" font-size="12" font-weight="600">WebSocket 长连接</text>
+      <text x="858" y="232" fill="rgba(255,255,255,0.4)" font-size="9">实时双向通信 · 会话保持</text>
+    </g>
+  </g>
+
+  <!-- ====== 智能客服引擎（5 个模块 + 中心对话管理器） ====== -->
+  <!-- 中心对话管理 -->
+  <g>
+    <ellipse cx="700" cy="425" rx="120" ry="45" fill="rgba(168,85,247,0.15)" stroke="#a855f7" stroke-width="1.5" filter="url(#glow)"/>
+    <text x="700" y="420" fill="#e6c87a" font-size="13" font-weight="700" text-anchor="middle" font-family="Microsoft YaHei">对话管理器</text>
+    <text x="700" y="438" fill="rgba(255,255,255,0.5)" font-size="10" text-anchor="middle" font-family="JetBrains Mono">Dialogue Manager · FSM / DST</text>
+  </g>
+
+  <!-- 左列 -->
+  <g font-family="Microsoft YaHei, sans-serif">
+    <g>
+      <rect x="100" y="340" width="260" height="55" rx="10" fill="rgba(168,85,247,0.08)" stroke="#a855f7" stroke-opacity="0.6"/>
+      <text x="120" y="362" fill="#e8ebf8" font-size="12" font-weight="600">意图识别</text>
+      <text x="120" y="380" fill="rgba(255,255,255,0.45)" font-size="10">BERT / BGE · 分类模型 · 多轮意图跟踪</text>
+    </g>
+    <g>
+      <rect x="100" y="420" width="260" height="55" rx="10" fill="rgba(168,85,247,0.08)" stroke="#a855f7" stroke-opacity="0.6"/>
+      <text x="120" y="442" fill="#e8ebf8" font-size="12" font-weight="600">实体 / 槽位提取</text>
+      <text x="120" y="460" fill="rgba(255,255,255,0.45)" font-size="10">NER · BiLSTM+CRF · 时间/地点/商品</text>
+    </g>
+    <g>
+      <rect x="100" y="500" width="260" height="30" rx="6" fill="rgba(230,200,122,0.08)" stroke="#e6c87a" stroke-opacity="0.5"/>
+      <text x="120" y="520" fill="#e6c87a" font-size="11">上下文记忆 · Attention Memory</text>
+    </g>
+  </g>
+
+  <!-- 右列 -->
+  <g font-family="Microsoft YaHei, sans-serif">
+    <g>
+      <rect x="1040" y="340" width="260" height="55" rx="10" fill="rgba(168,85,247,0.08)" stroke="#a855f7" stroke-opacity="0.6"/>
+      <text x="1060" y="362" fill="#e8ebf8" font-size="12" font-weight="600">自然语言生成</text>
+      <text x="1060" y="380" fill="rgba(255,255,255,0.45)" font-size="10">GPT / LLaMA · 模板 + 生成式混合</text>
+    </g>
+    <g>
+      <rect x="1040" y="420" width="260" height="55" rx="10" fill="rgba(168,85,247,0.08)" stroke="#a855f7" stroke-opacity="0.6"/>
+      <text x="1060" y="442" fill="#e8ebf8" font-size="12" font-weight="600">知识检索 RAG</text>
+      <text x="1060" y="460" fill="rgba(255,255,255,0.45)" font-size="10">向量相似度 · 重排序 · Prompt 增强</text>
+    </g>
+    <g>
+      <rect x="1040" y="500" width="260" height="30" rx="6" fill="rgba(230,200,122,0.08)" stroke="#e6c87a" stroke-opacity="0.5"/>
+      <text x="1060" y="520" fill="#e6c87a" font-size="11">多模态支持 · 语音 / 图片</text>
+    </g>
+  </g>
+
+  <!-- ====== 知识库 ====== -->
+  <g font-family="Microsoft YaHei, sans-serif">
+    <g>
+      <rect x="100" y="610" width="260" height="80" rx="10" fill="rgba(34,197,94,0.08)" stroke="#22c55e" stroke-opacity="0.55"/>
+      <text x="120" y="635" fill="#e8ebf8" font-size="12" font-weight="600">Milvus / FAISS</text>
+      <text x="120" y="653" fill="rgba(255,255,255,0.5)" font-size="10">向量数据库</text>
+      <text x="120" y="668" fill="rgba(255,255,255,0.35)" font-size="9">FAQ 向量 · 语义相似度检索</text>
+    </g>
+    <g>
+      <rect x="400" y="610" width="260" height="80" rx="10" fill="rgba(34,197,94,0.08)" stroke="#22c55e" stroke-opacity="0.55"/>
+      <text x="420" y="635" fill="#e8ebf8" font-size="12" font-weight="600">Elasticsearch</text>
+      <text x="420" y="653" fill="rgba(255,255,255,0.5)" font-size="10">全文检索引擎</text>
+      <text x="420" y="668" fill="rgba(255,255,255,0.35)" font-size="9">产品文档 · 术语词典</text>
+    </g>
+    <g>
+      <rect x="700" y="610" width="260" height="80" rx="10" fill="rgba(34,197,94,0.08)" stroke="#22c55e" stroke-opacity="0.55"/>
+      <text x="720" y="635" fill="#e8ebf8" font-size="12" font-weight="600">Neo4j 知识图谱</text>
+      <text x="720" y="653" fill="rgba(255,255,255,0.5)" font-size="10">图数据库</text>
+      <text x="720" y="668" fill="rgba(255,255,255,0.35)" font-size="9">商品关系 · 故障诊断路径</text>
+    </g>
+    <g>
+      <rect x="1000" y="610" width="260" height="80" rx="10" fill="rgba(34,197,94,0.08)" stroke="#22c55e" stroke-opacity="0.55"/>
+      <text x="1020" y="635" fill="#e8ebf8" font-size="12" font-weight="600">MySQL + Redis</text>
+      <text x="1020" y="653" fill="rgba(255,255,255,0.5)" font-size="10">关系型 + 缓存</text>
+      <text x="1020" y="668" fill="rgba(255,255,255,0.35)" font-size="9">会话日志 · 热问缓存</text>
+    </g>
+  </g>
+
+  <!-- ====== 后台管理 ====== -->
+  <g font-family="Microsoft YaHei, sans-serif">
+    <g>
+      <rect x="150" y="790" width="280" height="50" rx="10" fill="rgba(236,72,153,0.08)" stroke="#ec4899" stroke-opacity="0.55"/>
+      <text x="170" y="812" fill="#e8ebf8" font-size="12" font-weight="600">知识库运营后台</text>
+      <text x="170" y="828" fill="rgba(255,255,255,0.4)" font-size="10">知识录入 · 审核 · 更新 · 版本管理</text>
+    </g>
+    <g>
+      <rect x="480" y="790" width="280" height="50" rx="10" fill="rgba(236,72,153,0.08)" stroke="#ec4899" stroke-opacity="0.55"/>
+      <text x="500" y="812" fill="#e8ebf8" font-size="12" font-weight="600">数据分析 · BI 看板</text>
+      <text x="500" y="828" fill="rgba(255,255,255,0.4)" font-size="10">会话量 · 满意度 · 意图分布 · 漏斗</text>
+    </g>
+    <g>
+      <rect x="810" y="790" width="280" height="50" rx="10" fill="rgba(236,72,153,0.08)" stroke="#ec4899" stroke-opacity="0.55"/>
+      <text x="830" y="812" fill="#e8ebf8" font-size="12" font-weight="600">人工客服介入（HITL）</text>
+      <text x="830" y="828" fill="rgba(255,255,255,0.4)" font-size="10">转人工 · 会话接管 · 协同标注</text>
+    </g>
+    <g>
+      <rect x="1140" y="790" width="200" height="50" rx="10" fill="rgba(236,72,153,0.08)" stroke="#ec4899" stroke-opacity="0.55"/>
+      <text x="1160" y="812" fill="#e8ebf8" font-size="12" font-weight="600">模型训练</text>
+      <text x="1160" y="828" fill="rgba(255,255,255,0.4)" font-size="10">Retrain · A/B 测试</text>
+    </g>
+  </g>
+
+  <!-- ====== 连线 ====== -->
+  <g stroke="rgba(147,197,253,0.55)" stroke-width="1.2" stroke-dasharray="5,3" fill="none" marker-end="url(#arrow)">
+    <!-- L1 → L2 -->
+    <path d="M220,102 L220,170"/>
+    <path d="M680,102 L680,170"/>
+    <path d="M940,102 L940,170"/>
+    <!-- L2 → L3 中心 -->
+    <path d="M680,242 C680,280 700,280 700,330"/>
+    <!-- L3 中心 → 左 -->
+    <path d="M580,425 L360,367"/>
+    <path d="M580,425 L360,447"/>
+    <path d="M580,425 L360,515"/>
+    <!-- L3 中心 → 右 -->
+    <path d="M820,425 L1040,367"/>
+    <path d="M820,425 L1040,447"/>
+    <path d="M820,425 L1040,515"/>
+    <!-- L3 → L4 -->
+    <path d="M700,470 L700,580"/>
+    <path d="M230,470 C230,530 230,560 230,580"/>
+    <path d="M1170,470 C1170,530 1170,560 1170,580"/>
+    <!-- L4 → L5 -->
+    <path d="M360,690 L360,760"/>
+    <path d="M900,690 L900,760"/>
+  </g>
+
+  <!-- 标题 -->
+  <text x="700" y="22" text-anchor="middle" fill="#e6c87a" font-size="16" font-weight="700" font-family="Microsoft YaHei">知识库智能客服系统总体架构</text>
+</svg>
+
+<div class="zyf_117_legend">
+    <span><i style="background:#3b82f6"></i>用户层</span>
+    <span><i style="background:#06b6d4"></i>接入层</span>
+    <span><i style="background:#a855f7"></i>AI 引擎</span>
+    <span><i style="background:#22c55e"></i>知识库</span>
+    <span><i style="background:#ec4899"></i>后台管理</span>
+    <span><i style="background:#e6c87a"></i>上下文 / 多模态</span>
+</div>
+
+<footer>高级网页设计 I · 18-3 SVG 知识库智能客服架构图 · 科研方向</footer>
+</body>
+</html>

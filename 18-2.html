@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<!-- 姓名：张艺凡 / 日期：2026-11-05 / 功能名称：18-2 Canvas 电商系统架构图 -->
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>18-2 Canvas 电商系统架构图 · 张艺凡</title>
+<style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+        font-family: "Microsoft YaHei", sans-serif;
+        background:
+            radial-gradient(ellipse at 20% 0%, rgba(91,140,255,0.18) 0%, transparent 50%),
+            radial-gradient(ellipse at 100% 100%, rgba(168,85,247,0.18) 0%, transparent 50%),
+            #05060f;
+        min-height: 100vh; color: #cdd5f0;
+        overflow-x: auto;
+    }
+    .zyf_117_header {
+        padding: 24px 32px; display: flex; justify-content: space-between; align-items: center;
+        border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+    .zyf_117_title { font-size: 0.78rem; letter-spacing: 3px; color: rgba(255,255,255,0.55); }
+    .zyf_117_title b { color: #e6c87a; }
+    .zyf_117_sub { font-size: 0.7rem; color: rgba(255,255,255,0.35); letter-spacing: 1px; }
+    .zyf_117_wrap { padding: 32px; overflow: auto; }
+    canvas {
+        background: rgba(255,255,255,0.02);
+        border: 1px solid rgba(255,255,255,0.08);
+        border-radius: 16px;
+        display: block;
+    }
+    footer { text-align: center; padding: 24px; color: rgba(255,255,255,0.25); font-size: 0.7rem; letter-spacing: 4px; }
+</style>
+</head>
+<body>
+    <div class="zyf_117_header">
+        <div>
+            <div class="zyf_117_title">SYSTEM · ARCHITECTURE  /  <b>张艺凡</b></div>
+            <div class="zyf_117_sub">基于 Canvas 绘制的电商系统架构图 · Microservices</div>
+        </div>
+        <div class="zyf_117_sub">18-2</div>
+    </div>
+    <div class="zyf_117_wrap">
+        <canvas id="zyf_117_canvas" width="1600" height="1100"></canvas>
+    </div>
+    <footer>高级网页设计 I · 18-2 Canvas 电商系统架构图</footer>
+
+<script>
+const c = document.getElementById("zyf_117_canvas");
+const ctx = c.getContext("2d");
+
+// ====== 配置 ======
+const LAYERS = [
+    { name: "外部服务层",  y: 70,  h: 130, color: "#22c55e", items: [
+        { label: "支付宝",    sub: "Pay API" },
+        { label: "微信支付",  sub: "Pay API" },
+        { label: "阿里云 OSS", sub: "对象存储" },
+        { label: "短信服务",  sub: "SMS" },
+        { label: "邮件服务",  sub: "SMTP" },
+    ]},
+    { name: "用户接入层",  y: 230, h: 110, color: "#5b8cff", items: [
+        { label: "Web 网站",  sub: "Vue / React" },
+        { label: "iOS App",   sub: "Swift" },
+        { label: "Android",   sub: "Kotlin" },
+        { label: "小程序",    sub: "WeChat" },
+    ]},
+    { name: "网关层",      y: 370, h: 110, color: "#06b6d4", items: [
+        { label: "CDN",          sub: "静态资源加速" },
+        { label: "Nginx",        sub: "反向代理" },
+        { label: "Spring Cloud Gateway", sub: "API 网关 / 路由 / 鉴权" },
+        { label: "负载均衡",    sub: "F5 / LVS" },
+    ]},
+    { name: "业务微服务层", y: 510, h: 160, color: "#a855f7", items: [
+        { label: "用户服务",  sub: "User Center" },
+        { label: "商品服务",  sub: "Product" },
+        { label: "订单服务",  sub: "Order" },
+        { label: "支付服务",  sub: "Payment" },
+        { label: "搜索服务",  sub: "Search" },
+        { label: "物流服务",  sub: "Logistics" },
+    ]},
+    { name: "数据中间件层", y: 690, h: 120, color: "#f59e0b", items: [
+        { label: "Redis",      sub: "缓存 / Session" },
+        { label: "RabbitMQ",   sub: "消息队列" },
+        { label: "Elasticsearch", sub: "全文检索" },
+        { label: "Kafka",      sub: "日志 / 数据流" },
+    ]},
+    { name: "数据存储层",  y: 830, h: 130, color: "#ec4899", items: [
+        { label: "MySQL 主从", sub: "业务数据" },
+        { label: "MongoDB",    sub: "商品详情" },
+        { label: "ClickHouse", sub: "大数据分析" },
+        { label: "TiDB",       sub: "分布式" },
+    ]},
+];
+
+const X1 = 60, X2 = 1540;
+
+// ====== 画层背景 + 标签 ======
+function drawLayer(layer, idx) {
+    const { name, y, h, color, items } = layer;
+    // 半透明背景
+    const grad = ctx.createLinearGradient(X1, y, X1, y + h);
+    grad.addColorStop(0, color + "15");
+    grad.addColorStop(1, color + "05");
+    ctx.fillStyle = grad;
+    ctx.strokeStyle = color + "55";
+    ctx.lineWidth = 1;
+
+    const r = 12;
+    ctx.beginPath();
+    ctx.moveTo(X1 + r, y);
+    ctx.lineTo(X2 - r, y);
+    ctx.quadraticCurveTo(X2, y, X2, y + r);
+    ctx.lineTo(X2, y + h - r);
+    ctx.quadraticCurveTo(X2, y + h, X2 - r, y + h);
+    ctx.lineTo(X1 + r, y + h);
+    ctx.quadraticCurveTo(X1, y + h, X1, y + h - r);
+    ctx.lineTo(X1, y + r);
+    ctx.quadraticCurveTo(X1, y, X1 + r, y);
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
+
+    // 层名
+    ctx.fillStyle = color;
+    ctx.font = "600 13px 'JetBrains Mono', Consolas, monospace";
+    ctx.textAlign = "left";
+    ctx.textBaseline = "top";
+    ctx.shadowColor = color; ctx.shadowBlur = 10;
+    ctx.fillText("L" + (idx + 1) + " · " + name, X1 + 18, y + 14);
+    ctx.shadowBlur = 0;
+}
+
+// ====== 画节点 ======
+function drawNode(layer) {
+    const { y, h, color, items } = layer;
+    const padX = 28, boxW = (X2 - X1 - padX * 2 - (items.length - 1) * 14) / items.length;
+    const boxH = h - 50;
+    items.forEach((it, i) => {
+        const bx = X1 + padX + i * (boxW + 14);
+        const by = y + 38;
+
+        // 盒子
+        const grad = ctx.createLinearGradient(bx, by, bx, by + boxH);
+        grad.addColorStop(0, "rgba(255,255,255,0.06)");
+        grad.addColorStop(1, "rgba(255,255,255,0.015)");
+        ctx.fillStyle = grad;
+        ctx.strokeStyle = color + "66";
+        ctx.lineWidth = 1.2;
+        roundRect(bx, by, boxW, boxH, 10);
+        ctx.fill(); ctx.stroke();
+
+        // 左边缘色条
+        ctx.fillStyle = color;
+        ctx.fillRect(bx, by + 8, 3, boxH - 16);
+
+        // 发光小圆点
+        ctx.beginPath();
+        ctx.fillStyle = color;
+        ctx.shadowColor = color; ctx.shadowBlur = 10;
+        ctx.arc(bx + 16, by + 18, 4, 0, Math.PI * 2);
+        ctx.fill(); ctx.shadowBlur = 0;
+
+        // 文字
+        ctx.fillStyle = "#e8ebf8";
+        ctx.font = "600 12px 'Microsoft YaHei', sans-serif";
+        ctx.textAlign = "left"; ctx.textBaseline = "middle";
+        ctx.fillText(it.label, bx + 28, by + 18);
+
+        ctx.fillStyle = "rgba(200,210,230,0.5)";
+        ctx.font = "10px 'JetBrains Mono', Consolas, monospace";
+        ctx.fillText(it.sub, bx + 16, by + boxH - 10);
+    });
+}
+
+function roundRect(x, y, w, h, r) {
+    ctx.beginPath();
+    ctx.moveTo(x + r, y);
+    ctx.lineTo(x + w - r, y);
+    ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+    ctx.lineTo(x + w, y + h - r);
+    ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+    ctx.lineTo(x + r, y + h);
+    ctx.quadraticCurveTo(x, y + h, x, y + h - r);
+    ctx.lineTo(x, y + r);
+    ctx.quadraticCurveTo(x, y, x + r, y);
+    ctx.closePath();
+}
+
+// ====== 连接线 ======
+function drawArrows() {
+    // 层与层之间的垂直箭头（左中右三个）
+    for (let i = 0; i < LAYERS.length - 1; i++) {
+        const a = LAYERS[i], b = LAYERS[i + 1];
+        const y1 = a.y + a.h;
+        const y2 = b.y;
+        [X1 + 100, (X1 + X2) / 2, X2 - 100].forEach(x => {
+            const g = ctx.createLinearGradient(x, y1, x, y2);
+            g.addColorStop(0, a.color + "aa");
+            g.addColorStop(1, b.color + "aa");
+            ctx.strokeStyle = g;
+            ctx.lineWidth = 1.5;
+            ctx.setLineDash([6, 4]);
+            ctx.beginPath();
+            ctx.moveTo(x, y1); ctx.lineTo(x, y2);
+            ctx.stroke();
+            ctx.setLineDash([]);
+            // 箭头
+            ctx.fillStyle = b.color;
+            ctx.beginPath();
+            ctx.moveTo(x - 4, y2 - 6); ctx.lineTo(x + 4, y2 - 6); ctx.lineTo(x, y2);
+            ctx.closePath(); ctx.fill();
+        });
+    }
+}
+
+// ====== 装饰网格 ======
+function drawGrid() {
+    ctx.strokeStyle = "rgba(255,255,255,0.03)";
+    ctx.lineWidth = 1;
+    for (let x = 0; x <= c.width; x += 40) {
+        ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, c.height); ctx.stroke();
+    }
+    for (let y = 0; y <= c.height; y += 40) {
+        ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(c.width, y); ctx.stroke();
+    }
+}
+
+// ====== 标题 ======
+function drawTitle() {
+    ctx.fillStyle = "rgba(255,255,255,0.22)";
+    ctx.font = "700 22px 'Microsoft YaHei', sans-serif";
+    ctx.textAlign = "center";
+    ctx.fillText("电商微服务系统架构图", c.width / 2, 40);
+}
+
+// ====== 主循环 ======
+drawGrid();
+LAYERS.forEach(drawLayer);
+LAYERS.forEach(drawNode);
+drawArrows();
+drawTitle();
+</script>
+</body>
+</html>

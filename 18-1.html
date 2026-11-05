@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<!-- 姓名：张艺凡 / 日期：2026-11-05 / 功能名称：18-1 Canvas 粒子动画 -->
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>18-1 Canvas 粒子动画 · 张艺凡</title>
+<style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { height: 100%; }
+    body {
+        font-family: "Microsoft YaHei", sans-serif;
+        background: radial-gradient(ellipse at center, #0a0e20 0%, #000 100%);
+        color: #e8ebf8; overflow: hidden;
+    }
+    canvas { display: block; position: fixed; inset: 0; }
+    .zyf_117_overlay {
+        position: fixed; top: 0; left: 0; right: 0;
+        padding: 20px 28px; display: flex; justify-content: space-between; align-items: center;
+        pointer-events: none; z-index: 10;
+    }
+    .zyf_117_title {
+        font-size: 0.72rem; letter-spacing: 4px; text-transform: uppercase;
+        color: rgba(255,255,255,0.35); font-weight: 600;
+    }
+    .zyf_117_title b { color: #e6c87a; font-weight: 700; }
+    .zyf_117_ctrl {
+        display: flex; gap: 8px; pointer-events: auto;
+    }
+    .zyf_117_btn {
+        background: rgba(255,255,255,0.06);
+        border: 1px solid rgba(255,255,255,0.15);
+        border-radius: 999px;
+        color: rgba(255,255,255,0.75);
+        padding: 6px 16px; font-size: 0.72rem; letter-spacing: 1px;
+        cursor: pointer; backdrop-filter: blur(10px);
+        transition: all .2s;
+    }
+    .zyf_117_btn:hover { background: rgba(230,200,122,0.18); border-color: rgba(230,200,122,0.5); color: #e6c87a; }
+    footer {
+        position: fixed; bottom: 18px; left: 0; right: 0; text-align: center;
+        color: rgba(255,255,255,0.25); font-size: 0.7rem; letter-spacing: 4px;
+        pointer-events: none;
+    }
+</style>
+</head>
+<body>
+    <canvas id="zyf_117_canvas"></canvas>
+
+    <div class="zyf_117_overlay">
+        <div class="zyf_117_title">CANVAS · PARTICLE ANIMATION  /  <b>张艺凡</b></div>
+        <div class="zyf_117_ctrl">
+            <button class="zyf_117_btn" onclick="zyf_117_text('袁磊')">袁磊</button>
+            <button class="zyf_117_btn" onclick="zyf_117_text('张艺凡')">张艺凡</button>
+            <button class="zyf_117_btn" onclick="zyf_117_text('Hello')">Hello</button>
+            <button class="zyf_117_btn" onclick="zyf_117_text('2026')">2026</button>
+            <button class="zyf_117_btn" onclick="zyf_117_scatter()">✨ 散开</button>
+        </div>
+    </div>
+
+    <footer>高级网页设计 I · 18-1 Canvas 动画</footer>
+
+<script>
+    const canvas = document.getElementById("zyf_117_canvas");
+    const ctx = canvas.getContext("2d");
+    let W = 0, H = 0, DPR = window.devicePixelRatio || 1;
+
+    function zyf_117_resize() {
+        W = window.innerWidth; H = window.innerHeight;
+        canvas.width = W * DPR; canvas.height = H * DPR;
+        canvas.style.width = W + "px"; canvas.style.height = H + "px";
+        ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+        zyf_117_text("袁磊");
+    }
+
+    // 粒子
+    let zyf_117_particles = [];
+    class Particle {
+        constructor(tx, ty) {
+            this.x = Math.random() * W;
+            this.y = Math.random() * H;
+            this.vx = (Math.random() - 0.5) * 4;
+            this.vy = (Math.random() - 0.5) * 4;
+            this.tx = tx; this.ty = ty;
+            this.size = 1.2 + Math.random() * 1.2;
+            this.color = `hsl(${210 + Math.random() * 80}, 90%, ${65 + Math.random() * 20}%)`;
+        }
+        move() {
+            const dx = this.tx - this.x;
+            const dy = this.ty - this.y;
+            this.vx += dx * 0.005;
+            this.vy += dy * 0.005;
+            this.vx *= 0.92; this.vy *= 0.92;
+            this.x += this.vx; this.y += this.vy;
+        }
+        scatter() {
+            this.tx = Math.random() * W;
+            this.ty = Math.random() * H;
+        }
+        draw() {
+            ctx.beginPath();
+            ctx.fillStyle = this.color;
+            ctx.shadowColor = this.color;
+            ctx.shadowBlur = 8;
+            ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.shadowBlur = 0;
+        }
+    }
+
+    function zyf_117_text(txt) {
+        // 临时离屏画布采样像素
+        const off = document.createElement("canvas");
+        const octx = off.getContext("2d");
+        const fontSize = Math.min(W / (txt.length * 0.9), H / 1.6, 240);
+        off.width = W; off.height = H;
+        octx.fillStyle = "#fff";
+        octx.font = `bold ${fontSize}px "Microsoft YaHei", sans-serif`;
+        octx.textAlign = "center"; octx.textBaseline = "middle";
+        octx.fillText(txt, W / 2, H / 2);
+
+        const data = octx.getImageData(0, 0, W, H).data;
+        const step = Math.max(4, Math.floor(8 - txt.length)); // 采样步长
+        const targets = [];
+        for (let y = 0; y < H; y += step) {
+            for (let x = 0; x < W; x += step) {
+                const idx = (y * W + x) * 4 + 3;
+                if (data[idx] > 128) targets.push({ x, y });
+            }
+        }
+
+        // 重建粒子
+        zyf_117_particles = targets.map(p => new Particle(p.x, p.y));
+    }
+
+    function zyf_117_scatter() {
+        zyf_117_particles.forEach(p => p.scatter());
+    }
+
+    function zyf_117_loop() {
+        ctx.fillStyle = "rgba(0, 0, 0, 0.22)";
+        ctx.fillRect(0, 0, W, H);
+        zyf_117_particles.forEach(p => { p.move(); p.draw(); });
+        requestAnimationFrame(zyf_117_loop);
+    }
+
+    window.addEventListener("resize", zyf_117_resize);
+    zyf_117_resize();
+    zyf_117_loop();
+</script>
+</body>
+</html>

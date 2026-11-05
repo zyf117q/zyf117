@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<!-- 姓名：张艺凡 / 日期：2026-11-05 / 功能名称：18-4 ECharts 数据可视化 -->
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>18-4 ECharts 数据可视化 · 张艺凡</title>
+<script src="cdn/echarts/echarts.min.js"></script>
+<style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+        font-family: "Microsoft YaHei", sans-serif;
+        background:
+            radial-gradient(ellipse at 0% 0%, rgba(91,140,255,0.18) 0%, transparent 55%),
+            radial-gradient(ellipse at 100% 100%, rgba(168,85,247,0.18) 0%, transparent 55%),
+            #05060f;
+        min-height: 100vh; color: #cdd5f0; padding: 30px;
+    }
+    .zyf_117_header { margin-bottom: 24px; }
+    .zyf_117_title { font-size: 0.78rem; letter-spacing: 3px; color: rgba(255,255,255,0.55); }
+    .zyf_117_title b { color: #e6c87a; }
+    .zyf_117_sub { font-size: 0.72rem; color: rgba(255,255,255,0.4); margin-top: 6px; letter-spacing: 1px; }
+    .zyf_117_grid {
+        display: grid; gap: 20px;
+        grid-template-columns: repeat(2, 1fr);
+        max-width: 1400px; margin: 0 auto;
+    }
+    .zyf_117_card {
+        background: rgba(255,255,255,0.025);
+        border: 1px solid rgba(255,255,255,0.08);
+        border-radius: 14px; padding: 20px;
+    }
+    .zyf_117_card h3 {
+        font-size: 0.88rem; color: #e6c87a; font-weight: 600;
+        margin-bottom: 14px; letter-spacing: 2px;
+    }
+    .zyf_117_card h3::before {
+        content: ""; display: inline-block; width: 3px; height: 14px;
+        background: #e6c87a; margin-right: 10px; vertical-align: middle; border-radius: 2px;
+    }
+    .zyf_117_chart { width: 100%; height: 340px; }
+    footer { text-align: center; padding: 30px; color: rgba(255,255,255,0.25); font-size: 0.7rem; letter-spacing: 4px; }
+    @media (max-width: 800px) { .zyf_117_grid { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+    <div class="zyf_117_header">
+        <div class="zyf_117_title">ECHARTS · DATA VISUALIZATION  /  <b>张艺凡</b></div>
+        <div class="zyf_117_sub">18-4 · 本地 CDN 加载 echarts.min.js · 示例代码 + 实例网址</div>
+    </div>
+
+    <div class="zyf_117_grid">
+        <div class="zyf_117_card">
+            <h3>① 2025 上半年各品类销售额（柱状图）</h3>
+            <div id="zyf_117_chart1" class="zyf_117_chart"></div>
+        </div>
+        <div class="zyf_117_card">
+            <h3>② 各品类销售占比（环形饼图）</h3>
+            <div id="zyf_117_chart2" class="zyf_117_chart"></div>
+        </div>
+        <div class="zyf_117_card">
+            <h3>③ 1-6 月 GMV 与订单量趋势（双 Y 轴折线）</h3>
+            <div id="zyf_117_chart3" class="zyf_117_chart"></div>
+        </div>
+        <div class="zyf_117_card">
+            <h3>④ 用户活跃度散点分布（新增 vs 留存）</h3>
+            <div id="zyf_117_chart4" class="zyf_117_chart"></div>
+        </div>
+    </div>
+
+    <footer>高级网页设计 I · 18-4 ECharts 数据可视化</footer>
+
+<script>
+// 深色主题配色
+const zyf_117_colors = ["#5b8cff", "#a855f7", "#22c55e", "#ec4899", "#e6c87a", "#06b6d4"];
+
+// ====== 图 1：柱状图 ======
+echarts.init(document.getElementById("zyf_117_chart1"), null, { renderer: "canvas" }).setOption({
+    backgroundColor: "transparent",
+    color: zyf_117_colors,
+    tooltip: { trigger: "axis", axisPointer: { type: "shadow" } },
+    legend: { textStyle: { color: "#98a0bd" }, top: 0 },
+    grid: { left: 40, right: 20, top: 40, bottom: 30 },
+    xAxis: {
+        type: "category",
+        data: ["服饰", "数码", "家居", "美妆", "食品", "运动"],
+        axisLine: { lineStyle: { color: "rgba(255,255,255,0.15)" } },
+        axisLabel: { color: "#98a0bd" },
+    },
+    yAxis: {
+        type: "value",
+        name: "万元", nameTextStyle: { color: "#98a0bd" },
+        axisLine: { show: false },
+        splitLine: { lineStyle: { color: "rgba(255,255,255,0.06)" } },
+        axisLabel: { color: "#98a0bd" },
+    },
+    series: [{
+        name: "销售额", type: "bar", barWidth: "45%",
+        data: [3820, 5460, 2980, 4120, 3360, 2750],
+        itemStyle: {
+            borderRadius: [6, 6, 0, 0],
+            color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+                { offset: 0, color: "#a855f7" }, { offset: 1, color: "#5b8cff" }
+            ])
+        },
+        label: { show: true, position: "top", color: "#cbd5e1", fontSize: 11 }
+    }]
+});
+
+// ====== 图 2：环形饼图 ======
+echarts.init(document.getElementById("zyf_117_chart2"), null, { renderer: "canvas" }).setOption({
+    backgroundColor: "transparent",
+    color: zyf_117_colors,
+    tooltip: { trigger: "item", formatter: "{b}: {c} 万元 ({d}%)" },
+    legend: { bottom: 0, textStyle: { color: "#98a0bd" }, itemWidth: 12, itemHeight: 12 },
+    series: [{
+        name: "销售占比", type: "pie", radius: ["45%", "70%"], center: ["50%", "45%"],
+        avoidLabelOverlap: true, itemStyle: { borderColor: "#0a0e20", borderWidth: 3 },
+        label: { show: false },
+        emphasis: { label: { show: true, fontSize: 13, color: "#e8ebf8" } },
+        data: [
+            { value: 3820, name: "服饰" }, { value: 5460, name: "数码" },
+            { value: 2980, name: "家居" }, { value: 4120, name: "美妆" },
+            { value: 3360, name: "食品" }, { value: 2750, name: "运动" },
+        ]
+    }]
+});
+
+// ====== 图 3：双 Y 轴折线 ======
+echarts.init(document.getElementById("zyf_117_chart3"), null, { renderer: "canvas" }).setOption({
+    backgroundColor: "transparent",
+    tooltip: { trigger: "axis" },
+    legend: { textStyle: { color: "#98a0bd" }, top: 0 },
+    grid: { left: 40, right: 50, top: 40, bottom: 30 },
+    xAxis: {
+        type: "category", boundaryGap: false,
+        data: ["1月", "2月", "3月", "4月", "5月", "6月"],
+        axisLine: { lineStyle: { color: "rgba(255,255,255,0.15)" } },
+        axisLabel: { color: "#98a0bd" },
+    },
+    yAxis: [
+        { type: "value", name: "GMV(万)", nameTextStyle: { color: "#98a0bd" },
+          axisLine: { show: false }, splitLine: { lineStyle: { color: "rgba(255,255,255,0.06)" } }, axisLabel: { color: "#98a0bd" } },
+        { type: "value", name: "订单数(千)", nameTextStyle: { color: "#98a0bd" },
+          axisLine: { show: false }, splitLine: { show: false }, axisLabel: { color: "#98a0bd" } }
+    ],
+    series: [
+        { name: "GMV", type: "line", smooth: true, yAxisIndex: 0, data: [12400, 14800, 17200, 16500, 19800, 22490],
+          itemStyle: { color: "#e6c87a" }, areaStyle: { color: new echarts.graphic.LinearGradient(0,0,0,1,[{offset:0,color:"rgba(230,200,122,0.35)"},{offset:1,color:"rgba(230,200,122,0)"}])} },
+        { name: "订单数", type: "bar", yAxisIndex: 1, barWidth: "30%", data: [82, 96, 112, 108, 130, 148],
+          itemStyle: { color: "#5b8cff", borderRadius: [4, 4, 0, 0] } },
+    ]
+});
+
+// ====== 图 4：散点图 ======
+echarts.init(document.getElementById("zyf_117_chart4"), null, { renderer: "canvas" }).setOption({
+    backgroundColor: "transparent",
+    tooltip: { trigger: "item" },
+    legend: { textStyle: { color: "#98a0bd" }, top: 0 },
+    grid: { left: 40, right: 20, top: 40, bottom: 30 },
+    xAxis: {
+        type: "value", name: "新增用户(千)", nameTextStyle: { color: "#98a0bd" },
+        axisLine: { show: false }, splitLine: { lineStyle: { color: "rgba(255,255,255,0.06)" } },
+        axisLabel: { color: "#98a0bd" }
+    },
+    yAxis: {
+        type: "value", name: "7日留存率(%)", nameTextStyle: { color: "#98a0bd" },
+        axisLine: { show: false }, splitLine: { lineStyle: { color: "rgba(255,255,255,0.06)" } },
+        axisLabel: { color: "#98a0bd" }
+    },
+    series: ["服饰", "数码", "家居"].map((name, i) => ({
+        name, type: "scatter", symbolSize: (d) => Math.sqrt(d[2]) * 2,
+        itemStyle: { color: zyf_117_colors[i], opacity: 0.85 },
+        data: Array.from({length: 18}, () => [
+            Math.round(Math.random() * 30 + 5),
+            Math.round(Math.random() * 50 + 30),
+            Math.round(Math.random() * 200 + 50)
+        ])
+    }))
+});
+
+// 响应式
+window.addEventListener("resize", () => {
+    document.querySelectorAll(".zyf_117_chart").forEach(el => {
+        const inst = echarts.getInstanceByDom(el);
+        if (inst) inst.resize();
+    });
+});
+</script>
+</body>
+</html>
