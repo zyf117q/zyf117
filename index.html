@@ -4,402 +4,536 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>作业首页 · 张艺凡</title>
+<title>ZYF · 作业集</title>
 <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
-
+    :root {
+        --bg-0: #05060f;
+        --bg-1: #0a0e20;
+        --bg-2: #12162e;
+        --border: rgba(255,255,255,0.08);
+        --border-hi: rgba(255,255,255,0.18);
+        --gold: #e6c87a;
+        --gold-hi: #f5d88a;
+        --accent-1: #5b8cff;
+        --accent-2: #a855f7;
+        --accent-3: #ec4899;
+        --text-1: #e8eaf0;
+        --text-2: #8a90a6;
+        --text-3: #5a6080;
+    }
+    html, body { height: 100%; }
     body {
-        font-family: "Microsoft YaHei", "PingFang SC", Arial, sans-serif;
-        background:
-            radial-gradient(ellipse at 15% 0%, rgba(93,139,255,0.22) 0%, transparent 50%),
-            radial-gradient(ellipse at 100% 100%, rgba(160,107,255,0.18) 0%, transparent 55%),
-            radial-gradient(ellipse at 50% 60%, rgba(244,114,182,0.08) 0%, transparent 45%),
-            linear-gradient(160deg, #080c1e 0%, #12103a 60%, #1a0f4a 100%);
-        min-height: 100vh; color: #cdd5f0; padding: 0; overflow-x: hidden;
+        font-family: "SF Pro Display", "Inter", "Microsoft YaHei", -apple-system, sans-serif;
+        background: var(--bg-0);
+        color: var(--text-1);
+        overflow-x: hidden;
         position: relative;
     }
-    /* 网格 + 星点装饰 */
+    /* 极光光斑 */
     body::before {
-        content: "";
-        position: fixed; inset: 0; z-index: -1; pointer-events: none;
+        content: ""; position: fixed; inset: 0; z-index: 0; pointer-events: none;
+        background:
+            radial-gradient(circle at 12% 8%, rgba(91,140,255,0.35) 0%, transparent 38%),
+            radial-gradient(circle at 92% 15%, rgba(168,85,247,0.28) 0%, transparent 40%),
+            radial-gradient(circle at 50% 100%, rgba(236,72,153,0.20) 0%, transparent 55%);
+        filter: blur(2px);
+    }
+    /* 细网格线 */
+    body::after {
+        content: ""; position: fixed; inset: 0; z-index: 0; pointer-events: none;
         background-image:
-            linear-gradient(rgba(93,139,255,0.08) 1px, transparent 1px),
-            linear-gradient(90deg, rgba(93,139,255,0.08) 1px, transparent 1px);
-        background-size: 40px 40px;
-        mask-image: radial-gradient(ellipse at center, rgba(0,0,0,0.85) 30%, transparent 80%);
-        -webkit-mask-image: radial-gradient(ellipse at center, rgba(0,0,0,0.85) 30%, transparent 80%);
+            linear-gradient(rgba(255,255,255,0.035) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(255,255,255,0.035) 1px, transparent 1px);
+        background-size: 48px 48px;
+        mask-image: radial-gradient(ellipse at center, rgba(0,0,0,0.85) 0%, transparent 78%);
+        -webkit-mask-image: radial-gradient(ellipse at center, rgba(0,0,0,0.85) 0%, transparent 78%);
     }
 
-    /* 顶部 Hero */
-    .zyf_117_hero {
-        text-align: center; padding: 70px 20px 50px;
+    /* ===== Hero ===== */
+    .zyf_hero {
+        position: relative; z-index: 1;
+        min-height: 52vh;
+        display: flex; flex-direction: column; justify-content: center; align-items: center;
+        text-align: center; padding: 80px 24px 40px;
     }
-    .zyf_117_hero h1 {
-        font-size: 2.4rem; letter-spacing: 6px; font-weight: 700;
-        background: linear-gradient(90deg, #60a5fa, #a78bfa, #f472b6);
+    .zyf_tag {
+        display: inline-flex; align-items: center; gap: 8px;
+        padding: 6px 14px; border-radius: 999px;
+        background: rgba(255,255,255,0.04);
+        border: 1px solid var(--border);
+        font-size: 0.72rem; letter-spacing: 3px; text-transform: uppercase;
+        color: var(--text-2); margin-bottom: 28px;
+        backdrop-filter: blur(12px);
+    }
+    .zyf_tag .zyf_dot {
+        width: 6px; height: 6px; border-radius: 50%;
+        background: var(--gold); box-shadow: 0 0 8px var(--gold);
+    }
+    .zyf_hero h1 {
+        font-size: clamp(2.4rem, 6vw, 4.6rem);
+        font-weight: 800; letter-spacing: -1px; line-height: 1.02;
+        margin-bottom: 18px;
+    }
+    .zyf_hero h1 span {
+        background: linear-gradient(110deg, #fff 0%, var(--gold) 40%, #fff 58%, var(--gold) 82%, #fff 100%);
+        background-size: 300% 100%;
         -webkit-background-clip: text; background-clip: text; color: transparent;
-        margin-bottom: 12px;
+        animation: zyf_shine 5s linear infinite;
     }
-    .zyf_117_hero p {
-        color: #98a0bd; font-size: 0.9rem; letter-spacing: 2px;
+    @keyframes zyf_shine { to { background-position: 300% 0; } }
+
+    .zyf_sub { color: var(--text-2); font-size: 0.92rem; letter-spacing: 1px; }
+    .zyf_sub b { color: var(--gold); font-weight: 600; }
+
+    /* ===== Stats bar ===== */
+    .zyf_stats {
+        position: relative; z-index: 1;
+        max-width: 720px; margin: 0 auto 60px;
+        display: grid; grid-template-columns: repeat(4, 1fr);
+        gap: 0;
+        background: rgba(255,255,255,0.03);
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        backdrop-filter: blur(16px);
+        overflow: hidden;
+    }
+    .zyf_stat { text-align: center; padding: 22px 10px; position: relative; }
+    .zyf_stat + .zyf_stat::before {
+        content: ""; position: absolute; left: 0; top: 25%; height: 50%;
+        border-left: 1px solid var(--border);
+    }
+    .zyf_stat-num {
+        font-size: 1.8rem; font-weight: 700; font-variant-numeric: tabular-nums;
+        color: var(--gold); letter-spacing: -0.5px;
+    }
+    .zyf_stat-lbl { color: var(--text-3); font-size: 0.72rem; letter-spacing: 2px; margin-top: 4px; text-transform: uppercase; }
+
+    /* ===== Section ===== */
+    .zyf_main { position: relative; z-index: 1; max-width: 1200px; margin: 0 auto; padding: 0 32px 80px; }
+    .zyf_section { margin-bottom: 64px; opacity: 0; transform: translateY(20px); animation: zyf_fade 0.6s ease forwards; }
+    .zyf_section:nth-child(1) { animation-delay: 0.1s; }
+    .zyf_section:nth-child(2) { animation-delay: 0.2s; }
+    .zyf_section:nth-child(3) { animation-delay: 0.3s; }
+    .zyf_section:nth-child(4) { animation-delay: 0.4s; }
+    .zyf_section:nth-child(5) { animation-delay: 0.5s; }
+    .zyf_section:nth-child(6) { animation-delay: 0.6s; }
+    .zyf_section:nth-child(7) { animation-delay: 0.7s; }
+    @keyframes zyf_fade { to { opacity: 1; transform: translateY(0); } }
+
+    .zyf_sec-head {
+        display: flex; align-items: baseline; gap: 14px; margin-bottom: 22px;
+    }
+    .zyf_sec-num {
+        font-family: Consolas, "JetBrains Mono", monospace;
+        font-size: 0.72rem; color: var(--gold);
+        letter-spacing: 3px; font-weight: 600;
+    }
+    .zyf_sec-title {
+        font-size: 1.1rem; font-weight: 600; color: var(--text-1); letter-spacing: 1px;
+    }
+    .zyf_sec-sub {
+        flex: 1; height: 1px; background: linear-gradient(90deg, var(--border-hi), transparent);
+        margin-left: 8px;
     }
 
-    /* 统计条 */
-    .zyf_117_stats {
-        max-width: 900px; margin: 0 auto 36px; padding: 18px 22px;
-        display: flex; justify-content: space-around;
-        background: rgba(30,34,54,0.55);
-        border: 1px solid rgba(148,163,255,0.18);
-        border-radius: 14px; backdrop-filter: blur(8px);
+    /* ===== Cards ===== */
+    .zyf_grid {
+        display: grid; gap: 14px;
+        grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+        perspective: 900px;
     }
-    .zyf_117_stat { text-align: center; }
-    .zyf_117_stat-num {
-        font-size: 1.8rem; font-weight: 700;
-        background: linear-gradient(90deg, #93c5fd, #c4b5fd);
-        -webkit-background-clip: text; background-clip: text; color: transparent;
-    }
-    .zyf_117_stat-lbl { color: #6b7394; font-size: 0.75rem; margin-top: 2px; }
-
-    /* 作业网格 */
-    .zyf_117_container {
-        max-width: 1100px; margin: 0 auto 40px; padding: 0 24px;
-    }
-    .zyf_117_section { margin-bottom: 30px; }
-    .zyf_117_section-title {
-        font-size: 1rem; color: #f0c4ff; margin-bottom: 14px;
-        padding-left: 12px; border-left: 4px solid #a06bff;
-        letter-spacing: 2px;
-    }
-    .zyf_117_grid {
-        display: grid; gap: 12px;
-        grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-    }
-    .zyf_117_card {
+    .zyf_card {
+        position: relative;
         display: flex; flex-direction: column;
-        background: rgba(30,34,54,0.6);
-        border: 1px solid rgba(148,163,255,0.18);
-        border-radius: 12px; padding: 16px 18px;
+        padding: 20px 22px;
+        background: linear-gradient(145deg, rgba(255,255,255,0.035) 0%, rgba(255,255,255,0.015) 100%);
+        border: 1px solid var(--border);
+        border-radius: 14px;
         text-decoration: none; color: inherit;
-        transition: transform .2s, border-color .2s, box-shadow .2s, background .2s;
-        backdrop-filter: blur(6px);
-        position: relative; overflow: hidden;
+        transition: transform .35s cubic-bezier(.2,.8,.2,1), border-color .3s, background .3s;
+        will-change: transform;
     }
-    .zyf_117_card::after {
-        content: ""; position: absolute; inset: 0;
-        background: linear-gradient(135deg, rgba(93,139,255,0) 0%, rgba(160,107,255,0) 100%);
-        transition: background .3s;
+    .zyf_card::before {
+        content: "";
+        position: absolute; inset: 0;
+        border-radius: inherit;
+        background: radial-gradient(600px var(--mx, 50%) var(--my, 50%), rgba(255,255,255,0.07), transparent 40%);
+        opacity: 0; transition: opacity .35s;
         pointer-events: none;
     }
-    .zyf_117_card:hover {
-        transform: translateY(-3px);
-        border-color: rgba(148,163,255,0.55);
-        box-shadow: 0 10px 28px rgba(93,139,255,0.28), 0 0 0 1px rgba(160,107,255,0.3) inset;
-        background: rgba(40,46,74,0.8);
+    .zyf_card:hover {
+        transform: translateY(-4px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg));
+        border-color: var(--border-hi);
+        background: linear-gradient(145deg, rgba(255,255,255,0.06) 0%, rgba(255,255,255,0.02) 100%);
     }
-    .zyf_117_card:hover::after {
-        background: linear-gradient(135deg, rgba(93,139,255,0.12) 0%, rgba(160,107,255,0.12) 100%);
-    }
-    .zyf_117_card-id {
-        font-family: Consolas, Monaco, monospace;
-        font-size: 0.75rem; color: #6b7394; letter-spacing: 1px;
-        margin-bottom: 8px;
-    }
-    .zyf_117_card-title {
-        font-size: 0.88rem; font-weight: 600;
-        color: #e8ebf8; line-height: 1.45;
-    }
-    .zyf_117_card-arrow {
-        position: absolute; right: 16px; top: 50%; transform: translateY(-50%);
-        color: #6b7394; font-size: 1.1rem;
-        transition: all .25s;
-    }
-    .zyf_117_card:hover .zyf_117_card-arrow {
-        color: #a78bfa; transform: translate(3px, -50%);
-    }
+    .zyf_card:hover::before { opacity: 1; }
 
-    /* 彩色编号徽章 */
-    .zyf_117_badge {
-        display: inline-block; padding: 2px 8px; border-radius: 4px;
-        font-size: 0.7rem; font-weight: 600; margin-right: 6px;
+    .zyf_card-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 14px; }
+    .zyf_id {
+        font-family: "JetBrains Mono", Consolas, monospace;
+        font-size: 0.7rem; letter-spacing: 2px;
+        color: var(--gold); font-weight: 600;
+        padding: 3px 8px; border-radius: 4px;
+        background: rgba(230,200,122,0.08);
+        border: 1px solid rgba(230,200,122,0.22);
     }
-    .zyf_117_badge.zyf_117_basic  { background: rgba(100,116,139,0.25); color: #cbd5e1; }
-    .zyf_117_badge.zyf_117_data   { background: rgba(59,130,246,0.2);  color: #93c5fd; }
-    .zyf_117_badge.zyf_117_icon   { background: rgba(168,85,247,0.22); color: #c4b5fd; }
-    .zyf_117_badge.zyf_117_js     { background: rgba(234,179,8,0.18);  color: #fbbf24; }
-    .zyf_117_badge.zyf_117_net    { background: rgba(244,114,182,0.2);  color: #f9a8d4; }
-    .zyf_117_badge.zyf_117_async  { background: rgba(34,197,94,0.2);    color: #86efac; }
-    .zyf_117_badge.zyf_117_ui     { background: rgba(14,165,233,0.2);   color: #7dd3fc; }
+    .zyf_tag {
+        font-size: 0.66rem; letter-spacing: 1.5px; color: var(--text-3);
+        text-transform: uppercase;
+    }
+    .zyf_title {
+        font-size: 0.93rem; font-weight: 600; color: var(--text-1);
+        line-height: 1.45; margin-bottom: 16px;
+    }
+    .zyf_card-foot {
+        display: flex; justify-content: space-between; align-items: center;
+        font-size: 0.72rem; color: var(--text-3);
+        margin-top: auto;
+    }
+    .zyf_arrow {
+        display: inline-flex; align-items: center; gap: 4px;
+        color: var(--text-2); transition: color .2s, transform .25s;
+    }
+    .zyf_card:hover .zyf_arrow { color: var(--gold); transform: translateX(3px); }
+
+    /* 分类色点 */
+    .zyf_dot { display: inline-block; width: 6px; height: 6px; border-radius: 50%; margin-right: 6px; }
+    .zyf_dot-1 { background: #cbd5e1; }
+    .zyf_dot-2 { background: #a855f7; }
+    .zyf_dot-3 { background: #fbbf24; }
+    .zyf_dot-4 { background: #06b6d4; }
+    .zyf_dot-5 { background: #3b82f6; }
+    .zyf_dot-6 { background: #22c55e; }
+    .zyf_dot-7 { background: #6b7280; }
 
     footer {
-        text-align: center; padding: 30px 20px;
-        color: #4b5573; font-size: 0.8rem; letter-spacing: 3px;
-        border-top: 1px solid rgba(148,163,255,0.12);
+        position: relative; z-index: 1;
+        text-align: center; padding: 50px 20px 40px;
+        color: var(--text-3); font-size: 0.75rem; letter-spacing: 4px;
+        border-top: 1px solid var(--border);
+        max-width: 720px; margin: 20px auto 0;
+    }
+
+    @media (max-width: 520px) {
+        .zyf_stats { grid-template-columns: repeat(2, 1fr); }
+        .zyf_stat:nth-child(2)::before { display: none; }
+        .zyf_hero h1 { letter-spacing: -0.5px; }
     }
 </style>
 </head>
 <body>
-    <!-- Hero -->
-    <div class="zyf_117_hero">
-        <h1>ZYF · 作业集</h1>
-        <p>高级网页设计 I  ·  张艺凡  ·  2025 秋</p>
-    </div>
 
-    <!-- 统计条 -->
-    <div class="zyf_117_stats">
-        <div class="zyf_117_stat"><div class="zyf_117_stat-num">37</div><div class="zyf_117_stat-lbl">作业总数</div></div>
-        <div class="zyf_117_stat"><div class="zyf_117_stat-num">6</div><div class="zyf_117_stat-lbl">主题章节</div></div>
-        <div class="zyf_117_stat"><div class="zyf_117_stat-num">40%</div><div class="zyf_117_stat-lbl">JS 相关占比</div></div>
-        <div class="zyf_117_stat"><div class="zyf_117_stat-num">∞</div><div class="zyf_117_stat-lbl">学习热情</div></div>
-    </div>
+    <section class="zyf_hero">
+        <div class="zyf_tag"><span class="zyf_dot"></span>PORTFOLIO · ZYF117</div>
+        <h1><span>艺凡 · 作业集</span></h1>
+        <p class="zyf_sub">高级网页设计 I  ·  <b>张艺凡</b>  ·  2025 Autumn</p>
+    </section>
 
-    <div class="zyf_117_container">
+    <section class="zyf_stats">
+        <div class="zyf_stat"><div class="zyf_stat-num">37</div><div class="zyf_stat-lbl">Works</div></div>
+        <div class="zyf_stat"><div class="zyf_stat-num">7</div><div class="zyf_stat-lbl">Chapters</div></div>
+        <div class="zyf_stat"><div class="zyf_stat-num">∞</div><div class="zyf_stat-lbl">Curiosity</div></div>
+        <div class="zyf_stat"><div class="zyf_stat-num">A+</div><div class="zyf_stat-lbl">Target</div></div>
+    </section>
 
-        <!-- 基础网页 -->
-        <div class="zyf_117_section">
-            <div class="zyf_117_section-title">① 基础网页结构</div>
-            <div class="zyf_117_grid">
-                <a class="zyf_117_card" href="2.html" target="_blank">
-                    <span class="zyf_117_card-id"><span class="zyf_117_badge zyf_117_basic">基础</span>#02</span>
-                    <span class="zyf_117_card-title">作业 2</span>
-                    <span class="zyf_117_card-arrow">›</span>
+    <main class="zyf_main">
+
+        <!-- ① -->
+        <section class="zyf_section">
+            <div class="zyf_sec-head">
+                <span class="zyf_sec-num">01 / FOUNDATION</span>
+                <span class="zyf_sec-title">基础网页结构</span>
+                <span class="zyf_sec-sub"></span>
+            </div>
+            <div class="zyf_grid">
+                <a class="zyf_card" href="2.html" target="_blank" onmousemove="zyf_tilt(this,event)" onmouseleave="zyf_reset(this)">
+                    <div class="zyf_card-top"><span class="zyf_id">#02</span><span class="zyf_tag"><span class="zyf_dot zyf_dot-1"></span>Foundation</span></div>
+                    <div class="zyf_title">作业 2</div>
+                    <div class="zyf_card-foot"><span>HTML / CSS</span><span class="zyf_arrow">Open →</span></div>
                 </a>
-                <a class="zyf_117_card" href="3.html" target="_blank">
-                    <span class="zyf_117_card-id"><span class="zyf_117_badge zyf_117_basic">基础</span>#03</span>
-                    <span class="zyf_117_card-title">作业 3</span>
-                    <span class="zyf_117_card-arrow">›</span>
+                <a class="zyf_card" href="3.html" target="_blank" onmousemove="zyf_tilt(this,event)" onmouseleave="zyf_reset(this)">
+                    <div class="zyf_card-top"><span class="zyf_id">#03</span><span class="zyf_tag"><span class="zyf_dot zyf_dot-1"></span>Foundation</span></div>
+                    <div class="zyf_title">作业 3</div>
+                    <div class="zyf_card-foot"><span>HTML / CSS</span><span class="zyf_arrow">Open →</span></div>
                 </a>
-                <a class="zyf_117_card" href="4.html" target="_blank">
-                    <span class="zyf_117_card-id"><span class="zyf_117_badge zyf_117_basic">基础</span>#04</span>
-                    <span class="zyf_117_card-title">作业 4</span>
-                    <span class="zyf_117_card-arrow">›</span>
+                <a class="zyf_card" href="4.html" target="_blank" onmousemove="zyf_tilt(this,event)" onmouseleave="zyf_reset(this)">
+                    <div class="zyf_card-top"><span class="zyf_id">#04</span><span class="zyf_tag"><span class="zyf_dot zyf_dot-1"></span>Foundation</span></div>
+                    <div class="zyf_title">作业 4</div>
+                    <div class="zyf_card-foot"><span>HTML / CSS</span><span class="zyf_arrow">Open →</span></div>
                 </a>
-                <a class="zyf_117_card" href="5.html" target="_blank">
-                    <span class="zyf_117_card-id"><span class="zyf_117_badge zyf_117_basic">基础</span>#05</span>
-                    <span class="zyf_117_card-title">作业 5</span>
-                    <span class="zyf_117_card-arrow">›</span>
+                <a class="zyf_card" href="5.html" target="_blank" onmousemove="zyf_tilt(this,event)" onmouseleave="zyf_reset(this)">
+                    <div class="zyf_card-top"><span class="zyf_id">#05</span><span class="zyf_tag"><span class="zyf_dot zyf_dot-1"></span>Foundation</span></div>
+                    <div class="zyf_title">作业 5</div>
+                    <div class="zyf_card-foot"><span>HTML / CSS</span><span class="zyf_arrow">Open →</span></div>
                 </a>
-                <a class="zyf_117_card" href="6.html" target="_blank">
-                    <span class="zyf_117_card-id"><span class="zyf_117_badge zyf_117_basic">基础</span>#06</span>
-                    <span class="zyf_117_card-title">作业 6</span>
-                    <span class="zyf_117_card-arrow">›</span>
+                <a class="zyf_card" href="6.html" target="_blank" onmousemove="zyf_tilt(this,event)" onmouseleave="zyf_reset(this)">
+                    <div class="zyf_card-top"><span class="zyf_id">#06</span><span class="zyf_tag"><span class="zyf_dot zyf_dot-1"></span>Foundation</span></div>
+                    <div class="zyf_title">作业 6</div>
+                    <div class="zyf_card-foot"><span>HTML / CSS</span><span class="zyf_arrow">Open →</span></div>
                 </a>
-                <a class="zyf_117_card" href="7.html" target="_blank">
-                    <span class="zyf_117_card-id"><span class="zyf_117_badge zyf_117_basic">基础</span>#07</span>
-                    <span class="zyf_117_card-title">作业 7</span>
-                    <span class="zyf_117_card-arrow">›</span>
+                <a class="zyf_card" href="7.html" target="_blank" onmousemove="zyf_tilt(this,event)" onmouseleave="zyf_reset(this)">
+                    <div class="zyf_card-top"><span class="zyf_id">#07</span><span class="zyf_tag"><span class="zyf_dot zyf_dot-1"></span>Foundation</span></div>
+                    <div class="zyf_title">作业 7</div>
+                    <div class="zyf_card-foot"><span>HTML / CSS</span><span class="zyf_arrow">Open →</span></div>
                 </a>
-                <a class="zyf_117_card" href="8.html" target="_blank">
-                    <span class="zyf_117_card-id"><span class="zyf_117_badge zyf_117_basic">基础</span>#08</span>
-                    <span class="zyf_117_card-title">作业 8</span>
-                    <span class="zyf_117_card-arrow">›</span>
+                <a class="zyf_card" href="8.html" target="_blank" onmousemove="zyf_tilt(this,event)" onmouseleave="zyf_reset(this)">
+                    <div class="zyf_card-top"><span class="zyf_id">#08</span><span class="zyf_tag"><span class="zyf_dot zyf_dot-1"></span>Foundation</span></div>
+                    <div class="zyf_title">作业 8</div>
+                    <div class="zyf_card-foot"><span>HTML / CSS</span><span class="zyf_arrow">Open →</span></div>
                 </a>
-                <a class="zyf_117_card" href="9.html" target="_blank">
-                    <span class="zyf_117_card-id"><span class="zyf_117_badge zyf_117_basic">基础</span>#09</span>
-                    <span class="zyf_117_card-title">作业 9</span>
-                    <span class="zyf_117_card-arrow">›</span>
+                <a class="zyf_card" href="9.html" target="_blank" onmousemove="zyf_tilt(this,event)" onmouseleave="zyf_reset(this)">
+                    <div class="zyf_card-top"><span class="zyf_id">#09</span><span class="zyf_tag"><span class="zyf_dot zyf_dot-1"></span>Foundation</span></div>
+                    <div class="zyf_title">作业 9</div>
+                    <div class="zyf_card-foot"><span>HTML / CSS</span><span class="zyf_arrow">Open →</span></div>
                 </a>
-                <a class="zyf_117_card" href="10.html" target="_blank">
-                    <span class="zyf_117_card-id"><span class="zyf_117_badge zyf_117_basic">基础</span>#10</span>
-                    <span class="zyf_117_card-title">作业 10</span>
-                    <span class="zyf_117_card-arrow">›</span>
+                <a class="zyf_card" href="10.html" target="_blank" onmousemove="zyf_tilt(this,event)" onmouseleave="zyf_reset(this)">
+                    <div class="zyf_card-top"><span class="zyf_id">#10</span><span class="zyf_tag"><span class="zyf_dot zyf_dot-1"></span>Foundation</span></div>
+                    <div class="zyf_title">作业 10</div>
+                    <div class="zyf_card-foot"><span>HTML / CSS</span><span class="zyf_arrow">Open →</span></div>
                 </a>
-                <a class="zyf_117_card" href="11.html" target="_blank">
-                    <span class="zyf_117_card-id"><span class="zyf_117_badge zyf_117_basic">基础</span>#11</span>
-                    <span class="zyf_117_card-title">作业 11</span>
-                    <span class="zyf_117_card-arrow">›</span>
+                <a class="zyf_card" href="11.html" target="_blank" onmousemove="zyf_tilt(this,event)" onmouseleave="zyf_reset(this)">
+                    <div class="zyf_card-top"><span class="zyf_id">#11</span><span class="zyf_tag"><span class="zyf_dot zyf_dot-1"></span>Foundation</span></div>
+                    <div class="zyf_title">作业 11</div>
+                    <div class="zyf_card-foot"><span>HTML / CSS</span><span class="zyf_arrow">Open →</span></div>
                 </a>
-                <a class="zyf_117_card" href="12.html" target="_blank">
-                    <span class="zyf_117_card-id"><span class="zyf_117_badge zyf_117_basic">基础</span>#12</span>
-                    <span class="zyf_117_card-title">作业 12</span>
-                    <span class="zyf_117_card-arrow">›</span>
+                <a class="zyf_card" href="12.html" target="_blank" onmousemove="zyf_tilt(this,event)" onmouseleave="zyf_reset(this)">
+                    <div class="zyf_card-top"><span class="zyf_id">#12</span><span class="zyf_tag"><span class="zyf_dot zyf_dot-1"></span>Foundation</span></div>
+                    <div class="zyf_title">作业 12</div>
+                    <div class="zyf_card-foot"><span>HTML / CSS</span><span class="zyf_arrow">Open →</span></div>
                 </a>
             </div>
-        </div>
+        </section>
 
-        <!-- 图像解决方案（图标） -->
-        <div class="zyf_117_section">
-            <div class="zyf_117_section-title">② 图像解决方案 · 图标</div>
-            <div class="zyf_117_grid">
-                <a class="zyf_117_card" href="13.html" target="_blank">
-                    <span class="zyf_117_card-id"><span class="zyf_117_badge zyf_117_icon">图标</span>#13</span>
-                    <span class="zyf_117_card-title">作业 13</span>
-                    <span class="zyf_117_card-arrow">›</span>
+        <!-- ② -->
+        <section class="zyf_section">
+            <div class="zyf_sec-head">
+                <span class="zyf_sec-num">02 / ICONOGRAPHY</span>
+                <span class="zyf_sec-title">图像解决方案 · 图标</span>
+                <span class="zyf_sec-sub"></span>
+            </div>
+            <div class="zyf_grid">
+                <a class="zyf_card" href="13.html" target="_blank" onmousemove="zyf_tilt(this,event)" onmouseleave="zyf_reset(this)">
+                    <div class="zyf_card-top"><span class="zyf_id">#13</span><span class="zyf_tag"><span class="zyf_dot zyf_dot-2"></span>Icon</span></div>
+                    <div class="zyf_title">作业 13</div>
+                    <div class="zyf_card-foot"><span>Overview</span><span class="zyf_arrow">Open →</span></div>
                 </a>
-                <a class="zyf_117_card" href="13-1.html" target="_blank">
-                    <span class="zyf_117_card-id"><span class="zyf_117_badge zyf_117_icon">图标</span>#13-1</span>
-                    <span class="zyf_117_card-title">Font Awesome 字体图标</span>
-                    <span class="zyf_117_card-arrow">›</span>
+                <a class="zyf_card" href="13-1.html" target="_blank" onmousemove="zyf_tilt(this,event)" onmouseleave="zyf_reset(this)">
+                    <div class="zyf_card-top"><span class="zyf_id">#13-1</span><span class="zyf_tag"><span class="zyf_dot zyf_dot-2"></span>Font Icon</span></div>
+                    <div class="zyf_title">Font Awesome 字体图标展示</div>
+                    <div class="zyf_card-foot"><span>40 Icons · Solid / Line / Brand</span><span class="zyf_arrow">Open →</span></div>
                 </a>
-                <a class="zyf_117_card" href="13-2.html" target="_blank">
-                    <span class="zyf_117_card-id"><span class="zyf_117_badge zyf_117_icon">图标</span>#13-2</span>
-                    <span class="zyf_117_card-title">Lucide SVG 图标</span>
-                    <span class="zyf_117_card-arrow">›</span>
+                <a class="zyf_card" href="13-2.html" target="_blank" onmousemove="zyf_tilt(this,event)" onmouseleave="zyf_reset(this)">
+                    <div class="zyf_card-top"><span class="zyf_id">#13-2</span><span class="zyf_tag"><span class="zyf_dot zyf_dot-2"></span>SVG Icon</span></div>
+                    <div class="zyf_title">Lucide SVG 图标展示</div>
+                    <div class="zyf_card-foot"><span>36 Icons · Inline SVG</span><span class="zyf_arrow">Open →</span></div>
                 </a>
-                <a class="zyf_117_card" href="13-3.html" target="_blank">
-                    <span class="zyf_117_card-id"><span class="zyf_117_badge zyf_117_icon">图标</span>#13-3</span>
-                    <span class="zyf_117_card-title">下导航 · 双方案对比</span>
-                    <span class="zyf_117_card-arrow">›</span>
+                <a class="zyf_card" href="13-3.html" target="_blank" onmousemove="zyf_tilt(this,event)" onmouseleave="zyf_reset(this)">
+                    <div class="zyf_card-top"><span class="zyf_id">#13-3</span><span class="zyf_tag"><span class="zyf_dot zyf_dot-2"></span>Bottom Nav</span></div>
+                    <div class="zyf_title">下导航 · 双方案对比</div>
+                    <div class="zyf_card-foot"><span>FA vs Lucide · Neon</span><span class="zyf_arrow">Open →</span></div>
                 </a>
             </div>
-        </div>
+        </section>
 
-        <!-- JS 基础 -->
-        <div class="zyf_117_section">
-            <div class="zyf_117_section-title">③ JavaScript · 基础</div>
-            <div class="zyf_117_grid">
-                <a class="zyf_117_card" href="14.html" target="_blank">
-                    <span class="zyf_117_card-id"><span class="zyf_117_badge zyf_117_js">JS</span>#14</span>
-                    <span class="zyf_117_card-title">作业 14</span>
-                    <span class="zyf_117_card-arrow">›</span>
+        <!-- ③ -->
+        <section class="zyf_section">
+            <div class="zyf_sec-head">
+                <span class="zyf_sec-num">03 / JAVASCRIPT · BASE</span>
+                <span class="zyf_sec-title">JavaScript 基础</span>
+                <span class="zyf_sec-sub"></span>
+            </div>
+            <div class="zyf_grid">
+                <a class="zyf_card" href="14.html" target="_blank" onmousemove="zyf_tilt(this,event)" onmouseleave="zyf_reset(this)">
+                    <div class="zyf_card-top"><span class="zyf_id">#14</span><span class="zyf_tag"><span class="zyf_dot zyf_dot-3"></span>JS</span></div>
+                    <div class="zyf_title">作业 14</div>
+                    <div class="zyf_card-foot"><span>Overview</span><span class="zyf_arrow">Open →</span></div>
                 </a>
-                <a class="zyf_117_card" href="14-1.html" target="_blank">
-                    <span class="zyf_117_card-id"><span class="zyf_117_badge zyf_117_js">JS</span>#14-1</span>
-                    <span class="zyf_117_card-title">五种弹窗输出</span>
-                    <span class="zyf_117_card-arrow">›</span>
+                <a class="zyf_card" href="14-1.html" target="_blank" onmousemove="zyf_tilt(this,event)" onmouseleave="zyf_reset(this)">
+                    <div class="zyf_card-top"><span class="zyf_id">#14-1</span><span class="zyf_tag"><span class="zyf_dot zyf_dot-3"></span>Output</span></div>
+                    <div class="zyf_title">五种弹窗输出</div>
+                    <div class="zyf_card-foot"><span>write / alert / log / confirm / prompt</span><span class="zyf_arrow">Open →</span></div>
                 </a>
-                <a class="zyf_117_card" href="14-2.html" target="_blank">
-                    <span class="zyf_117_card-id"><span class="zyf_117_badge zyf_117_js">JS</span>#14-2</span>
-                    <span class="zyf_117_card-title">六种基础数据类型</span>
-                    <span class="zyf_117_card-arrow">›</span>
+                <a class="zyf_card" href="14-2.html" target="_blank" onmousemove="zyf_tilt(this,event)" onmouseleave="zyf_reset(this)">
+                    <div class="zyf_card-top"><span class="zyf_id">#14-2</span><span class="zyf_tag"><span class="zyf_dot zyf_dot-3"></span>Data Type</span></div>
+                    <div class="zyf_title">六种基础数据类型</div>
+                    <div class="zyf_card-foot"><span>Number · String · Boolean · Undefined · Null · Symbol</span><span class="zyf_arrow">Open →</span></div>
                 </a>
-                <a class="zyf_117_card" href="15.html" target="_blank">
-                    <span class="zyf_117_card-id"><span class="zyf_117_badge zyf_117_js">JS</span>#15</span>
-                    <span class="zyf_117_card-title">作业 15</span>
-                    <span class="zyf_117_card-arrow">›</span>
+                <a class="zyf_card" href="15.html" target="_blank" onmousemove="zyf_tilt(this,event)" onmouseleave="zyf_reset(this)">
+                    <div class="zyf_card-top"><span class="zyf_id">#15</span><span class="zyf_tag"><span class="zyf_dot zyf_dot-3"></span>JS</span></div>
+                    <div class="zyf_title">作业 15</div>
+                    <div class="zyf_card-foot"><span>Overview</span><span class="zyf_arrow">Open →</span></div>
                 </a>
-                <a class="zyf_117_card" href="15-1.html" target="_blank">
-                    <span class="zyf_117_card-id"><span class="zyf_117_badge zyf_117_js">JS</span>#15-1</span>
-                    <span class="zyf_117_card-title">数7游戏 · 100格盒子</span>
-                    <span class="zyf_117_card-arrow">›</span>
+                <a class="zyf_card" href="15-1.html" target="_blank" onmousemove="zyf_tilt(this,event)" onmouseleave="zyf_reset(this)">
+                    <div class="zyf_card-top"><span class="zyf_id">#15-1</span><span class="zyf_tag"><span class="zyf_dot zyf_dot-3"></span>Game</span></div>
+                    <div class="zyf_title">数 7 游戏 · 100 格盒子</div>
+                    <div class="zyf_card-foot"><span>7 的倍数 · 含 7 的数</span><span class="zyf_arrow">Open →</span></div>
                 </a>
-                <a class="zyf_117_card" href="15-2.html" target="_blank">
-                    <span class="zyf_117_card-id"><span class="zyf_117_badge zyf_117_js">JS</span>#15-2</span>
-                    <span class="zyf_117_card-title">JS 条件与循环 · 流程图</span>
-                    <span class="zyf_117_card-arrow">›</span>
+                <a class="zyf_card" href="15-2.html" target="_blank" onmousemove="zyf_tilt(this,event)" onmouseleave="zyf_reset(this)">
+                    <div class="zyf_card-top"><span class="zyf_id">#15-2</span><span class="zyf_tag"><span class="zyf_dot zyf_dot-3"></span>Flow</span></div>
+                    <div class="zyf_title">JS 条件与循环 · 流程图</div>
+                    <div class="zyf_card-foot"><span>if / for / while / switch</span><span class="zyf_arrow">Open →</span></div>
                 </a>
-                <a class="zyf_117_card" href="16.html" target="_blank">
-                    <span class="zyf_117_card-id"><span class="zyf_117_badge zyf_117_js">JS</span>#16</span>
-                    <span class="zyf_117_card-title">作业 16</span>
-                    <span class="zyf_117_card-arrow">›</span>
+                <a class="zyf_card" href="16.html" target="_blank" onmousemove="zyf_tilt(this,event)" onmouseleave="zyf_reset(this)">
+                    <div class="zyf_card-top"><span class="zyf_id">#16</span><span class="zyf_tag"><span class="zyf_dot zyf_dot-5"></span>Data</span></div>
+                    <div class="zyf_title">作业 16</div>
+                    <div class="zyf_card-foot"><span>Overview</span><span class="zyf_arrow">Open →</span></div>
                 </a>
-                <a class="zyf_117_card" href="16-1.html" target="_blank">
-                    <span class="zyf_117_card-id"><span class="zyf_117_badge zyf_117_data">数据</span>#16-1</span>
-                    <span class="zyf_117_card-title">JS 数组方法可视化</span>
-                    <span class="zyf_117_card-arrow">›</span>
+                <a class="zyf_card" href="16-1.html" target="_blank" onmousemove="zyf_tilt(this,event)" onmouseleave="zyf_reset(this)">
+                    <div class="zyf_card-top"><span class="zyf_id">#16-1</span><span class="zyf_tag"><span class="zyf_dot zyf_dot-5"></span>Array</span></div>
+                    <div class="zyf_title">JS 数组方法可视化</div>
+                    <div class="zyf_card-foot"><span>push · pop · shift · splice · map · filter · reduce</span><span class="zyf_arrow">Open →</span></div>
                 </a>
-                <a class="zyf_117_card" href="16-2.html" target="_blank">
-                    <span class="zyf_117_card-id"><span class="zyf_117_badge zyf_117_data">数据</span>#16-2</span>
-                    <span class="zyf_117_card-title">JS 对象与字符串可视化</span>
-                    <span class="zyf_117_card-arrow">›</span>
+                <a class="zyf_card" href="16-2.html" target="_blank" onmousemove="zyf_tilt(this,event)" onmouseleave="zyf_reset(this)">
+                    <div class="zyf_card-top"><span class="zyf_id">#16-2</span><span class="zyf_tag"><span class="zyf_dot zyf_dot-5"></span>Object / String</span></div>
+                    <div class="zyf_title">JS 对象与字符串可视化</div>
+                    <div class="zyf_card-foot"><span>keys · values · entries · slice · split · join</span><span class="zyf_arrow">Open →</span></div>
                 </a>
             </div>
-        </div>
+        </section>
 
-        <!-- UI 组件 -->
-        <div class="zyf_117_section">
-            <div class="zyf_117_section-title">④ UI 组件与交互</div>
-            <div class="zyf_117_grid">
-                <a class="zyf_117_card" href="16-3.html" target="_blank">
-                    <span class="zyf_117_card-id"><span class="zyf_117_badge zyf_117_ui">UI</span>#16-3</span>
-                    <span class="zyf_117_card-title">短视频内容卡片</span>
-                    <span class="zyf_117_card-arrow">›</span>
+        <!-- ④ -->
+        <section class="zyf_section">
+            <div class="zyf_sec-head">
+                <span class="zyf_sec-num">04 / UI · COMPONENTS</span>
+                <span class="zyf_sec-title">UI 组件与交互</span>
+                <span class="zyf_sec-sub"></span>
+            </div>
+            <div class="zyf_grid">
+                <a class="zyf_card" href="16-3.html" target="_blank" onmousemove="zyf_tilt(this,event)" onmouseleave="zyf_reset(this)">
+                    <div class="zyf_card-top"><span class="zyf_id">#16-3</span><span class="zyf_tag"><span class="zyf_dot zyf_dot-4"></span>Card</span></div>
+                    <div class="zyf_title">短视频内容卡片 · CSS 袋鼠</div>
+                    <div class="zyf_card-foot"><span>Pure CSS Character</span><span class="zyf_arrow">Open →</span></div>
                 </a>
-                <a class="zyf_117_card" href="16-4.html" target="_blank">
-                    <span class="zyf_117_card-id"><span class="zyf_117_badge zyf_117_ui">UI</span>#16-4</span>
-                    <span class="zyf_117_card-title">Tab 选项卡 + 弹窗</span>
-                    <span class="zyf_117_card-arrow">›</span>
+                <a class="zyf_card" href="16-4.html" target="_blank" onmousemove="zyf_tilt(this,event)" onmouseleave="zyf_reset(this)">
+                    <div class="zyf_card-top"><span class="zyf_id">#16-4</span><span class="zyf_tag"><span class="zyf_dot zyf_dot-4"></span>Tabs</span></div>
+                    <div class="zyf_title">Tab 选项卡 + 点击弹窗</div>
+                    <div class="zyf_card-foot"><span>5 Tabs · 6 Articles · Modal</span><span class="zyf_arrow">Open →</span></div>
                 </a>
-                <a class="zyf_117_card" href="22.html" target="_blank">
-                    <span class="zyf_117_card-id"><span class="zyf_117_badge zyf_117_ui">综合</span>#22</span>
-                    <span class="zyf_117_card-title">网页元素设计 · 综合页</span>
-                    <span class="zyf_117_card-arrow">›</span>
+                <a class="zyf_card" href="22.html" target="_blank" onmousemove="zyf_tilt(this,event)" onmouseleave="zyf_reset(this)">
+                    <div class="zyf_card-top"><span class="zyf_id">#22</span><span class="zyf_tag"><span class="zyf_dot zyf_dot-4"></span>COMPREHENSIVE</span></div>
+                    <div class="zyf_title">网页元素设计 · 综合页</div>
+                    <div class="zyf_card-foot"><span>Nav · Grid · Card · List · Tab</span><span class="zyf_arrow">Open →</span></div>
                 </a>
             </div>
-        </div>
+        </section>
 
-        <!-- JS 数据 / 网络 -->
-        <div class="zyf_117_section">
-            <div class="zyf_117_section-title">⑤ 数据获取 · 远程接口</div>
-            <div class="zyf_117_grid">
-                <a class="zyf_117_card" href="17.html" target="_blank">
-                    <span class="zyf_117_card-id"><span class="zyf_117_badge zyf_117_net">网络</span>#17</span>
-                    <span class="zyf_117_card-title">作业 17</span>
-                    <span class="zyf_117_card-arrow">›</span>
+        <!-- ⑤ -->
+        <section class="zyf_section">
+            <div class="zyf_sec-head">
+                <span class="zyf_sec-num">05 / NETWORK · FETCH</span>
+                <span class="zyf_sec-title">数据获取 · 远程接口</span>
+                <span class="zyf_sec-sub"></span>
+            </div>
+            <div class="zyf_grid">
+                <a class="zyf_card" href="17.html" target="_blank" onmousemove="zyf_tilt(this,event)" onmouseleave="zyf_reset(this)">
+                    <div class="zyf_card-top"><span class="zyf_id">#17</span><span class="zyf_tag"><span class="zyf_dot zyf_dot-5"></span>Fetch</span></div>
+                    <div class="zyf_title">作业 17</div>
+                    <div class="zyf_card-foot"><span>Overview</span><span class="zyf_arrow">Open →</span></div>
                 </a>
-                <a class="zyf_117_card" href="17-1.html" target="_blank">
-                    <span class="zyf_117_card-id"><span class="zyf_117_badge zyf_117_data">JSON</span>#17-1</span>
-                    <span class="zyf_117_card-title">JSON 展示 · 解析高亮</span>
-                    <span class="zyf_117_card-arrow">›</span>
+                <a class="zyf_card" href="17-1.html" target="_blank" onmousemove="zyf_tilt(this,event)" onmouseleave="zyf_reset(this)">
+                    <div class="zyf_card-top"><span class="zyf_id">#17-1</span><span class="zyf_tag"><span class="zyf_dot zyf_dot-5"></span>JSON</span></div>
+                    <div class="zyf_title">JSON 展示 · 解析 · 高亮 · 预览</div>
+                    <div class="zyf_card-foot"><span>JSON.parse / JSON.stringify</span><span class="zyf_arrow">Open →</span></div>
                 </a>
-                <a class="zyf_117_card" href="17-2.html" target="_blank">
-                    <span class="zyf_117_card-id"><span class="zyf_117_badge zyf_117_net">fetch</span>#17-2</span>
-                    <span class="zyf_117_card-title">fetch 接口数据获取</span>
-                    <span class="zyf_117_card-arrow">›</span>
+                <a class="zyf_card" href="17-2.html" target="_blank" onmousemove="zyf_tilt(this,event)" onmouseleave="zyf_reset(this)">
+                    <div class="zyf_card-top"><span class="zyf_id">#17-2</span><span class="zyf_tag"><span class="zyf_dot zyf_dot-5"></span>Fetch</span></div>
+                    <div class="zyf_title">fetch 接口数据获取</div>
+                    <div class="zyf_card-foot"><span>async / await · try / catch · CORS</span><span class="zyf_arrow">Open →</span></div>
                 </a>
-                <a class="zyf_117_card" href="17-3.html" target="_blank">
-                    <span class="zyf_117_card-id"><span class="zyf_117_badge zyf_117_net">fetch</span>#17-3</span>
-                    <span class="zyf_117_card-title">远程商品列表</span>
-                    <span class="zyf_117_card-arrow">›</span>
+                <a class="zyf_card" href="17-3.html" target="_blank" onmousemove="zyf_tilt(this,event)" onmouseleave="zyf_reset(this)">
+                    <div class="zyf_card-top"><span class="zyf_id">#17-3</span><span class="zyf_tag"><span class="zyf_dot zyf_dot-5"></span>List</span></div>
+                    <div class="zyf_title">远程商品列表</div>
+                    <div class="zyf_card-foot"><span>DummyJSON · 100 Products</span><span class="zyf_arrow">Open →</span></div>
                 </a>
-                <a class="zyf_117_card" href="17-3-detail.html" target="_blank">
-                    <span class="zyf_117_card-id"><span class="zyf_117_badge zyf_117_net">fetch</span>#17-3d</span>
-                    <span class="zyf_117_card-title">商品详情页</span>
-                    <span class="zyf_117_card-arrow">›</span>
+                <a class="zyf_card" href="17-3-detail.html" target="_blank" onmousemove="zyf_tilt(this,event)" onmouseleave="zyf_reset(this)">
+                    <div class="zyf_card-top"><span class="zyf_id">#17-3d</span><span class="zyf_tag"><span class="zyf_dot zyf_dot-5"></span>Detail</span></div>
+                    <div class="zyf_title">商品详情页</div>
+                    <div class="zyf_card-foot"><span>?id= URL Param · Product Gallery</span><span class="zyf_arrow">Open →</span></div>
                 </a>
-                <a class="zyf_117_card" href="17-4.html" target="_blank">
-                    <span class="zyf_117_card-id"><span class="zyf_117_badge zyf_117_net">接口</span>#17-4</span>
-                    <span class="zyf_117_card-title">远程接口 get/post 测试</span>
-                    <span class="zyf_117_card-arrow">›</span>
+                <a class="zyf_card" href="17-4.html" target="_blank" onmousemove="zyf_tilt(this,event)" onmouseleave="zyf_reset(this)">
+                    <div class="zyf_card-top"><span class="zyf_id">#17-4</span><span class="zyf_tag"><span class="zyf_dot zyf_dot-5"></span>API Test</span></div>
+                    <div class="zyf_title">远程接口 GET / POST 测试</div>
+                    <div class="zyf_card-foot"><span>jsonplaceholder.typicode.com</span><span class="zyf_arrow">Open →</span></div>
                 </a>
             </div>
-        </div>
+        </section>
 
-        <!-- 异步 -->
-        <div class="zyf_117_section">
-            <div class="zyf_117_section-title">⑥ 异步编程 · 定时器 & Promise</div>
-            <div class="zyf_117_grid">
-                <a class="zyf_117_card" href="17-5.html" target="_blank">
-                    <span class="zyf_117_card-id"><span class="zyf_117_badge zyf_117_async">异步</span>#17-5</span>
-                    <span class="zyf_117_card-title">JS 两种定时器</span>
-                    <span class="zyf_117_card-arrow">›</span>
+        <!-- ⑥ -->
+        <section class="zyf_section">
+            <div class="zyf_sec-head">
+                <span class="zyf_sec-num">06 / ASYNC · PROMISE</span>
+                <span class="zyf_sec-title">异步编程 · 定时器 & Promise</span>
+                <span class="zyf_sec-sub"></span>
+            </div>
+            <div class="zyf_grid">
+                <a class="zyf_card" href="17-5.html" target="_blank" onmousemove="zyf_tilt(this,event)" onmouseleave="zyf_reset(this)">
+                    <div class="zyf_card-top"><span class="zyf_id">#17-5</span><span class="zyf_tag"><span class="zyf_dot zyf_dot-6"></span>Timer</span></div>
+                    <div class="zyf_title">两种定时器 · setTimeout vs setInterval</div>
+                    <div class="zyf_card-foot"><span>Clear / Start / 倒计时</span><span class="zyf_arrow">Open →</span></div>
                 </a>
-                <a class="zyf_117_card" href="17-6.html" target="_blank">
-                    <span class="zyf_117_card-id"><span class="zyf_117_badge zyf_117_async">Promise</span>#17-6</span>
-                    <span class="zyf_117_card-title">Promise + async/await 包饺子</span>
-                    <span class="zyf_117_card-arrow">›</span>
+                <a class="zyf_card" href="17-6.html" target="_blank" onmousemove="zyf_tilt(this,event)" onmouseleave="zyf_reset(this)">
+                    <div class="zyf_card-top"><span class="zyf_id">#17-6</span><span class="zyf_tag"><span class="zyf_dot zyf_dot-6"></span>Promise</span></div>
+                    <div class="zyf_title">Promise + async/await · 包饺子流程</div>
+                    <div class="zyf_card-foot"><span>Race · All · Parallel Demo</span><span class="zyf_arrow">Open →</span></div>
                 </a>
             </div>
-        </div>
+        </section>
 
-        <!-- 老作业 -->
-        <div class="zyf_117_section">
-            <div class="zyf_117_section-title">⑦ 其他作业</div>
-            <div class="zyf_117_grid">
-                <a class="zyf_117_card" href="18.html" target="_blank">
-                    <span class="zyf_117_card-id"><span class="zyf_117_badge zyf_117_basic">其他</span>#18</span>
-                    <span class="zyf_117_card-title">作业 18</span>
-                    <span class="zyf_117_card-arrow">›</span>
+        <!-- ⑦ -->
+        <section class="zyf_section">
+            <div class="zyf_sec-head">
+                <span class="zyf_sec-num">07 / EXTRA</span>
+                <span class="zyf_sec-title">其他作业</span>
+                <span class="zyf_sec-sub"></span>
+            </div>
+            <div class="zyf_grid">
+                <a class="zyf_card" href="18.html" target="_blank" onmousemove="zyf_tilt(this,event)" onmouseleave="zyf_reset(this)">
+                    <div class="zyf_card-top"><span class="zyf_id">#18</span><span class="zyf_tag"><span class="zyf_dot zyf_dot-7"></span>Extra</span></div>
+                    <div class="zyf_title">作业 18</div>
+                    <div class="zyf_card-foot"><span>—</span><span class="zyf_arrow">Open →</span></div>
                 </a>
-                <a class="zyf_117_card" href="19.html" target="_blank">
-                    <span class="zyf_117_card-id"><span class="zyf_117_badge zyf_117_basic">其他</span>#19</span>
-                    <span class="zyf_117_card-title">作业 19</span>
-                    <span class="zyf_117_card-arrow">›</span>
+                <a class="zyf_card" href="19.html" target="_blank" onmousemove="zyf_tilt(this,event)" onmouseleave="zyf_reset(this)">
+                    <div class="zyf_card-top"><span class="zyf_id">#19</span><span class="zyf_tag"><span class="zyf_dot zyf_dot-7"></span>Extra</span></div>
+                    <div class="zyf_title">作业 19</div>
+                    <div class="zyf_card-foot"><span>—</span><span class="zyf_arrow">Open →</span></div>
                 </a>
-                <a class="zyf_117_card" href="20.html" target="_blank">
-                    <span class="zyf_117_card-id"><span class="zyf_117_badge zyf_117_basic">其他</span>#20</span>
-                    <span class="zyf_117_card-title">作业 20</span>
-                    <span class="zyf_117_card-arrow">›</span>
+                <a class="zyf_card" href="20.html" target="_blank" onmousemove="zyf_tilt(this,event)" onmouseleave="zyf_reset(this)">
+                    <div class="zyf_card-top"><span class="zyf_id">#20</span><span class="zyf_tag"><span class="zyf_dot zyf_dot-7"></span>Extra</span></div>
+                    <div class="zyf_title">作业 20</div>
+                    <div class="zyf_card-foot"><span>—</span><span class="zyf_arrow">Open →</span></div>
                 </a>
-                <a class="zyf_117_card" href="21.html" target="_blank">
-                    <span class="zyf_117_card-id"><span class="zyf_117_badge zyf_117_basic">其他</span>#21</span>
-                    <span class="zyf_117_card-title">作业 21</span>
-                    <span class="zyf_117_card-arrow">›</span>
+                <a class="zyf_card" href="21.html" target="_blank" onmousemove="zyf_tilt(this,event)" onmouseleave="zyf_reset(this)">
+                    <div class="zyf_card-top"><span class="zyf_id">#21</span><span class="zyf_tag"><span class="zyf_dot zyf_dot-7"></span>Extra</span></div>
+                    <div class="zyf_title">作业 21</div>
+                    <div class="zyf_card-foot"><span>—</span><span class="zyf_arrow">Open →</span></div>
                 </a>
             </div>
-        </div>
+        </section>
 
-    </div>
+    </main>
 
-    <footer>张艺凡 · 高级网页设计 I · 2025</footer>
+    <footer>© 张艺凡 · PORTFOLIO · 2025</footer>
+
+    <script>
+        // 鼠标悬停 3D 倾斜 + 光束跟随
+        function zyf_tilt(el, e) {
+            const rect = el.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            const cx = rect.width / 2;
+            const cy = rect.height / 2;
+            const rx = ((y - cy) / cy) * -7;   // 上下倾斜
+            const ry = ((x - cx) / cx) * 7;    // 左右倾斜
+            el.style.setProperty("--rx", rx + "deg");
+            el.style.setProperty("--ry", ry + "deg");
+            el.style.setProperty("--mx", x + "px");
+            el.style.setProperty("--my", y + "px");
+        }
+        function zyf_reset(el) {
+            el.style.setProperty("--rx", "0deg");
+            el.style.setProperty("--ry", "0deg");
+        }
+    </script>
 </body>
 </html>
