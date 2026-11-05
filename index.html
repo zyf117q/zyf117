@@ -1,69 +1,405 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
-
+<!-- 姓名：张艺凡 / 日期：2026-11-05 / 功能名称：作业首页 -->
 <head>
-    <meta charset="UTF-8">
-    <title>作业首页</title>
-    <style>
-        body {
-            font-size: 22px;
-            padding: 30px;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>作业首页 · 张艺凡</title>
+<style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
 
-        a {
-            display: block;
-            margin: 12px 0;
-            color: #2255cc;
-            text-decoration: none;
-        }
+    body {
+        font-family: "Microsoft YaHei", "PingFang SC", Arial, sans-serif;
+        background:
+            radial-gradient(ellipse at 15% 0%, rgba(93,139,255,0.22) 0%, transparent 50%),
+            radial-gradient(ellipse at 100% 100%, rgba(160,107,255,0.18) 0%, transparent 55%),
+            radial-gradient(ellipse at 50% 60%, rgba(244,114,182,0.08) 0%, transparent 45%),
+            linear-gradient(160deg, #080c1e 0%, #12103a 60%, #1a0f4a 100%);
+        min-height: 100vh; color: #cdd5f0; padding: 0; overflow-x: hidden;
+        position: relative;
+    }
+    /* 网格 + 星点装饰 */
+    body::before {
+        content: "";
+        position: fixed; inset: 0; z-index: -1; pointer-events: none;
+        background-image:
+            linear-gradient(rgba(93,139,255,0.08) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(93,139,255,0.08) 1px, transparent 1px);
+        background-size: 40px 40px;
+        mask-image: radial-gradient(ellipse at center, rgba(0,0,0,0.85) 30%, transparent 80%);
+        -webkit-mask-image: radial-gradient(ellipse at center, rgba(0,0,0,0.85) 30%, transparent 80%);
+    }
 
-        a:hover {
-            color: orange;
-        }
-    </style>
+    /* 顶部 Hero */
+    .zyf_117_hero {
+        text-align: center; padding: 70px 20px 50px;
+    }
+    .zyf_117_hero h1 {
+        font-size: 2.4rem; letter-spacing: 6px; font-weight: 700;
+        background: linear-gradient(90deg, #60a5fa, #a78bfa, #f472b6);
+        -webkit-background-clip: text; background-clip: text; color: transparent;
+        margin-bottom: 12px;
+    }
+    .zyf_117_hero p {
+        color: #98a0bd; font-size: 0.9rem; letter-spacing: 2px;
+    }
+
+    /* 统计条 */
+    .zyf_117_stats {
+        max-width: 900px; margin: 0 auto 36px; padding: 18px 22px;
+        display: flex; justify-content: space-around;
+        background: rgba(30,34,54,0.55);
+        border: 1px solid rgba(148,163,255,0.18);
+        border-radius: 14px; backdrop-filter: blur(8px);
+    }
+    .zyf_117_stat { text-align: center; }
+    .zyf_117_stat-num {
+        font-size: 1.8rem; font-weight: 700;
+        background: linear-gradient(90deg, #93c5fd, #c4b5fd);
+        -webkit-background-clip: text; background-clip: text; color: transparent;
+    }
+    .zyf_117_stat-lbl { color: #6b7394; font-size: 0.75rem; margin-top: 2px; }
+
+    /* 作业网格 */
+    .zyf_117_container {
+        max-width: 1100px; margin: 0 auto 40px; padding: 0 24px;
+    }
+    .zyf_117_section { margin-bottom: 30px; }
+    .zyf_117_section-title {
+        font-size: 1rem; color: #f0c4ff; margin-bottom: 14px;
+        padding-left: 12px; border-left: 4px solid #a06bff;
+        letter-spacing: 2px;
+    }
+    .zyf_117_grid {
+        display: grid; gap: 12px;
+        grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    }
+    .zyf_117_card {
+        display: flex; flex-direction: column;
+        background: rgba(30,34,54,0.6);
+        border: 1px solid rgba(148,163,255,0.18);
+        border-radius: 12px; padding: 16px 18px;
+        text-decoration: none; color: inherit;
+        transition: transform .2s, border-color .2s, box-shadow .2s, background .2s;
+        backdrop-filter: blur(6px);
+        position: relative; overflow: hidden;
+    }
+    .zyf_117_card::after {
+        content: ""; position: absolute; inset: 0;
+        background: linear-gradient(135deg, rgba(93,139,255,0) 0%, rgba(160,107,255,0) 100%);
+        transition: background .3s;
+        pointer-events: none;
+    }
+    .zyf_117_card:hover {
+        transform: translateY(-3px);
+        border-color: rgba(148,163,255,0.55);
+        box-shadow: 0 10px 28px rgba(93,139,255,0.28), 0 0 0 1px rgba(160,107,255,0.3) inset;
+        background: rgba(40,46,74,0.8);
+    }
+    .zyf_117_card:hover::after {
+        background: linear-gradient(135deg, rgba(93,139,255,0.12) 0%, rgba(160,107,255,0.12) 100%);
+    }
+    .zyf_117_card-id {
+        font-family: Consolas, Monaco, monospace;
+        font-size: 0.75rem; color: #6b7394; letter-spacing: 1px;
+        margin-bottom: 8px;
+    }
+    .zyf_117_card-title {
+        font-size: 0.88rem; font-weight: 600;
+        color: #e8ebf8; line-height: 1.45;
+    }
+    .zyf_117_card-arrow {
+        position: absolute; right: 16px; top: 50%; transform: translateY(-50%);
+        color: #6b7394; font-size: 1.1rem;
+        transition: all .25s;
+    }
+    .zyf_117_card:hover .zyf_117_card-arrow {
+        color: #a78bfa; transform: translate(3px, -50%);
+    }
+
+    /* 彩色编号徽章 */
+    .zyf_117_badge {
+        display: inline-block; padding: 2px 8px; border-radius: 4px;
+        font-size: 0.7rem; font-weight: 600; margin-right: 6px;
+    }
+    .zyf_117_badge.zyf_117_basic  { background: rgba(100,116,139,0.25); color: #cbd5e1; }
+    .zyf_117_badge.zyf_117_data   { background: rgba(59,130,246,0.2);  color: #93c5fd; }
+    .zyf_117_badge.zyf_117_icon   { background: rgba(168,85,247,0.22); color: #c4b5fd; }
+    .zyf_117_badge.zyf_117_js     { background: rgba(234,179,8,0.18);  color: #fbbf24; }
+    .zyf_117_badge.zyf_117_net    { background: rgba(244,114,182,0.2);  color: #f9a8d4; }
+    .zyf_117_badge.zyf_117_async  { background: rgba(34,197,94,0.2);    color: #86efac; }
+    .zyf_117_badge.zyf_117_ui     { background: rgba(14,165,233,0.2);   color: #7dd3fc; }
+
+    footer {
+        text-align: center; padding: 30px 20px;
+        color: #4b5573; font-size: 0.8rem; letter-spacing: 3px;
+        border-top: 1px solid rgba(148,163,255,0.12);
+    }
+</style>
 </head>
-
 <body>
-    <h2>作业列表</h2>
-    <a href="2.html" target="_blank">作业2</a>
-    <a href="3.html" target="_blank">作业3</a>
-    <a href="4.html" target="_blank">作业4</a>
-    <a href="5.html" target="_blank">作业5</a>
-    <a href="6.html" target="_blank">作业6</a>
-    <a href="7.html" target="_blank">作业7</a>
-    <a href="8.html" target="_blank">作业8</a>
-    <a href="9.html" target="_blank">作业9</a>
-    <a href="10.html" target="_blank">作业10</a>
-    <a href="11.html" target="_blank">作业11</a>
-    <a href="12.html" target="_blank">作业12</a>
-    <a href="13.html" target="_blank">作业13</a>
-    <a href="13-1.html" target="_blank">作业13-1（Font Awesome 字体图标）</a>
-    <a href="13-2.html" target="_blank">作业13-2（Lucide SVG 图标）</a>
-    <a href="13-3.html" target="_blank">作业13-3（下导航 · 双方案对比）</a>
-    <a href="14.html" target="_blank">作业14</a>
-    <a href="14-1.html" target="_blank">作业14-1（五种弹窗输出）</a>
-    <a href="14-2.html" target="_blank">作业14-2（六种基础数据类型）</a>
-    <a href="15.html" target="_blank">作业15</a>
-    <a href="15-1.html" target="_blank">作业15-1（数7游戏 · 100格盒子）</a>
-    <a href="15-2.html" target="_blank">作业15-2（JS 条件与循环 · 流程图）</a>
-    <a href="16.html" target="_blank">作业16</a>
-    <a href="16-1.html" target="_blank">作业16-1（JS 数组方法可视化）</a>
-    <a href="16-2.html" target="_blank">作业16-2（JS 对象与字符串可视化）</a>
-    <a href="16-3.html" target="_blank">作业16-3（短视频内容卡片）</a>
-    <a href="16-4.html" target="_blank">作业16-4（Tab 选项卡 + 弹窗）</a>
-    <a href="17.html" target="_blank">作业17</a>
-    <a href="17-1.html" target="_blank">作业17-1（JSON 展示）</a>
-    <a href="17-2.html" target="_blank">作业17-2（fetch 接口数据获取）</a>
-    <a href="17-3.html" target="_blank">作业17-3（远程商品列表）</a>
-    <a href="17-3-detail.html" target="_blank">作业17-3-detail（商品详情）</a>
-    <a href="17-4.html" target="_blank">作业17-4（远程接口 get/post 测试）</a>
-    <a href="17-5.html" target="_blank">作业17-5（JS 两种定时器）</a>
-    <a href="17-6.html" target="_blank">作业17-6（Promise + async/await 包饺子）</a>
-    <a href="18.html" target="_blank">作业18</a>
-    <a href="19.html" target="_blank">作业19</a>
-    <a href="20.html" target="_blank">作业20</a>
-    <a href="21.html" target="_blank">作业21</a>
-    <a href="22.html" target="_blank">作业22（网页元素设计 · 综合页）</a>
-</body>
+    <!-- Hero -->
+    <div class="zyf_117_hero">
+        <h1>ZYF · 作业集</h1>
+        <p>高级网页设计 I  ·  张艺凡  ·  2025 秋</p>
+    </div>
 
+    <!-- 统计条 -->
+    <div class="zyf_117_stats">
+        <div class="zyf_117_stat"><div class="zyf_117_stat-num">37</div><div class="zyf_117_stat-lbl">作业总数</div></div>
+        <div class="zyf_117_stat"><div class="zyf_117_stat-num">6</div><div class="zyf_117_stat-lbl">主题章节</div></div>
+        <div class="zyf_117_stat"><div class="zyf_117_stat-num">40%</div><div class="zyf_117_stat-lbl">JS 相关占比</div></div>
+        <div class="zyf_117_stat"><div class="zyf_117_stat-num">∞</div><div class="zyf_117_stat-lbl">学习热情</div></div>
+    </div>
+
+    <div class="zyf_117_container">
+
+        <!-- 基础网页 -->
+        <div class="zyf_117_section">
+            <div class="zyf_117_section-title">① 基础网页结构</div>
+            <div class="zyf_117_grid">
+                <a class="zyf_117_card" href="2.html" target="_blank">
+                    <span class="zyf_117_card-id"><span class="zyf_117_badge zyf_117_basic">基础</span>#02</span>
+                    <span class="zyf_117_card-title">作业 2</span>
+                    <span class="zyf_117_card-arrow">›</span>
+                </a>
+                <a class="zyf_117_card" href="3.html" target="_blank">
+                    <span class="zyf_117_card-id"><span class="zyf_117_badge zyf_117_basic">基础</span>#03</span>
+                    <span class="zyf_117_card-title">作业 3</span>
+                    <span class="zyf_117_card-arrow">›</span>
+                </a>
+                <a class="zyf_117_card" href="4.html" target="_blank">
+                    <span class="zyf_117_card-id"><span class="zyf_117_badge zyf_117_basic">基础</span>#04</span>
+                    <span class="zyf_117_card-title">作业 4</span>
+                    <span class="zyf_117_card-arrow">›</span>
+                </a>
+                <a class="zyf_117_card" href="5.html" target="_blank">
+                    <span class="zyf_117_card-id"><span class="zyf_117_badge zyf_117_basic">基础</span>#05</span>
+                    <span class="zyf_117_card-title">作业 5</span>
+                    <span class="zyf_117_card-arrow">›</span>
+                </a>
+                <a class="zyf_117_card" href="6.html" target="_blank">
+                    <span class="zyf_117_card-id"><span class="zyf_117_badge zyf_117_basic">基础</span>#06</span>
+                    <span class="zyf_117_card-title">作业 6</span>
+                    <span class="zyf_117_card-arrow">›</span>
+                </a>
+                <a class="zyf_117_card" href="7.html" target="_blank">
+                    <span class="zyf_117_card-id"><span class="zyf_117_badge zyf_117_basic">基础</span>#07</span>
+                    <span class="zyf_117_card-title">作业 7</span>
+                    <span class="zyf_117_card-arrow">›</span>
+                </a>
+                <a class="zyf_117_card" href="8.html" target="_blank">
+                    <span class="zyf_117_card-id"><span class="zyf_117_badge zyf_117_basic">基础</span>#08</span>
+                    <span class="zyf_117_card-title">作业 8</span>
+                    <span class="zyf_117_card-arrow">›</span>
+                </a>
+                <a class="zyf_117_card" href="9.html" target="_blank">
+                    <span class="zyf_117_card-id"><span class="zyf_117_badge zyf_117_basic">基础</span>#09</span>
+                    <span class="zyf_117_card-title">作业 9</span>
+                    <span class="zyf_117_card-arrow">›</span>
+                </a>
+                <a class="zyf_117_card" href="10.html" target="_blank">
+                    <span class="zyf_117_card-id"><span class="zyf_117_badge zyf_117_basic">基础</span>#10</span>
+                    <span class="zyf_117_card-title">作业 10</span>
+                    <span class="zyf_117_card-arrow">›</span>
+                </a>
+                <a class="zyf_117_card" href="11.html" target="_blank">
+                    <span class="zyf_117_card-id"><span class="zyf_117_badge zyf_117_basic">基础</span>#11</span>
+                    <span class="zyf_117_card-title">作业 11</span>
+                    <span class="zyf_117_card-arrow">›</span>
+                </a>
+                <a class="zyf_117_card" href="12.html" target="_blank">
+                    <span class="zyf_117_card-id"><span class="zyf_117_badge zyf_117_basic">基础</span>#12</span>
+                    <span class="zyf_117_card-title">作业 12</span>
+                    <span class="zyf_117_card-arrow">›</span>
+                </a>
+            </div>
+        </div>
+
+        <!-- 图像解决方案（图标） -->
+        <div class="zyf_117_section">
+            <div class="zyf_117_section-title">② 图像解决方案 · 图标</div>
+            <div class="zyf_117_grid">
+                <a class="zyf_117_card" href="13.html" target="_blank">
+                    <span class="zyf_117_card-id"><span class="zyf_117_badge zyf_117_icon">图标</span>#13</span>
+                    <span class="zyf_117_card-title">作业 13</span>
+                    <span class="zyf_117_card-arrow">›</span>
+                </a>
+                <a class="zyf_117_card" href="13-1.html" target="_blank">
+                    <span class="zyf_117_card-id"><span class="zyf_117_badge zyf_117_icon">图标</span>#13-1</span>
+                    <span class="zyf_117_card-title">Font Awesome 字体图标</span>
+                    <span class="zyf_117_card-arrow">›</span>
+                </a>
+                <a class="zyf_117_card" href="13-2.html" target="_blank">
+                    <span class="zyf_117_card-id"><span class="zyf_117_badge zyf_117_icon">图标</span>#13-2</span>
+                    <span class="zyf_117_card-title">Lucide SVG 图标</span>
+                    <span class="zyf_117_card-arrow">›</span>
+                </a>
+                <a class="zyf_117_card" href="13-3.html" target="_blank">
+                    <span class="zyf_117_card-id"><span class="zyf_117_badge zyf_117_icon">图标</span>#13-3</span>
+                    <span class="zyf_117_card-title">下导航 · 双方案对比</span>
+                    <span class="zyf_117_card-arrow">›</span>
+                </a>
+            </div>
+        </div>
+
+        <!-- JS 基础 -->
+        <div class="zyf_117_section">
+            <div class="zyf_117_section-title">③ JavaScript · 基础</div>
+            <div class="zyf_117_grid">
+                <a class="zyf_117_card" href="14.html" target="_blank">
+                    <span class="zyf_117_card-id"><span class="zyf_117_badge zyf_117_js">JS</span>#14</span>
+                    <span class="zyf_117_card-title">作业 14</span>
+                    <span class="zyf_117_card-arrow">›</span>
+                </a>
+                <a class="zyf_117_card" href="14-1.html" target="_blank">
+                    <span class="zyf_117_card-id"><span class="zyf_117_badge zyf_117_js">JS</span>#14-1</span>
+                    <span class="zyf_117_card-title">五种弹窗输出</span>
+                    <span class="zyf_117_card-arrow">›</span>
+                </a>
+                <a class="zyf_117_card" href="14-2.html" target="_blank">
+                    <span class="zyf_117_card-id"><span class="zyf_117_badge zyf_117_js">JS</span>#14-2</span>
+                    <span class="zyf_117_card-title">六种基础数据类型</span>
+                    <span class="zyf_117_card-arrow">›</span>
+                </a>
+                <a class="zyf_117_card" href="15.html" target="_blank">
+                    <span class="zyf_117_card-id"><span class="zyf_117_badge zyf_117_js">JS</span>#15</span>
+                    <span class="zyf_117_card-title">作业 15</span>
+                    <span class="zyf_117_card-arrow">›</span>
+                </a>
+                <a class="zyf_117_card" href="15-1.html" target="_blank">
+                    <span class="zyf_117_card-id"><span class="zyf_117_badge zyf_117_js">JS</span>#15-1</span>
+                    <span class="zyf_117_card-title">数7游戏 · 100格盒子</span>
+                    <span class="zyf_117_card-arrow">›</span>
+                </a>
+                <a class="zyf_117_card" href="15-2.html" target="_blank">
+                    <span class="zyf_117_card-id"><span class="zyf_117_badge zyf_117_js">JS</span>#15-2</span>
+                    <span class="zyf_117_card-title">JS 条件与循环 · 流程图</span>
+                    <span class="zyf_117_card-arrow">›</span>
+                </a>
+                <a class="zyf_117_card" href="16.html" target="_blank">
+                    <span class="zyf_117_card-id"><span class="zyf_117_badge zyf_117_js">JS</span>#16</span>
+                    <span class="zyf_117_card-title">作业 16</span>
+                    <span class="zyf_117_card-arrow">›</span>
+                </a>
+                <a class="zyf_117_card" href="16-1.html" target="_blank">
+                    <span class="zyf_117_card-id"><span class="zyf_117_badge zyf_117_data">数据</span>#16-1</span>
+                    <span class="zyf_117_card-title">JS 数组方法可视化</span>
+                    <span class="zyf_117_card-arrow">›</span>
+                </a>
+                <a class="zyf_117_card" href="16-2.html" target="_blank">
+                    <span class="zyf_117_card-id"><span class="zyf_117_badge zyf_117_data">数据</span>#16-2</span>
+                    <span class="zyf_117_card-title">JS 对象与字符串可视化</span>
+                    <span class="zyf_117_card-arrow">›</span>
+                </a>
+            </div>
+        </div>
+
+        <!-- UI 组件 -->
+        <div class="zyf_117_section">
+            <div class="zyf_117_section-title">④ UI 组件与交互</div>
+            <div class="zyf_117_grid">
+                <a class="zyf_117_card" href="16-3.html" target="_blank">
+                    <span class="zyf_117_card-id"><span class="zyf_117_badge zyf_117_ui">UI</span>#16-3</span>
+                    <span class="zyf_117_card-title">短视频内容卡片</span>
+                    <span class="zyf_117_card-arrow">›</span>
+                </a>
+                <a class="zyf_117_card" href="16-4.html" target="_blank">
+                    <span class="zyf_117_card-id"><span class="zyf_117_badge zyf_117_ui">UI</span>#16-4</span>
+                    <span class="zyf_117_card-title">Tab 选项卡 + 弹窗</span>
+                    <span class="zyf_117_card-arrow">›</span>
+                </a>
+                <a class="zyf_117_card" href="22.html" target="_blank">
+                    <span class="zyf_117_card-id"><span class="zyf_117_badge zyf_117_ui">综合</span>#22</span>
+                    <span class="zyf_117_card-title">网页元素设计 · 综合页</span>
+                    <span class="zyf_117_card-arrow">›</span>
+                </a>
+            </div>
+        </div>
+
+        <!-- JS 数据 / 网络 -->
+        <div class="zyf_117_section">
+            <div class="zyf_117_section-title">⑤ 数据获取 · 远程接口</div>
+            <div class="zyf_117_grid">
+                <a class="zyf_117_card" href="17.html" target="_blank">
+                    <span class="zyf_117_card-id"><span class="zyf_117_badge zyf_117_net">网络</span>#17</span>
+                    <span class="zyf_117_card-title">作业 17</span>
+                    <span class="zyf_117_card-arrow">›</span>
+                </a>
+                <a class="zyf_117_card" href="17-1.html" target="_blank">
+                    <span class="zyf_117_card-id"><span class="zyf_117_badge zyf_117_data">JSON</span>#17-1</span>
+                    <span class="zyf_117_card-title">JSON 展示 · 解析高亮</span>
+                    <span class="zyf_117_card-arrow">›</span>
+                </a>
+                <a class="zyf_117_card" href="17-2.html" target="_blank">
+                    <span class="zyf_117_card-id"><span class="zyf_117_badge zyf_117_net">fetch</span>#17-2</span>
+                    <span class="zyf_117_card-title">fetch 接口数据获取</span>
+                    <span class="zyf_117_card-arrow">›</span>
+                </a>
+                <a class="zyf_117_card" href="17-3.html" target="_blank">
+                    <span class="zyf_117_card-id"><span class="zyf_117_badge zyf_117_net">fetch</span>#17-3</span>
+                    <span class="zyf_117_card-title">远程商品列表</span>
+                    <span class="zyf_117_card-arrow">›</span>
+                </a>
+                <a class="zyf_117_card" href="17-3-detail.html" target="_blank">
+                    <span class="zyf_117_card-id"><span class="zyf_117_badge zyf_117_net">fetch</span>#17-3d</span>
+                    <span class="zyf_117_card-title">商品详情页</span>
+                    <span class="zyf_117_card-arrow">›</span>
+                </a>
+                <a class="zyf_117_card" href="17-4.html" target="_blank">
+                    <span class="zyf_117_card-id"><span class="zyf_117_badge zyf_117_net">接口</span>#17-4</span>
+                    <span class="zyf_117_card-title">远程接口 get/post 测试</span>
+                    <span class="zyf_117_card-arrow">›</span>
+                </a>
+            </div>
+        </div>
+
+        <!-- 异步 -->
+        <div class="zyf_117_section">
+            <div class="zyf_117_section-title">⑥ 异步编程 · 定时器 & Promise</div>
+            <div class="zyf_117_grid">
+                <a class="zyf_117_card" href="17-5.html" target="_blank">
+                    <span class="zyf_117_card-id"><span class="zyf_117_badge zyf_117_async">异步</span>#17-5</span>
+                    <span class="zyf_117_card-title">JS 两种定时器</span>
+                    <span class="zyf_117_card-arrow">›</span>
+                </a>
+                <a class="zyf_117_card" href="17-6.html" target="_blank">
+                    <span class="zyf_117_card-id"><span class="zyf_117_badge zyf_117_async">Promise</span>#17-6</span>
+                    <span class="zyf_117_card-title">Promise + async/await 包饺子</span>
+                    <span class="zyf_117_card-arrow">›</span>
+                </a>
+            </div>
+        </div>
+
+        <!-- 老作业 -->
+        <div class="zyf_117_section">
+            <div class="zyf_117_section-title">⑦ 其他作业</div>
+            <div class="zyf_117_grid">
+                <a class="zyf_117_card" href="18.html" target="_blank">
+                    <span class="zyf_117_card-id"><span class="zyf_117_badge zyf_117_basic">其他</span>#18</span>
+                    <span class="zyf_117_card-title">作业 18</span>
+                    <span class="zyf_117_card-arrow">›</span>
+                </a>
+                <a class="zyf_117_card" href="19.html" target="_blank">
+                    <span class="zyf_117_card-id"><span class="zyf_117_badge zyf_117_basic">其他</span>#19</span>
+                    <span class="zyf_117_card-title">作业 19</span>
+                    <span class="zyf_117_card-arrow">›</span>
+                </a>
+                <a class="zyf_117_card" href="20.html" target="_blank">
+                    <span class="zyf_117_card-id"><span class="zyf_117_badge zyf_117_basic">其他</span>#20</span>
+                    <span class="zyf_117_card-title">作业 20</span>
+                    <span class="zyf_117_card-arrow">›</span>
+                </a>
+                <a class="zyf_117_card" href="21.html" target="_blank">
+                    <span class="zyf_117_card-id"><span class="zyf_117_badge zyf_117_basic">其他</span>#21</span>
+                    <span class="zyf_117_card-title">作业 21</span>
+                    <span class="zyf_117_card-arrow">›</span>
+                </a>
+            </div>
+        </div>
+
+    </div>
+
+    <footer>张艺凡 · 高级网页设计 I · 2025</footer>
+</body>
 </html>
